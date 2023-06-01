@@ -1,0 +1,26 @@
+[
+    {
+        "id":1,
+        "unit":"Kg"
+    },
+    {
+        "id":2,
+        "unit":"Ton"
+    },
+    {
+        "id":3,
+        "unit":"Mon"
+    },
+    {
+        "id":4,
+        "unit":"Psc"
+    },
+    {
+        "id":5,
+        "unit":"Ati"
+    },
+    {
+        "id":6,
+        "unit":"Palla"
+    }
+]
