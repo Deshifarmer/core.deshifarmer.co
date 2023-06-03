@@ -26,8 +26,8 @@ class ChannelResource extends JsonResource
             'channel_name' => $this->channel_name,
             'division'=>Division::where('id',$division_id)->get()->implode('name'),
             'district'=>District::where('id',$district_id)->get()->implode('name'),
-            'toatal_distributor' => Employee::where('channel', $this->channel_name)->count(),
-            'total_me' => Me::where('channel_id', $this->channel_name)->count(),
+            'toatal_distributor' => Employee::where('channel', $this->channel_name)->where('type',2)->count(),
+            'total_me' => Employee::where('channel', $this->channel_name)->where('type',3)->count(),
             'total_order'=>$this->when($request->routeIs('hq.all_channel'), function () {
                 return InputOrder::where('channel_id',$this->channel_name)->count();
             }),

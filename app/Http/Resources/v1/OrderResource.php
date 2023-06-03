@@ -23,12 +23,12 @@ class OrderResource extends JsonResource
             'me_order_id' => $this->me_order_id,
             'product_id' => $this->product_id,
             'product_details' => new ProductResource(Product::where('product_id', $this->product_id)->first()),
-            'unit' =>$unit,
+            'unit' =>$this->unit,
             'quantity' => $this->quantity,
             'total_price'=>$this->total_price,
             'status'=>$this->status,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
-            'location' => "static location",
+            'location' => $this->channel_id,
         ];
     }
 }

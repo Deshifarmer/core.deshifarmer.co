@@ -23,9 +23,9 @@ return new class extends Migration
             $table->bigInteger('category_id');
             $table->bigInteger('subcategory_id')->nullable();
             $table->string('company_id');
-            $table->decimal('buy_price_from_company');
-            $table->decimal('sell_price_from_company');
-            $table->decimal('sell_price');
+            $table->decimal('buy_price_from_company');//hq buying price from company
+            $table->decimal('sell_price_from_company');//Hq selling price set by company
+            $table->decimal('sell_price'); // sell_price_from_company == sell_price (it could be modified by HQ)
             $table->decimal('discount')->nullable();
             $table->decimal('hq_commission')->nullable();
             $table->decimal('me_commission')->nullable();

@@ -7,6 +7,7 @@ use App\Http\Resources\v1\InputOrderResource;
 use App\Http\Resources\v1\OrderResource;
 use App\Models\v1\InputOrder;
 use App\Models\v1\order;
+use App\Models\v1\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -55,6 +56,11 @@ class OrdersController extends Controller
 
     public function orderFromMe($id){
         return InputOrderResource::collection(InputOrder::where('me_id',$id)->get());
+    }
+
+    //company wise order
+    public function my_order(){
+        return OrderResource::collection( Order::where('company_id', auth()->user()->df_id)->get());
     }
 
     public function orderFromFarmer($id){

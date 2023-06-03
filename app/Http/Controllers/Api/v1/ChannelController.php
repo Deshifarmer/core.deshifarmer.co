@@ -97,6 +97,37 @@ class ChannelController extends BaseController
             'status' => 'success',
         ], 200);
     }
+    public function assignMe(Request $request, channel $channel)
+    {
+
+        foreach ($request->list as $key => $value) {
+            $employee = Employee::where('df_id', $value);
+            $alreadyAssign = $employee->get('channel')->implode('channel');
+
+            if ($alreadyAssign != null) {
+                return response()->json([
+                    'message' => $value . ' ' . 'This Micro-Entreprenure Already Assign',
+                    'status' => 'error',
+                ], 422);
+            } else {
+                (new EmployeeController)->update(
+                    new Request(
+                        [
+                            'channel' => Employee::where('df_id',$request->under )->get('channel')->implode('channel'),
+                            'channel_assign_by' => auth()->user()->df_id,
+                            'under'=>$request->under,
+                        ]
+                    ),
+                    Employee::where('df_id', $value)->first()
+                );
+            }
+
+        }
+        return response()->json([
+            'message' => 'Assign Successfully',
+            'status' => 'success',
+        ], 200);
+    }
 
 
     /**

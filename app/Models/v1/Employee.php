@@ -37,7 +37,8 @@ class Employee extends Model
         'comission',
         'target_volume',
         'channel',
-        'channel_assign_by'
+        'channel_assign_by',
+        'under'
     ];
 
     protected $appends = [

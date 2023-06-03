@@ -45,6 +45,7 @@ class ProductController extends BaseController
         $image_path = '/image/product/' . $input["product_id"] . '.' . $extension;
         $input['image'] =  $image_path;
         $input['company_id'] = auth()->user()->df_id;
+        $input['sell_price'] = $input['sell_price_from_company'];
 
         $product = Product::create($input);
         return $product;
@@ -115,6 +116,6 @@ class ProductController extends BaseController
     {
         $products = Product::where('company_id', auth()->user()->df_id)->get();
         return ProductResource::collection($products);
-     
+
     }
 }

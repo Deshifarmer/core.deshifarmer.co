@@ -96,5 +96,13 @@ class EmployeeController extends BaseController
         // return $employee->delete();
     }
 
+    public function distributorsMe(Employee $employee){
+
+        return UserResource::collection(
+            Employee::where('under',$employee->df_id)->get()
+        );
+
+    }
+
 
 }

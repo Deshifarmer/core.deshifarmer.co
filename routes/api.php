@@ -69,17 +69,20 @@ Route::prefix('v1/')
                     Route::post('add', [AuthController::class, 'register'])->name('add_hq_co_dis_me');
                     Route::get('all_company', [UserController::class, 'allCompany'])->name('all_company');
                     Route::get('all_distributor', [UserController::class, 'allDistributor'])->name('all_distributor');
+                    Route::get('all_me', [UserController::class, 'allMicroEnt'])->name('all_me');
                     Route::get('unassigned_distributor', [UserController::class, 'unassignedDistributor'])->name('unassigned_distributor');
                     Route::get('unassigned_me', [UserController::class, 'unassignedMe'])->name('unassigned_me');
-                    Route::get('all_me', [UserController::class, 'allMicroEnt'])->name('all_me');
+
                     Route::get('all_channel', [ChannelController::class, 'index'])->name('hq.all_channel');
                     Route::get('info/{user}', [UserController::class, 'show'])->name('hq.info.single_user');
-                    //Channel
                     Route::post('add_channel', [ChannelController::class, 'store']);
                     Route::get('channel/{channel}', [ChannelController::class, 'show'])->name('hq.single_channel');
-                    Route::post('channel/{channel}/assign', [ChannelController::class, 'assign'])->name('hq.channel_assign');
+                    Route::post('channel/{channel}/assign_dis', [ChannelController::class, 'assign'])->name('hq.channel_assign_dis');
+                    Route::post('assign_me', [ChannelController::class, 'assignMe'])->name('hq.assign_me');
+                    Route::get('distributor/{employee}/me', [EmployeeController::class, 'distributorsMe'])->name('distributors_me');
                     Route::post('add_category', [ProductCategoryController::class, 'store'])->name('add_category');
                     Route::get('all_input_order', [InputOrderController::class, 'index'])->name('hq.all_input_order');
+                    Route::get('input_order/{input_order}', [InputOrderController::class, 'show'])->name('hq.single_input_order');
                 });
         });
         //all route only for HeadQuater
@@ -91,6 +94,8 @@ Route::prefix('v1/')
             Route::prefix('co/')
                 ->group(function () {
                     Route::get('my_product', [ProductController::class, 'companyWiseProduct'])->name('companyWiseProduct');
+                    Route::get('my_order',[OrdersController::class,'my_order'])->name('co.my_order');
+
                 });
         });
 
@@ -99,7 +104,8 @@ Route::prefix('v1/')
                 ->group(function () {
                    Route::post('add_farmer', [FarmerController::class, 'store'])->name('me.add_farmer');
                    Route::get('my_farmer', [MeController::class, 'myFarmer'])->name('me.my_farmer');
-                   Route::post('input_order', [InputOrderController::class, 'store'])->name('me.input_order');
+                   Route::post('input_order', [InputOrderController::class, 'store'])->name('me.input_order.store');
+
                 });
         });
 

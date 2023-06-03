@@ -40,6 +40,7 @@ return new class extends Migration
             $table->float('target_volume')->nullable(); //data will come from comission table
             $table->string('channel')->nullable();
             $table->string('channel_assign_by')->nullable();
+            $table->string('under')->nullable(); //me under which distributor
             $table->string('status')->default('active');
 
             $table->timestamps();

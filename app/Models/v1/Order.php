@@ -15,6 +15,8 @@ class Order extends Model
         'unit',
         'quantity',
         'total_price',
+        'channel_id',
+        'company_id',
         'status'
     ];
 
