@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\v1;
 
-
+use App\Models\v1\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,7 +21,7 @@ class AuthResource extends JsonResource
             'full_name' => "$this->first_name $this->last_name",
             'df_id' => $this->df_id,
             'role' => $this->role,
-            // 'details'=>   $details ? EmployeeResource::collection($details) : null,
+           
         ];
     }
 }

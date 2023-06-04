@@ -67,7 +67,7 @@ class EmployeeController extends BaseController
      */
     public function show(Employee $employee)
     {
-        // return new EmployeeResource($employee);
+        return new UserResource($employee);
     }
 
     /**
@@ -101,6 +101,15 @@ class EmployeeController extends BaseController
         return UserResource::collection(
             Employee::where('under',$employee->df_id)->get()
         );
+
+    }
+
+    public function myMe(){
+
+        return UserResource::collection(
+            Employee::where('under',auth()->user()->df_id)->get()
+        );
+
 
     }
 

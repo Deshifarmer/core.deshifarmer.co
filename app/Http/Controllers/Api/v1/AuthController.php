@@ -62,7 +62,20 @@ class AuthController extends BaseController
     {
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             $user = Auth::user();
-            return AuthResource::make($user);
+            if($user->role == 0 || $user->role == 1){
+                return AuthResource::make($user);
+            }
+            if($user->role == 2 && Employee::where('df_id', $user->df_id)->first()->channel != null){
+                return AuthResource::make($user);
+            }
+            else if($user->role == 3 && Employee::where('df_id', $user->df_id)->first()->under != null){
+                return AuthResource::make($user);
+            }
+            else{
+                return response()->json(
+                    ['error' => 'Contact HQ for Assign yourself to a channel or under a distributor'], 401);
+            }
+
         }
         else{
             return response()->json(['error' => 'Email or password incorrect'], 401);

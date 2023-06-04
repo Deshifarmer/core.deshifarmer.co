@@ -28,11 +28,13 @@ class InputOrderController extends BaseController
         $data['me_id'] = auth()->user()->df_id;
         $data['order_id'] ='Ord-' . $this->generateUUID();
         $data['channel_id'] = Employee::where('df_id', auth()->user()->df_id)->get('channel')->implode('channel');
+        $data['distributor_id']= Employee::where('df_id', auth()->user()->df_id)->get('under')->implode('under');
 
         $total_price = 0;
         for($i = 0; $i < count($request->{"order"}); $i++){
             $product_price = Product::where('product_id', $request->{"order"}[$i]["product_id"])->get('sell_price')->implode('sell_price');
             $total_price +=  $product_price * $request->{"order"}[$i]["quantity"];
+
             (new OrdersController)->store( new Request([
                 'product_id' => $request->{"order"}[$i]["product_id"],
                 'quantity' => $request->{"order"}[$i]["quantity"],
@@ -45,8 +47,10 @@ class InputOrderController extends BaseController
         }
         $data['total_price'] = $total_price;
 
+
         $orderFromMe = inputOrder::create($data);
         return new InputOrderResource($orderFromMe);
+
     }
 
     /**
@@ -71,5 +75,12 @@ class InputOrderController extends BaseController
     public function destroy(inputOrder $inputOrder)
     {
         //
+    }
+
+
+    public function meOrder(){
+        return InputOrderResource::collection(
+            inputOrder::where('distributor_id',auth()->user()->df_id)->get()
+        );
     }
 }

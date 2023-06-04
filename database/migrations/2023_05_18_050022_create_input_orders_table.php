@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('input_orders', function (Blueprint $table) {
             $table->id();
             $table->string('order_id')->index();
-            $table->string('me_id');
             $table->string('channel_id');
+            $table->string('distributor_id');
+            $table->string('me_id');
             $table->decimal('total_price');
             $table->string('sold_to'); //farmer_id
             $table->string('status')->default('pending'); //pending, approved, rejected, delivered, cancelled

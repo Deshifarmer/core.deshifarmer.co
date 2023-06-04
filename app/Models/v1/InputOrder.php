@@ -20,6 +20,7 @@ class InputOrder extends Model
         'me_id',
         'total_price',
         'channel_id',
+        'distributor_id',
         'sold_to',
         'status',
         'payment_method',
