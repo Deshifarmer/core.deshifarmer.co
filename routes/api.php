@@ -56,9 +56,10 @@ Route::prefix('v1/')
             Route::get('all_category', [ProductCategoryController::class, 'index']);
             Route::get('sub_category', [ProductSubCategoryController::class, 'index']);
             Route::Post('sub_category', [ProductSubCategoryController::class, 'store']);
-
             Route::get('all_product', [ProductController::class, 'index']);
             Route::get('product/sort', [ProductController::class, 'sort']);
+
+            Route::get('product/{product}', [ProductController::class, 'show']);
         });
 
 
@@ -70,10 +71,11 @@ Route::prefix('v1/')
                     Route::get('all_company', [UserController::class, 'allCompany'])->name('all_company');
                     Route::get('all_distributor', [UserController::class, 'allDistributor'])->name('all_distributor');
                     Route::get('all_me', [UserController::class, 'allMicroEnt'])->name('all_me');
+                    Route::get('all_farmer', [FarmerController::class, 'index']);
                     Route::get('unassigned_distributor', [UserController::class, 'unassignedDistributor'])->name('unassigned_distributor');
                     Route::get('unassigned_me', [UserController::class, 'unassignedMe'])->name('unassigned_me');
                     Route::get('all_channel', [ChannelController::class, 'index'])->name('hq.all_channel');
-                    Route::get('profile/{employee}', [EmployeeController::class, 'show'])->name('hq.profilebr.single_user');
+                    Route::get('profile/{employee}', [EmployeeController::class, 'show'])->name('hq.profile.single_user');
                     Route::post('add_channel', [ChannelController::class, 'store'])->name('hq.add_channel');
                     Route::get('channel/{channel}', [ChannelController::class, 'show'])->name('hq.single_channel');
                     Route::post('channel/{channel}/assign_dis', [ChannelController::class, 'assign'])->name('hq.channel_assign_dis');
@@ -82,6 +84,12 @@ Route::prefix('v1/')
                     Route::post('add_category', [ProductCategoryController::class, 'store'])->name('add_category');
                     Route::get('all_input_order', [InputOrderController::class, 'index'])->name('hq.all_input_order');
                     Route::get('input_order/{input_order}', [InputOrderController::class, 'show'])->name('hq.single_input_order');
+
+                    Route::get('distributor/{dis_id}/order', [OrdersController::class, 'distributorOrder'])->name('hq.distributor_order');
+                    Route::get('me/{me_id}/order', [OrdersController::class, 'meOrder'])->name('hq.me_order');
+
+                    Route::get('farmer/profile/{farmer}', [FarmerController::class, 'show']);
+
                 });
         });
 
@@ -109,7 +117,6 @@ Route::prefix('v1/')
         Route::group(['middleware' => ['auth:sanctum', 'user-access:ME']], function () {
             Route::prefix('me/')
                 ->group(function () {
-                    Route::post('login', [AuthController::class, 'login']);
                     Route::post('add_farmer', [FarmerController::class, 'store'])->name('me.add_farmer');
                     Route::get('my_farmer', [MeController::class, 'myFarmer'])->name('me.my_farmer');
                     Route::post('input_order', [InputOrderController::class, 'store'])->name('me.input_order.store');
@@ -162,7 +169,7 @@ Route::prefix('v1/')
         //     ->group(function () {
         //         Route::get('/', [FarmerController::class, 'index']);
         //         // Route::post('/', [FarmerController::class, 'store']);
-        //         Route::get('/{farmar}', [FarmerController::class, 'show']);
+        //         Route::get('/{farmer}', [FarmerController::class, 'show']);
         //         Route::put('/{farmer}', [FarmerController::class, 'update']);
         //         Route::delete('/{farmer}', [FarmerController::class, 'destroy']);
         //     });

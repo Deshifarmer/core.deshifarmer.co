@@ -40,6 +40,8 @@ class InputOrderController extends BaseController
                 'quantity' => $request->{"order"}[$i]["quantity"],
                 'unit' => $request->{"order"}[$i]["unit"],
                 'me_order_id' => $data['order_id'],
+                'me_id' => $data['me_id'],
+                'distributor_id' => $data['distributor_id'],
                 'channel_id' => $data['channel_id'],
                 'company_id' => Product::where('product_id', $request->{"order"}[$i]["product_id"])->get('company_id')->implode('company_id'),
                 'total_price' =>  $product_price * $request->{"order"}[$i]["quantity"],

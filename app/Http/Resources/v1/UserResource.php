@@ -4,6 +4,11 @@ namespace App\Http\Resources\v1;
 
 use App\Models\v1\District;
 use App\Models\v1\Employee;
+use App\Models\v1\Farmer;
+use App\Models\v1\InputOrder;
+use App\Models\v1\Order;
+use App\Models\v1\Product;
+use App\Models\v1\Unit;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
@@ -26,7 +31,7 @@ class UserResource extends JsonResource
             'previous_designation' => $this->previous_designation,
             'previous_company' => $this->previous_company,
             'photo' => $this->photo,
-            'channel'=> $this->channel,
+            'channel' => $this->channel,
             'date_of_birth' => $this->date_of_birth,
             'present_address' => $this->present_address,
             'permanent_address' => $this->permanent_address,
@@ -42,15 +47,70 @@ class UserResource extends JsonResource
 
             'me_list' => $this->when($this->type == 2, function () {
                 return Employee::where('under', $this->df_id)->get()->map(function ($employee) {
-                        return [
-                            'df_id' => $employee->df_id,
-                            'full_name' => "$employee->first_name $employee->last_name",
-                            'phone' => $employee->phone,
-                            'email' => $employee->email,
-                            'channel_assign_by' => $employee->channel_assign_by,
-                            'status' => $employee->status,
-                        ];
-                    });
+                    return [
+                        'df_id' => $employee->df_id,
+                        'full_name' => $employee->full_name,
+                        'phone' => $employee->phone,
+                        'email' => $employee->email,
+                        'channel_assign_by' => $employee->channel_assign_by,
+                        'status' => $employee->status,
+                        'total_order' => InputOrder::where('me_id', $employee->df_id)->count(),
+                        'total_order_amount' => InputOrder::where('me_id', $employee->df_id)->sum('total_price'),
+                        // 'order_list' => InputOrder::where('me_id', $employee->df_id)->get('order_id')->map(function ($input_order) {
+                        //     return Order::where('me_order_id', $input_order->order_id)->get()->map(function ($order) {
+
+                        //         $productDet = Product::where('product_id', $order->product_id)->get(['name', 'image']);
+                        //         return [
+                        //             'id' => $order->id,
+                        //             'product_id' => $order->product_id,
+                        //             'quantity' => $order->quantity,
+                        //             'unit'=>Unit::where('id',$order->unit)->get('unit')->implode('unit'),
+                        //             'product_name'=> $productDet->implode('name'),
+                        //             'image'=> $productDet->implode('image'),
+                        //         ];
+                        //     });
+                        // }),
+                    ];
+                });
+            }),
+
+            // 'order_list' => $this->when($this->type == 2, function () {
+            //     return InputOrder::where('distributor_id', $this->df_id)->get('order_id')->map(function ($input_order) {
+            //         return
+            //         Order::where('me_order_id', $input_order->order_id)->get()->map(function ($order) {
+            //             $productDet = Product::where('product_id', $order->product_id)->get(['name', 'image']);
+            //             return [
+            //                 'id' => $order->id,
+            //                 'product_id' => $order->product_id,
+            //                 'quantity' => $order->quantity,
+            //                 'unit' => Unit::where('id', $order->unit)->get('unit')->implode('unit'),
+            //                 'product_name' => $productDet->implode('name'),
+            //                 'image' => $productDet->implode('image'),
+            //             ];
+            //         });
+            //     });
+            // }),
+
+            'farmer_list' => $this->when($this->type == 3, function () {
+                return Farmer::where('input_by', $this->df_id)->get()->map(function ($farmer) {
+                    return [
+                        'farmer_id' => $farmer->farmer_id,
+                        'full_name' => "$farmer->first_name $farmer->last_name",
+                        'phone' => $farmer->phone,
+                    ];
+                });
+            }),
+
+            'product_list' => $this->when($this->type == 1, function () {
+                return Product::where('company_id', $this->df_id)->get()->map(function ($product) {
+                    return [
+                        'product_id' => $product->product_id,
+                        'product_name' =>$product->name,
+                        'image' => $product->image,
+                        'buy_price_from_company'=>$product->buy_price_from_company,
+                        'sell_price_from_company'=>$product->sell_price_from_company
+                    ];
+                });
             }),
         ];
     }

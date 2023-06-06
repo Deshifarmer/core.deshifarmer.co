@@ -14,6 +14,8 @@ class Order extends Model
         'product_id',
         'unit',
         'quantity',
+        'me_id',
+        'distributor_id',
         'total_price',
         'channel_id',
         'company_id',

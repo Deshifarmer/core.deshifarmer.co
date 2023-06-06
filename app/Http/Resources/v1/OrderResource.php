@@ -21,9 +21,11 @@ class OrderResource extends JsonResource
         return [
             'id' => $this->id,
             'me_order_id' => $this->me_order_id,
+            'me_id' => $this->me_id,
+            'distributor_id' => $this->distributor_id,
             'product_id' => $this->product_id,
             'product_details' => new ProductResource(Product::where('product_id', $this->product_id)->first()),
-            'unit' =>$this->unit,
+            'unit' =>Unit::where('id', $this->unit)->get()->implode('unit'),
             'quantity' => $this->quantity,
             'total_price'=>$this->total_price,
             'status'=>$this->status,

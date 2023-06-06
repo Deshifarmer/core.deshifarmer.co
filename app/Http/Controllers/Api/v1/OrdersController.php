@@ -10,6 +10,7 @@ use App\Models\v1\order;
 use App\Models\v1\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Symfony\Component\Console\Input\Input;
 
 class OrdersController extends Controller
 {
@@ -74,4 +75,13 @@ class OrdersController extends Controller
         }
         return  $collection;
     }
+
+    public function distributorOrder($dis_id){
+      return   OrderResource::collection(Order::where('distributor_id',$dis_id)->get());
+    }
+
+    public function meOrder($me_id){
+        return OrderResource::collection(Order::where('me_id',$me_id)->get());
+    }
+
 }

@@ -4,6 +4,8 @@ namespace App\Http\Resources\v1;
 
 use App\Models\v1\District;
 use App\Models\v1\Division;
+use App\Models\v1\InputOrder;
+use App\Models\v1\Order;
 use App\Models\v1\Upazila;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -45,8 +47,10 @@ class FarmerResource extends JsonResource
             'farmer_role' => $this->farmer_role,
             'farm_id' => $this->farm_id,
             'is_active' => $this->is_active,
-            'created_at' => $this->created_at->diffForHumans(),
-            'updated_at' => $this->updated_at->diffForHumans(),
+            // 'created_at' => $this->created_at->diffForHumans(),
+            // 'updated_at' => $this->updated_at->diffForHumans(),
+
+            'order_list' => InputOrderResource::collection(InputOrder::where('sold_to',$this->farmer_id)->get())
         ];
     }
 }
