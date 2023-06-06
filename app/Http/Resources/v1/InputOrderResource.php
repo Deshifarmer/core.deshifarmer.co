@@ -31,10 +31,10 @@ class InputOrderResource extends JsonResource
             'distributor_commission' => $this->distributor_commission,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
-            'order_details' => $this->when($request->routeIs('hq.single_input_order'), function () {
+            'order_details' => $this->when($request->routeIs(['hq.single_input_order']), function () {
                 return OrderResource::collection(Order::where('me_order_id', $this->order_id)->get());
             }),
-           
+
         ];
     }
 }

@@ -74,7 +74,7 @@ class BaseController extends Controller
 
     public function generateUUID()
     {
-        $uuid = substr(Str::uuid(), 4, 8);
+        $uuid = substr(Str::uuid(), 4, 8) . Carbon::now()->format('s');
         return $uuid;
     }
 }

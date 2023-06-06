@@ -19,7 +19,7 @@ class OrdersController extends Controller
      */
     public function index()
     {
-       return OrderResource::collection(order::all());
+        return OrderResource::collection(order::all());
     }
 
     /**
@@ -27,8 +27,8 @@ class OrdersController extends Controller
      */
     public function store(Request $request)
     {
-       $order = Order::create($request->all());
-       return new OrderResource($order);
+        $order = Order::create($request->all());
+        return new OrderResource($order);
     }
 
     /**
@@ -55,33 +55,37 @@ class OrdersController extends Controller
         //
     }
 
-    public function orderFromMe($id){
-        return InputOrderResource::collection(InputOrder::where('me_id',$id)->get());
+    public function orderFromMe($id)
+    {
+        return InputOrderResource::collection(InputOrder::where('me_id', $id)->get());
     }
 
     //company wise order
-    public function my_order(){
-        return OrderResource::collection( Order::where('company_id', auth()->user()->df_id)->get());
+    public function my_order()
+    {
+        return OrderResource::collection(Order::where('company_id', auth()->user()->df_id)->get());
     }
 
-    public function orderFromFarmer($id){
-        $meOrderId = InputOrder::where('sold_to',$id)->get('order_id');
+    public function orderFromFarmer($id)
+    {
+        $meOrderId = InputOrder::where('sold_to', $id)->get('order_id');
 
         $collection = new Collection();
         foreach ($meOrderId as $key => $value) {
             $collection->push(
-                OrderResource::make(order::where('me_order_id',$value->order_id)->first())
+                OrderResource::make(order::where('me_order_id', $value->order_id)->first())
             );
         }
         return  $collection;
     }
 
-    public function distributorOrder($dis_id){
-      return   OrderResource::collection(Order::where('distributor_id',$dis_id)->get());
+    public function distributorOrder($dis_id)
+    {
+        return   OrderResource::collection(Order::where('distributor_id', $dis_id)->get());
     }
 
-    public function meOrder($me_id){
-        return OrderResource::collection(Order::where('me_id',$me_id)->get());
+    public function meOrder($me_id)
+    {
+        return OrderResource::collection(Order::where('me_id', $me_id)->get());
     }
-
 }

@@ -30,7 +30,8 @@ class User extends Authenticatable
         'phone',
         'nid',
         'role',
-        'df_id'
+        'df_id',
+        'access_revoked'
     ];
 
     /**

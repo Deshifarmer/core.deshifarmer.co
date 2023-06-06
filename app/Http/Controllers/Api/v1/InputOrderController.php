@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\InputOrderResource;
+use App\Http\Resources\v1\OrderResource;
 use App\Models\v1\Employee;
 use App\Models\v1\inputOrder;
+use App\Models\v1\Order;
 use App\Models\v1\Product;
 use Illuminate\Http\Request;
 
@@ -83,6 +85,12 @@ class InputOrderController extends BaseController
     public function meOrder(){
         return InputOrderResource::collection(
             inputOrder::where('distributor_id',auth()->user()->df_id)->get()
+        );
+    }
+
+    public function input_order_details($id){
+        return OrderResource::collection(
+            Order::where('me_order_id', $id)->get()
         );
     }
 }

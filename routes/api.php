@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\v1\AuthController;
+use App\Http\Controllers\Api\v1\CashInRequestController;
 use App\Http\Controllers\Api\v1\ChannelController;
 use App\Http\Controllers\Api\v1\CompanyController;
 use App\Http\Controllers\Api\v1\DiostributorInfoController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Api\v1\UnitController;
 use App\Http\Controllers\Api\v1\UpazilaController;
 use App\Http\Controllers\Api\v1\DistrictController;
 use App\Http\Controllers\Api\v1\DivisionController;
+use App\Http\Controllers\Api\v1\EmployeeAccountController;
 use App\Http\Controllers\Api\v1\EmployeeController;
 use App\Http\Controllers\Api\v1\FarmerDepositController;
 use App\Http\Controllers\Api\v1\FarmersPointController;
@@ -21,6 +23,7 @@ use App\Http\Controllers\Api\v1\OrdersController;
 use App\Http\Controllers\Api\v1\ProductCategoryController;
 use App\Http\Controllers\Api\v1\ProductController;
 use App\Http\Controllers\Api\v1\ProductSubCategoryController;
+use App\Http\Controllers\Api\v1\TransactionController;
 use App\Http\Controllers\Api\v1\UserController;
 use App\Models\v1\Channel;
 use Illuminate\Support\Facades\Auth;
@@ -89,7 +92,6 @@ Route::prefix('v1/')
                     Route::get('me/{me_id}/order', [OrdersController::class, 'meOrder'])->name('hq.me_order');
 
                     Route::get('farmer/profile/{farmer}', [FarmerController::class, 'show']);
-
                 });
         });
 
@@ -108,7 +110,9 @@ Route::prefix('v1/')
                 Route::group(['middleware' => ['auth:sanctum', 'user-access:DB']], function () {
                     Route::get('my_me', [EmployeeController::class, 'myMe'])->name('distributor.my_me');
                     Route::get('me_order', [InputOrderController::class, 'meOrder'])->name('distributor.me_order');
-                    Route::get('me_order/{input_order}', [InputOrderController::class, 'show'])->name('dis.single_input_order');
+                    Route::get('me_order/{input_order}', [InputOrderController::class, 'input_order_details'])->name('dis.input_order_details');
+                    Route::post('cash_in_request/', [CashInRequestController::class, 'store'])->name('dis.cash_in_request');
+
                 });
             });
 
@@ -127,6 +131,35 @@ Route::prefix('v1/')
         Route::group(['middleware' => ['auth:sanctum', 'user-access:CO|HQ']], function () {
             Route::post('add_product', [ProductController::class, 'store'])->name('add_product');
         });
+
+
+
+        Route::prefix('employee_account')
+            ->group(function () {
+                Route::get('/', [EmployeeAccountController::class, 'index']);
+                Route::post('/', [EmployeeAccountController::class, 'store']);
+                Route::get('/{employee}', [EmployeeAccountController::class, 'show']);
+                Route::put('/{employee}', [EmployeeAccountController::class, 'update']);
+                Route::delete('/{employee}', [EmployeeAccountController::class, 'destroy']);
+            });
+
+        Route::prefix('transaction')
+            ->group(function () {
+                Route::get('/', [TransactionController::class, 'index']);
+                Route::post('/', [EmployeeAccountController::class, 'store']);
+                Route::get('/{transaction}', [EmployeeAccountController::class, 'show']);
+                Route::put('/{transaction}', [EmployeeAccountController::class, 'update']);
+                Route::delete('/{transaction}', [EmployeeAccountController::class, 'destroy']);
+            });
+        Route::prefix('cash_in_request')
+            ->group(function () {
+                Route::get('/', [CashInRequestController::class, 'index']);
+
+                Route::get('/{cash_in_request}', [CashInRequestController::class, 'show']);
+                Route::put('/{cash_in_request}', [CashInRequestController::class, 'update']);
+                Route::delete('/{cash_in_request}', [CashInRequestController::class, 'destroy']);
+            });
+
 
 
 

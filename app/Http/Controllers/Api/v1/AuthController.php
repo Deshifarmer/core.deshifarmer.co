@@ -6,9 +6,11 @@ use App\Http\Resources\v1\AuthResource;
 use App\Http\Resources\v1\UserResource;
 use App\Models\User;
 use App\Models\v1\Employee;
+use App\Models\v1\EmployeeAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+
 class AuthController extends BaseController
 {
     public function register(Request $request)
@@ -24,7 +26,7 @@ class AuthController extends BaseController
             'c_password' => 'required|same:password',
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return $validator->errors();
         }
 
@@ -38,7 +40,7 @@ class AuthController extends BaseController
         ];
         $input['df_id'] = $arr[$input['role']] . $this->generateUuid();
 
-        Employee :: create([
+        Employee::create([
             'df_id' => $input['df_id'],
             'first_name' => $input['first_name'],
             'last_name' => $input['last_name'],
@@ -47,6 +49,9 @@ class AuthController extends BaseController
             'nid' => $input['nid'],
             'type' => $input['role'],
             'onboard_by' => auth()->user()->df_id,
+        ]);
+        EmployeeAccount::create([
+           'acc_number' => $input['df_id'],
         ]);
         $user = User::create($input);
         // return AuthResource::make($user);
@@ -60,24 +65,30 @@ class AuthController extends BaseController
      */
     public function login(Request $request)
     {
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
-            $user = Auth::user();
-            if($user->role == 0 || $user->role == 1){
-                return AuthResource::make($user);
-            }
-            if($user->role == 2 && Employee::where('df_id', $user->df_id)->first()->channel != null){
-                return AuthResource::make($user);
-            }
-            else if($user->role == 3 && Employee::where('df_id', $user->df_id)->first()->under != null){
-                return AuthResource::make($user);
-            }
-            else{
-                return response()->json(
-                    ['error' => 'Contact HQ for Assign yourself to a channel or under a distributor'], 401);
-            }
+        $credentials = $request->only('email', 'password');
+        $fieldType = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
 
-        }
-        else{
+        if (Auth::attempt([$fieldType => $credentials['email'], 'password' => $credentials['password']])) {
+            $user = Auth::user();
+            if ($user->access_revoked) {
+
+                return response()->json(['error' => 'Access revoked'], 401);
+            }
+            if ($user->role == 0 || $user->role == 1) {
+                return AuthResource::make($user);
+            }
+            if ($user->role == 2 && Employee::where('df_id', $user->df_id)->first()->channel != null) {
+                return AuthResource::make($user);
+            } else if ($user->role == 3 && Employee::where('df_id', $user->df_id)->first()->under != null) {
+                return AuthResource::make($user);
+            } else {
+
+                return response()->json(
+                    ['error' => 'You do not have access to this portal'],
+                    401
+                );
+            }
+        } else {
             return response()->json(['error' => 'Email or password incorrect'], 401);
         }
     }

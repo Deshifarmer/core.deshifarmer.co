@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('df_id')->unique()->index();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->boolean('access_revoked')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

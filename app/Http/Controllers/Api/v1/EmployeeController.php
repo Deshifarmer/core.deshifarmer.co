@@ -98,24 +98,21 @@ class EmployeeController extends BaseController
         // return $employee->delete();
     }
 
-    public function distributorsMe(Employee $employee){
+    public function distributorsMe(Employee $employee)
+    {
 
         return UserResource::collection(
-            Employee::where('under',$employee->df_id)->get()
+            Employee::where('under', $employee->df_id)->get()
         );
-
     }
 
 
 
-    public function myMe(){
+    public function myMe()
+    {
 
         return UserResource::collection(
-            Employee::where('under',auth()->user()->df_id)->get()
+            Employee::where('under', auth()->user()->df_id)->get()
         );
-
-
     }
-
-
 }
