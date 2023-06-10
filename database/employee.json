@@ -1,0 +1,46 @@
+[
+    {
+        "df_id": "HQ-01",
+        "first_name": "Hasibur",
+        "last_name": "Rahman",
+        "email": "shuvodfbe@gmail.com",
+        "phone": "01700000000",
+        "nid": "12345678901234567",
+        "type": 0,
+        "status": "active",
+        "onboard_by": "HQ-01"
+    },
+    {
+        "df_id": "CO-01",
+        "first_name": "ACI",
+        "last_name": "LTD",
+        "email": "co@gmail.com",
+        "phone": "017000000",
+        "nid": "12345678901234",
+        "type": 1,
+        "status": "active",
+        "onboard_by": "HQ-01"
+    },
+    {
+        "df_id": "DB-01",
+        "first_name": "Alif",
+        "last_name": "Sakib",
+        "email": "db@gmail.com",
+        "phone": "01700000",
+        "nid": "1234567890123",
+        "type": 2,
+        "status": "active",
+        "onboard_by": "HQ-01"
+    },
+    {
+        "df_id": "ME-01",
+        "first_name": "Farhan",
+        "last_name": "Fredous",
+        "email": "me@gmail.com",
+        "phone": "0170000",
+        "nid": "1234",
+        "type": 3,
+        "status": "active",
+        "onboard_by": "HQ-01"
+    }
+]

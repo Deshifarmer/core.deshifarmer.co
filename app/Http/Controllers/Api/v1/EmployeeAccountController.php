@@ -29,7 +29,7 @@ class EmployeeAccountController extends Controller
      */
     public function show(EmployeeAccount $employeeAccount)
     {
-        //
+        return $employeeAccount;
     }
 
     /**
@@ -37,7 +37,7 @@ class EmployeeAccountController extends Controller
      */
     public function update(Request $request, EmployeeAccount $employeeAccount)
     {
-        //
+      return  $employeeAccount->update($request->all());
     }
 
     /**

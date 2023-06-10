@@ -21,17 +21,9 @@ class DatabaseSeeder extends Seeder
             DistrictsSeeder::class,
             UpazilasSeeder::class,
             UnitSeeder::class,
+            UserSeeder::class,
+            EmployeeSeeder::class,
+            EmployeeAccSeeder::class,
         ]);
-        DB::table('users')->insert([
-            'df_id' => 'HQ-01',
-            'first_name' => "Hasibur",
-            'last_name' => "Rahman",
-            'email' => 'shuvodfbe@gmail.com',
-            'phone' => '01700000000',
-            'nid'=>'12345678901234567',
-            'role' => 0,
-            'password' => Hash::make('password'),
-        ]
-    );
     }
 }

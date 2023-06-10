@@ -63,7 +63,11 @@ class OrdersController extends Controller
     //company wise order
     public function my_order()
     {
-        return OrderResource::collection(Order::where('company_id', auth()->user()->df_id)->get());
+        return OrderResource::collection(
+            Order::where('company_id', auth()->user()->df_id)
+                // ->where('status', '==', 'pending')
+                ->get()
+        );
     }
 
     public function orderFromFarmer($id)

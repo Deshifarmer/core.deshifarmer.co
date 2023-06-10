@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\ProductResource;
 use App\Models\v1\Product;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends BaseController
@@ -44,11 +45,15 @@ class ProductController extends BaseController
         $request->file('image')->storeAs('public/image/product', $input["product_id"] . '.' . $extension);
         $image_path = '/image/product/' . $input["product_id"] . '.' . $extension;
         $input['image'] =  $image_path;
-        $input['company_id'] = auth()->user()->df_id;
+        $input['company_id'] =  $request->company_id == null ? auth()->user()->df_id : $input['company_id'] ;
         $input['sell_price'] = $input['sell_price_from_company'];
-
         $product = Product::create($input);
-        return $product;
+        return Response()->json([
+            'message' => 'Product Created Successfully',
+            'status' => 'success',
+        ], 201);
+
+
     }
 
     /**
@@ -71,15 +76,14 @@ class ProductController extends BaseController
      */
     public function update(Request $request, Product $product)
     {
-        $product->update([
-            'id' => $request->id,
-            'name' => $request->name,
-            'sku' => $request->sku,
-            'image' => $request->image,
-            'category' => $request->category,
-            'subcategory' => $request->subcategory,
-        ]);
-        return new ProductResource($product);
+        $product->update(
+            $request->all()
+        );
+
+        return Response()->json([
+            'message' => 'Product Updated Successfully',
+            'status' => 'success',
+        ], 200);
     }
 
     /**

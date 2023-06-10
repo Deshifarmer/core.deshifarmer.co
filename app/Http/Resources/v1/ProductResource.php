@@ -31,21 +31,16 @@ class ProductResource extends JsonResource
             'sell_price' => $this->sell_price,
             'discount'=>$this->discount,
 
-            // 'buy_price_from_company'=>$this->whenAppended('buy_price_from_company', function () {
-            //     return $this->buy_price_from_company;
-            // }),
-            // 'sell_price_from_company'=>$this->whenAppended('sell_price_from_company', function () {
-            //     return $this->sell_price_from_company;
-            // }),
-            // 'hq_commission'=>$this->whenAppended('hq_commission', function () {
-            //     return $this->hq_commission;
-            // }),
-            // 'me_commission'=>$this->whenAppended('me_commission', function () {
-            //     return $this->me_commission;
-            // }),
-            // 'distributor_commission'=>$this->whenAppended('distributor_commission', function () {
-            //     return $this->distributor_commission;
-            // }),
+            'hq_secret'=> $this->when(auth()->user()->role == 0, function () {
+                return [
+                    'buy_price_from_company'=>$this->buy_price_from_company,
+                    'sell_price_from_company'=>$this->sell_price_from_company,
+                    'hq_commission'=>$this->hq_commission,
+                    'me_commission'=>$this->me_commission,
+                    'distributor_commission'=>$this->distributor_commission,
+                ];
+            }),
+
         ];
     }
 }

@@ -84,7 +84,7 @@ class AuthController extends BaseController
             } else {
 
                 return response()->json(
-                    ['error' => 'You do not have access to this portal'],
+                    ['error' => 'You  do not have access to this portal'],
                     401
                 );
             }

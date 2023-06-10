@@ -66,7 +66,7 @@ Route::prefix('v1/')
         });
 
 
-        //all route only for HeadQuater
+        //all route only for HeadQuatre
         Route::group(['middleware' => ['auth:sanctum', 'user-access:HQ']], function () {
             Route::prefix('hq/')
                 ->group(function () {
@@ -92,6 +92,11 @@ Route::prefix('v1/')
                     Route::get('me/{me_id}/order', [OrdersController::class, 'meOrder'])->name('hq.me_order');
 
                     Route::get('farmer/profile/{farmer}', [FarmerController::class, 'show']);
+                    Route::get('distributor/all_cash_in_request', [CashInRequestController::class, 'index'])->name('hq.distributor_cash_in_request');
+                    Route::put('distributor/cash_in_request/{cash_in_request}', [CashInRequestController::class, 'update'])->name('hq.distributor_cash_in_request_update');
+
+
+                    Route::put('product/{product}', [ProductController::class, 'update'])->name('hq.product_update');
                 });
         });
 
@@ -112,12 +117,12 @@ Route::prefix('v1/')
                     Route::get('me_order', [InputOrderController::class, 'meOrder'])->name('distributor.me_order');
                     Route::get('me_order/{input_order}', [InputOrderController::class, 'input_order_details'])->name('dis.input_order_details');
                     Route::post('cash_in_request/', [CashInRequestController::class, 'store'])->name('dis.cash_in_request');
-
+                    Route::get('my_cash_in_request/', [CashInRequestController::class, 'myCashInReq'])->name('dis.my_cash_in_request');
                 });
             });
 
 
-        //all route only for Micro Enterpreneur
+        //all route only for Micro Entrepreneur
         Route::group(['middleware' => ['auth:sanctum', 'user-access:ME']], function () {
             Route::prefix('me/')
                 ->group(function () {
@@ -127,38 +132,38 @@ Route::prefix('v1/')
                 });
         });
 
-        //all route for HeadQuater and Company
+        //all route for HeadQuatre and Company
         Route::group(['middleware' => ['auth:sanctum', 'user-access:CO|HQ']], function () {
             Route::post('add_product', [ProductController::class, 'store'])->name('add_product');
         });
 
 
 
-        Route::prefix('employee_account')
-            ->group(function () {
-                Route::get('/', [EmployeeAccountController::class, 'index']);
-                Route::post('/', [EmployeeAccountController::class, 'store']);
-                Route::get('/{employee}', [EmployeeAccountController::class, 'show']);
-                Route::put('/{employee}', [EmployeeAccountController::class, 'update']);
-                Route::delete('/{employee}', [EmployeeAccountController::class, 'destroy']);
-            });
+        // Route::prefix('employee_account')
+        //     ->group(function () {
+        //         Route::get('/', [EmployeeAccountController::class, 'index']);
+        //         Route::post('/', [EmployeeAccountController::class, 'store']);
+        //         Route::get('/{employee_account}', [EmployeeAccountController::class, 'show']);
+        //         Route::put('/{employee_account}', [EmployeeAccountController::class, 'update']);
+        //         Route::delete('/{employee_account}', [EmployeeAccountController::class, 'destroy']);
+        //     });
 
-        Route::prefix('transaction')
-            ->group(function () {
-                Route::get('/', [TransactionController::class, 'index']);
-                Route::post('/', [EmployeeAccountController::class, 'store']);
-                Route::get('/{transaction}', [EmployeeAccountController::class, 'show']);
-                Route::put('/{transaction}', [EmployeeAccountController::class, 'update']);
-                Route::delete('/{transaction}', [EmployeeAccountController::class, 'destroy']);
-            });
-        Route::prefix('cash_in_request')
-            ->group(function () {
-                Route::get('/', [CashInRequestController::class, 'index']);
+        // Route::prefix('transaction')
+        //     ->group(function () {
+        //         Route::get('/', [TransactionController::class, 'index']);
+        //         Route::post('/', [EmployeeAccountController::class, 'store']);
+        //         Route::get('/{transaction}', [EmployeeAccountController::class, 'show']);
+        //         Route::put('/{transaction}', [EmployeeAccountController::class, 'update']);
+        //         Route::delete('/{transaction}', [EmployeeAccountController::class, 'destroy']);
+        //     });
+        // Route::prefix('cash_in_request')
+        //     ->group(function () {
+        //         Route::get('/', [CashInRequestController::class, 'index']);
 
-                Route::get('/{cash_in_request}', [CashInRequestController::class, 'show']);
-                Route::put('/{cash_in_request}', [CashInRequestController::class, 'update']);
-                Route::delete('/{cash_in_request}', [CashInRequestController::class, 'destroy']);
-            });
+        //         Route::get('/{cash_in_request}', [CashInRequestController::class, 'show']);
+        //         // Route::put('/{cash_in_request}', [CashInRequestController::class, 'update']);
+        //         Route::delete('/{cash_in_request}', [CashInRequestController::class, 'destroy']);
+        //     });
 
 
 
@@ -215,11 +220,11 @@ Route::prefix('v1/')
         //         Route::get('/my_me', [DistributorController::class, 'myMe']);
         //         Route::get('/', [DistributorController::class, 'index']);
         //         // Route::get('/{distributor}', [DistributorController::class, 'show']);
-        //         Route::get('/info', [DiostributorInfoController::class, 'index']);
-        //         Route::post('/info', [DiostributorInfoController::class, 'store']);
+        //         Route::get('/info', [DistributorInfoController::class, 'index']);
+        //         Route::post('/info', [DistributorInfoController::class, 'store']);
         //     });
 
-        //All routes for Micro Entreprenur
+        //All routes for Micro Entrepreneur
         // Route::prefix('me')
         //     ->group(function () {
         //         Route::get('/', [MeController::class, 'index']);

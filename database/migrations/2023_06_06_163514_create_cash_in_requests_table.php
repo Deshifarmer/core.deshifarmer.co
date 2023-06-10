@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('cash_in_requests', function (Blueprint $table) {
             $table->id();
+            $table->string('receipt_id')->index()->unique();
             $table->string('df_id');
-            $table->string('ammount');
-            $table->string('receipt');
+            $table->decimal('requested',12,2);
+            $table->decimal('accepted_amount',12,2)->nullable();
+            $table->string('receipt')->nullable();
             $table->string('status')->default('pending');
             $table->timestamps();
         });

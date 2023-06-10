@@ -16,7 +16,7 @@ class EmployeeAccount extends Model
 
     protected $fillable = [
         'acc_number',
-        'net_balance',
+        'net_balence',
         'total_credit',
         'total_debit',
         'last_transaction',

@@ -9,10 +9,18 @@ class CashInRequest extends Model
 {
     use HasFactory;
 
+    protected $hidden = ['id'];
+    public function getRouteKeyName()
+    {
+        return 'receipt_id';
+    }
+
     protected $fillable = [
         'df_id',
-        'ammount',
+        'requested',
+        'accepted_amount',
         'receipt',
+        'receipt_id',
         'status',
     ];
 }
