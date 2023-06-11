@@ -19,7 +19,7 @@ class Product extends Model
         'name',
         'image',
         'description',
-        'prefered',
+        'preferred',
         'category_id',//category_id
         'subcategory_id',//subcategory_id
         'company_id',
@@ -29,6 +29,7 @@ class Product extends Model
         'discount',
         'hq_commission',
         'me_commission',
-        'distributor_commission'
+        'distributor_commission',
+        'status'
     ];
 }

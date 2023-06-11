@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('image');
             $table->string('description')->nullable();
-            $table->string('prefered')->nullable();
+            $table->string('preferred')->nullable();
             $table->bigInteger('category_id');
             $table->bigInteger('subcategory_id')->nullable();
             $table->string('company_id');
@@ -30,6 +30,7 @@ return new class extends Migration
             $table->decimal('hq_commission')->nullable();
             $table->decimal('me_commission')->nullable();
             $table->decimal('distributor_commission')->nullable();
+            $table->string('status')->default('inactive');
             $table->timestamps();
         });
     }

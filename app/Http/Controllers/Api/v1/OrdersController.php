@@ -65,8 +65,8 @@ class OrdersController extends Controller
     {
         return OrderResource::collection(
             Order::where('company_id', auth()->user()->df_id)
-                // ->where('status', '==', 'pending')
-                ->get()
+            ->where('status', 'confirm by distributor')
+            ->get()
         );
     }
 

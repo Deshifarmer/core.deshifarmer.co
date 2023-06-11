@@ -24,12 +24,13 @@ class ProductResource extends JsonResource
             'name'=>$this->name,
             'image'=>$this->image,
             'description'=>$this->description,
-            'prefered'=>$this->prefered,
+            'preferred'=>$this->preferred,
             'category'=>ProductCategory::find($this->category_id)->title,
             'subcategory'=> $this->subcategory_id ? ProductSubcategory::find($this->subcategory_id)->title : null,
             'company'=>$companyDet->implode('first_name') . ' ' . $companyDet->implode('last_name'),
             'sell_price' => $this->sell_price,
             'discount'=>$this->discount,
+            'status'=>$this->status,
 
             'hq_secret'=> $this->when(auth()->user()->role == 0, function () {
                 return [

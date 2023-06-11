@@ -85,7 +85,9 @@ Route::prefix('v1/')
                     Route::post('assign_me', [ChannelController::class, 'assignMe'])->name('hq.assign_me');
                     Route::get('distributor/{employee}/me', [EmployeeController::class, 'distributorsMe'])->name('distributors_me');
                     Route::post('add_category', [ProductCategoryController::class, 'store'])->name('add_category');
+                    
                     Route::get('all_input_order', [InputOrderController::class, 'index'])->name('hq.all_input_order');
+
                     Route::get('input_order/{input_order}', [InputOrderController::class, 'show'])->name('hq.single_input_order');
 
                     Route::get('distributor/{dis_id}/order', [OrdersController::class, 'distributorOrder'])->name('hq.distributor_order');
@@ -118,6 +120,7 @@ Route::prefix('v1/')
                     Route::get('me_order/{input_order}', [InputOrderController::class, 'input_order_details'])->name('dis.input_order_details');
                     Route::post('cash_in_request/', [CashInRequestController::class, 'store'])->name('dis.cash_in_request');
                     Route::get('my_cash_in_request/', [CashInRequestController::class, 'myCashInReq'])->name('dis.my_cash_in_request');
+                    Route::put('me_order/{input_order}', [InputOrderController::class, 'update'])->name('dis.input_order_update');
                 });
             });
 

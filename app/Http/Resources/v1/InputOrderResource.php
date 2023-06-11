@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\v1;
 
+use App\Models\v1\Employee;
+use App\Models\v1\Farmer;
 use App\Models\v1\Order;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -16,6 +18,10 @@ class InputOrderResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
+
+
+
         return [
             'order_id' => $this->order_id,
             'me_id' => $this->me_id,
@@ -31,6 +37,31 @@ class InputOrderResource extends JsonResource
             'distributor_commission' => $this->distributor_commission,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
+
+            'distributor_details' => $this->when($request->routeIs(['hq.single_input_order']), function () {
+                $distributor_details = Employee::where('df_id', $this->distributor_id)->get();
+                return [
+                    'distributor_name' => $distributor_details->implode('full_name'),
+                    'distributor_phone' => $distributor_details->implode('phone'),
+                ];
+
+            }),
+            'me_details' => $this->when($request->routeIs(['hq.single_input_order']), function () {
+                $me_details = Employee::where('df_id', $this->distributor_id)->get();
+                return [
+                    'me_name' => $me_details->implode('full_name'),
+                    'me_phone' => $me_details->implode('phone'),
+                ];
+
+            }),
+            'farmer_details' => $this->when($request->routeIs(['hq.single_input_order']), function () {
+                $farmer_details = Farmer::where('farmer_id', $this->sold_to)->get();
+                return [
+                    'farmer_name' => $farmer_details->implode('first_name') . ' ' . $farmer_details->implode('last_name'),
+                    'farmer_phone' => $farmer_details->implode('phone'),
+                ];
+
+            }),
             'order_details' => $this->when($request->routeIs(['hq.single_input_order']), function () {
                 return OrderResource::collection(Order::where('me_order_id', $this->order_id)->get());
             }),
