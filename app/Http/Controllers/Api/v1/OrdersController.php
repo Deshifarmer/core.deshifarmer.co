@@ -44,7 +44,7 @@ class OrdersController extends Controller
      */
     public function update(Request $request, order $order)
     {
-        //
+       $order->update($request->all());
     }
 
     /**

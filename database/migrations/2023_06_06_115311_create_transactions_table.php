@@ -13,15 +13,13 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('df_id');
-            $table->string('transaction_id')->index()->unique();
-            $table->string('ammount');
+            $table->string('transaction_id')->index();
+            $table->string('amount');
             $table->string('order_id')->nullable();
             $table->string('method');
-            $table->string('type');
-            $table->string('credited_to');
-            $table->string('debited_from');
-            $table->string('authorized_by');
+            $table->string('credited_to')->nullable();
+            $table->string('debited_from')->nullable();
+            $table->string('authorized_by')->default('HQ-01');
             $table->timestamps();
         });
     }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('employee_accounts', function (Blueprint $table) {
             $table->id();
             $table->string('acc_number')->index(); //emloyee df_id
-            $table->decimal('net_balence',12,2)->default(0.00);
+            $table->decimal('net_balance',12,2)->default(0.00);
             $table->decimal('total_credit',12,2)->default(0.00);
             $table->decimal('total_debit',12,2)->default(0.00);
             $table->string('last_transaction')->nullable(); //transaction id

@@ -23,7 +23,7 @@ class UserResource extends JsonResource
     {
         return [
             'df_id' => $this->df_id,
-            "full_name" => $this->full_name,
+            'full_name' => $this->full_name,
             'nid' => $this->nid,
             'phone' => $this->phone,
             'email' => $this->email,
@@ -41,7 +41,7 @@ class UserResource extends JsonResource
             'gender' => $this->gender,
             'department' => $this->department,
             'work_place' => $this->work_place,
-            'comission' => $this->comission,
+            'commission' => $this->commission,
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
             'target_volume' => $this->target_volume,
 

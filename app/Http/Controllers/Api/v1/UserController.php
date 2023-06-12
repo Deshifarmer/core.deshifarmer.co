@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\v1\MyProfileResource;
 use App\Http\Resources\v1\UserResource;
 use App\Models\User;
 use App\Models\v1\Employee;
@@ -79,4 +80,6 @@ class UserController extends Controller
     {
         //
     }
+
+    
 }

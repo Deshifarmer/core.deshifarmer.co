@@ -73,19 +73,30 @@ class CashInRequestController extends Controller
 
         if ($cashInRequest->status == 'pending') {
 
-            $employeeAccountDetails = EmployeeAccount::where('acc_number', $cashInRequest->df_id)->get(['net_balence', 'total_credit']);
+            $employeeAccountDetails = EmployeeAccount::where('acc_number', $cashInRequest->df_id)->get(['net_balance', 'total_credit']);
 
             if($request->status == 'approved'){
-                $OldNetBalance = $employeeAccountDetails->implode('net_balence');
+                $OldNetBalance = $employeeAccountDetails->implode('net_balance');
                 $oldTotalCredit =$employeeAccountDetails->implode('total_credit');
                (new EmployeeAccountController)->update(
                     new Request(
                         [
-                           'net_balence' =>  floatval($OldNetBalance) + floatval($request->accepted_amount),
+                           'net_balance' =>  floatval($OldNetBalance) + floatval($request->accepted_amount),
                            'total_credit' =>  floatval($oldTotalCredit) + floatval($request->accepted_amount),
                         ]
                     ),
                     EmployeeAccount::where('acc_number', $cashInRequest->df_id)->first()
+                );
+
+                (new TransactionController)->store(
+                    new Request(
+                        [
+                            'amount' => $request->accepted_amount,
+                            'method' => 'cash_in',
+                            'credited_to' => $cashInRequest->df_id,
+                            'authorized_by'=> auth()->user()->df_id,
+                        ]
+                    )
                 );
                 $cashInRequest->update($request->all());
             }

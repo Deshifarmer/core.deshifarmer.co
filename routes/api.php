@@ -3,9 +3,7 @@
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\CashInRequestController;
 use App\Http\Controllers\Api\v1\ChannelController;
-use App\Http\Controllers\Api\v1\CompanyController;
-use App\Http\Controllers\Api\v1\DiostributorInfoController;
-use App\Http\Controllers\Api\v1\DistributorController;
+
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\v1\FarmerController;
@@ -85,7 +83,7 @@ Route::prefix('v1/')
                     Route::post('assign_me', [ChannelController::class, 'assignMe'])->name('hq.assign_me');
                     Route::get('distributor/{employee}/me', [EmployeeController::class, 'distributorsMe'])->name('distributors_me');
                     Route::post('add_category', [ProductCategoryController::class, 'store'])->name('add_category');
-                    
+
                     Route::get('all_input_order', [InputOrderController::class, 'index'])->name('hq.all_input_order');
 
                     Route::get('input_order/{input_order}', [InputOrderController::class, 'show'])->name('hq.single_input_order');
@@ -96,8 +94,6 @@ Route::prefix('v1/')
                     Route::get('farmer/profile/{farmer}', [FarmerController::class, 'show']);
                     Route::get('distributor/all_cash_in_request', [CashInRequestController::class, 'index'])->name('hq.distributor_cash_in_request');
                     Route::put('distributor/cash_in_request/{cash_in_request}', [CashInRequestController::class, 'update'])->name('hq.distributor_cash_in_request_update');
-
-
                     Route::put('product/{product}', [ProductController::class, 'update'])->name('hq.product_update');
                 });
         });
@@ -115,11 +111,15 @@ Route::prefix('v1/')
         Route::prefix('distributor')
             ->group(function () {
                 Route::group(['middleware' => ['auth:sanctum', 'user-access:DB']], function () {
+
+                    Route::get('my_profile', [EmployeeController::class, 'myProfile'])->name('my_profile');
+                    
                     Route::get('my_me', [EmployeeController::class, 'myMe'])->name('distributor.my_me');
                     Route::get('me_order', [InputOrderController::class, 'meOrder'])->name('distributor.me_order');
                     Route::get('me_order/{input_order}', [InputOrderController::class, 'input_order_details'])->name('dis.input_order_details');
                     Route::post('cash_in_request/', [CashInRequestController::class, 'store'])->name('dis.cash_in_request');
                     Route::get('my_cash_in_request/', [CashInRequestController::class, 'myCashInReq'])->name('dis.my_cash_in_request');
+
                     Route::put('me_order/{input_order}', [InputOrderController::class, 'update'])->name('dis.input_order_update');
                 });
             });
@@ -139,6 +139,9 @@ Route::prefix('v1/')
         Route::group(['middleware' => ['auth:sanctum', 'user-access:CO|HQ']], function () {
             Route::post('add_product', [ProductController::class, 'store'])->name('add_product');
         });
+
+
+
 
 
 

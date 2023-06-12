@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\InputOrderResource;
 use App\Http\Resources\v1\OrderResource;
 use App\Models\v1\Employee;
+use App\Models\v1\EmployeeAccount;
 use App\Models\v1\inputOrder;
 use App\Models\v1\Order;
 use App\Models\v1\Product;
@@ -39,9 +40,9 @@ class InputOrderController extends BaseController
             $product_price = $product_details->implode('sell_price');
             $total_price +=  $product_price * $request->{"order"}[$i]["quantity"];
             $priceIntoQuantity = $product_price * $request->{"order"}[$i]["quantity"];
-            $totalHqCommission = round($priceIntoQuantity * floatval($product_details->implode('hq_commission'))/100, 2);
-            $totalMeCommission = round($priceIntoQuantity * floatval($product_details->implode('me_commission'))/100, 2);
-            $totalDistributorCommission = round($priceIntoQuantity * floatval($product_details->implode('distributor_commission'))/100, 2);
+            $totalHqCommission = round($priceIntoQuantity * floatval($product_details->implode('hq_commission')) / 100, 2);
+            $totalMeCommission = round($priceIntoQuantity * floatval($product_details->implode('me_commission')) / 100, 2);
+            $totalDistributorCommission = round($priceIntoQuantity * floatval($product_details->implode('distributor_commission')) / 100, 2);
             (new OrdersController)->store(new Request([
                 'product_id' => $request->{"order"}[$i]["product_id"],
                 'quantity' => $request->{"order"}[$i]["quantity"],
@@ -75,16 +76,67 @@ class InputOrderController extends BaseController
      */
     public function update(Request $request, inputOrder $inputOrder)
     {
-        $inputOrder->update($request->all());
 
-        Order::where('me_order_id', $inputOrder->order_id)->update([
-            'status' => $request->status
-        ]);
-        return Response(
-            [
-                'message' => 'Updated Successfully'
-            ]
-        );
+
+        if ($request->status == 'confirm by distributor' && $inputOrder->status == 'pending') {
+
+            $orderTotalPrice = $inputOrder->total_price;
+            $distributorAccount =  EmployeeAccount::where('acc_number', $inputOrder->distributor_id)->get();
+
+            $newBalance = floatval($distributorAccount->implode('net_balance')) - floatval($orderTotalPrice);
+
+            if ($newBalance < 0) {
+                return Response(
+                    [
+                        'message' => 'Insufficient Balance'
+                    ]
+                );
+            } else {
+
+                (new TransactionController)->store(new Request(
+                    [
+                        'amount' => $orderTotalPrice,
+                        'order_id' => $inputOrder->order_id,
+                        'method' => 'order payment',
+                        'credited_to' => 'HQ-01',
+                        'debited_from' => $inputOrder->distributor_id,
+                        'authorized_by' => 'portal',
+                    ]
+                ));
+
+                (new EmployeeAccountController)->update(new Request(
+                    [
+                        'net_balance' => $newBalance
+                    ]
+                ), EmployeeAccount::where('acc_number', $inputOrder->distributor_id)->first());
+
+                $hqAccount =  EmployeeAccount::where('acc_number', 'HQ-01')->first();
+                (new EmployeeAccountController)->update(new Request(
+                    [
+                        'net_balance' => floatval($hqAccount->implode('net_balance')) + $orderTotalPrice
+                    ]
+                ), $hqAccount);
+
+
+
+                $data = $request->all();
+                $data['payment_method'] = 'by portal';
+
+                $inputOrder->update($data);
+
+                return Response(
+                    [
+                        'message' => 'Updated Successfully'
+                    ]
+                );
+            }
+        } else {
+            return Response(
+                [
+                    'message' => 'already confirm by distributor'
+                ]
+            );
+        }
     }
 
     /**

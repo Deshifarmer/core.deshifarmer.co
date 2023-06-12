@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\v1\Transaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class TransactionController extends Controller
+class TransactionController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -21,13 +22,15 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+        $data['transaction_id'] = 'Tr-' . $this->generateUUID().'-'.Carbon::now()->format('Ymd');
+        Transaction::create($data);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Transaction $transiction)
+    public function show(Transaction $transaction)
     {
         //
     }
@@ -35,7 +38,7 @@ class TransactionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Transaction $transiction)
+    public function update(Request $request, Transaction $transaction)
     {
         //
     }
@@ -43,7 +46,7 @@ class TransactionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Transaction $transiction)
+    public function destroy(Transaction $transaction)
     {
         //
     }

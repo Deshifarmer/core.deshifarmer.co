@@ -8,7 +8,9 @@ use App\Models\v1\Employee;
 use Illuminate\Http\Request;
 use App\Http\Resources\v1\EmployeeResource;
 use App\Http\Resources\v1\FarmerResource;
+use App\Http\Resources\v1\MyProfileResource;
 use App\Http\Resources\v1\UserResource;
+use App\Models\User;
 use App\Models\v1\Farmer;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -100,7 +102,6 @@ class EmployeeController extends BaseController
 
     public function distributorsMe(Employee $employee)
     {
-
         return UserResource::collection(
             Employee::where('under', $employee->df_id)->get()
         );
@@ -115,4 +116,10 @@ class EmployeeController extends BaseController
             Employee::where('under', auth()->user()->df_id)->get()
         );
     }
+
+    public function myProfile()
+    {
+       return MyProfileResource::make(Employee::where('df_id', auth()->user()->df_id)->first());
+    }
+
 }
