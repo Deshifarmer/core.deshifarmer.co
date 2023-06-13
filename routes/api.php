@@ -103,7 +103,10 @@ Route::prefix('v1/')
             Route::prefix('co/')
                 ->group(function () {
                     Route::get('my_product', [ProductController::class, 'companyWiseProduct'])->name('companyWiseProduct');
-                    Route::get('my_order', [OrdersController::class, 'my_order'])->name('co.my_order');
+                    Route::get('my_new_order', [OrdersController::class, 'company_new_order'])->name('co.my_new_order');
+                    Route::get('my_confirm_order', [OrdersController::class, 'company_confirm_order'])->name('co.my_confirm_order');
+                    Route::get('my_delivery_history', [OrdersController::class, 'company_delivery_history'])->name('co.delivery_history');
+                    Route::put('my_order/{order}', [OrdersController::class, 'update'])->name('co.order_update');
                 });
         });
 
@@ -111,15 +114,14 @@ Route::prefix('v1/')
         Route::prefix('distributor')
             ->group(function () {
                 Route::group(['middleware' => ['auth:sanctum', 'user-access:DB']], function () {
-
                     Route::get('my_profile', [EmployeeController::class, 'myProfile'])->name('my_profile');
-                    
                     Route::get('my_me', [EmployeeController::class, 'myMe'])->name('distributor.my_me');
-                    Route::get('me_order', [InputOrderController::class, 'meOrder'])->name('distributor.me_order');
+                    
+                    Route::get('me_new_order', [InputOrderController::class, 'meNewOrder'])->name('distributor.me_new_order');
+                    Route::get('me_confirm_order_status', [InputOrderController::class, 'meConfirmOrderStatus'])->name('distributor.me_confirm_order_status');
                     Route::get('me_order/{input_order}', [InputOrderController::class, 'input_order_details'])->name('dis.input_order_details');
                     Route::post('cash_in_request/', [CashInRequestController::class, 'store'])->name('dis.cash_in_request');
                     Route::get('my_cash_in_request/', [CashInRequestController::class, 'myCashInReq'])->name('dis.my_cash_in_request');
-
                     Route::put('me_order/{input_order}', [InputOrderController::class, 'update'])->name('dis.input_order_update');
                 });
             });
@@ -254,7 +256,7 @@ Route::prefix('v1/')
         //         Route::get('/me/{id}', [OrdersController::class, 'orderFromMe']);
         //         Route::get('/farmer/{id}', [OrdersController::class, 'orderFromFarmer']);
         //         Route::get('/{order}', [OrdersController::class, 'show']);
-        //         // Route::put('/{order}', [OrderFromMeController::class, 'update']);
+        //         //;
         //         // Route::delete('/{order}', [OrderFromMeController::class, 'destroy']);
         //     });
 

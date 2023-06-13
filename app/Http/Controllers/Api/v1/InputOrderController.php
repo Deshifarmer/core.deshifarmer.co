@@ -124,6 +124,8 @@ class InputOrderController extends BaseController
 
                 $inputOrder->update($data);
 
+                Order::where('me_order_id', $inputOrder->order_id)->update(['status' => 'confirm by distributor']);
+
                 return Response(
                     [
                         'message' => 'Updated Successfully'
@@ -148,10 +150,39 @@ class InputOrderController extends BaseController
     }
 
 
-    public function meOrder()
+    public function meNewOrder()
     {
         return InputOrderResource::collection(
-            inputOrder::where('distributor_id', auth()->user()->df_id)->get()
+            inputOrder::where('distributor_id', auth()->user()->df_id)
+            ->where('status', 'pending')
+            ->get()
+        );
+    }
+
+    public function meConfirmOrderStatus()
+    {
+        $totalConfirmByDis =inputOrder::where('distributor_id', auth()->user()->df_id)
+        ->where('status', 'confirm by distributor')
+        ->get();
+
+
+        for($i = 0; $i < $totalConfirmByDis->count(); $i++){
+             $totalProduct = Order::where('me_order_id', $totalConfirmByDis[$i]->order_id)->get();
+             $k= 0;
+             for($j = 0; $j < $totalProduct->count(); $j++){
+                if($totalProduct[$j]->status == 'deliver from company' || $totalProduct[$j]->status == 'rejected by company'){
+                    $k++;
+                }
+             }
+             if($k == $totalProduct->count()){
+                $totalConfirmByDis[$i]->update(['status' => 'ready to collect for distributor']);
+             }
+        }
+
+        return InputOrderResource::collection(
+            inputOrder::where('distributor_id', auth()->user()->df_id)
+            ->where('status', 'confirm by distributor')
+            ->get()
         );
     }
 

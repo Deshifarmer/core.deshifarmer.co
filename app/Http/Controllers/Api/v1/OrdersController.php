@@ -8,6 +8,7 @@ use App\Http\Resources\v1\OrderResource;
 use App\Models\v1\InputOrder;
 use App\Models\v1\order;
 use App\Models\v1\Product;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Symfony\Component\Console\Input\Input;
@@ -44,7 +45,25 @@ class OrdersController extends Controller
      */
     public function update(Request $request, order $order)
     {
-       $order->update($request->all());
+        $order->update($request->all());
+
+        $totalProduct = Order::where('me_order_id', $order->me_order_id)->get();
+
+
+        for ($j = 0; $j < $totalProduct->count(); $j++) {
+            $k = 0;
+            if ($totalProduct[$j]->status == 'deliver from company' || $totalProduct[$j]->status == 'rejected by company') {
+                $k++;
+            }
+            if ($k == $totalProduct->count()) {
+                InputOrder::where('order_id', $order->me_order_id)
+                    ->update(['status' => 'ready to collect for distributor']);
+            }
+        }
+
+        return Response([
+            'message' => 'status updated'
+        ], 201);
     }
 
     /**
@@ -61,12 +80,28 @@ class OrdersController extends Controller
     }
 
     //company wise order
-    public function my_order()
+    public function company_new_order()
     {
         return OrderResource::collection(
             Order::where('company_id', auth()->user()->df_id)
-            ->where('status', 'confirm by distributor')
-            ->get()
+                ->where('status', 'confirm by distributor')
+                ->get()
+        );
+    }
+    public function company_confirm_order()
+    {
+        return OrderResource::collection(
+            Order::where('company_id', auth()->user()->df_id)
+                ->where('status', 'processing by company')
+                ->get()
+        );
+    }
+    public function company_delivery_history()
+    {
+        return OrderResource::collection(
+            Order::where('company_id', auth()->user()->df_id)
+                ->where('status', 'deliver from company')
+                ->get()
         );
     }
 
