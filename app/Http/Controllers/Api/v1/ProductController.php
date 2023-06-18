@@ -103,16 +103,21 @@ class ProductController extends BaseController
         if ($request->has('company_id') && $request->has('category_id')) {
             $products = Product::where('company_id', $request->company_id)
                 ->where('category_id', $request->category_id)
+                ->where('status', 'active')
                 ->get();
             return ProductResource::collection($products);
         } elseif ($request->has('company_id')) {
-            $products = Product::where('company_id', $request->company_id)->get();
+            $products = Product::where('company_id', $request->company_id)
+            ->where('status', 'active')
+            ->get();
             return ProductResource::collection($products);
         } elseif ($request->has('category_id')) {
-            $products = Product::where('category_id', $request->category_id)->get();
+            $products = Product::where('category_id', $request->category_id)
+            ->where('status', 'active')
+            ->get();
             return ProductResource::collection($products);
         } else {
-            return ProductResource::collection(Product::all());
+            return ProductResource::collection(Product::where('status', 'active')->get());
         }
     }
 

@@ -105,13 +105,12 @@ class CashInRequestController extends Controller
                 'message' => 'Cash In Request Updated Successfully',
                 'status' => 'success',
             ], 200);
+        }else{
+            return response()->json([
+                'message' => 'Cash In Request Already Approved',
+                'status' => 'success',
+            ], 200);
         }
-        // else{
-        //     return response()->json([
-        //         'message' => 'Cash In Request Already Approved',
-        //         'status' => 'success',
-        //     ], 200);
-        // }
     }
 
     /**

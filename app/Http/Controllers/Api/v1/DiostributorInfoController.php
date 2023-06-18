@@ -26,7 +26,6 @@ class DiostributorInfoController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $data["distributor_id"] = "adsjdsafj";
         $distributorInfo = DistributorInfo::create($data);
         return new DistributorInfoResource($distributorInfo);
     }

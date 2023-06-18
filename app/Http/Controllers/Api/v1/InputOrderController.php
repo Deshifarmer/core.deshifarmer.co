@@ -132,6 +132,8 @@ class InputOrderController extends BaseController
                     ]
                 );
             }
+        } elseif ($request->status == 'delivered to me') {
+            $inputOrder->update($request->all());
         } else {
             return Response(
                 [
@@ -154,35 +156,19 @@ class InputOrderController extends BaseController
     {
         return InputOrderResource::collection(
             inputOrder::where('distributor_id', auth()->user()->df_id)
-            ->where('status', 'pending')
-            ->get()
+                ->where('status', 'pending')
+                ->get()
         );
     }
 
     public function meConfirmOrderStatus()
     {
-        $totalConfirmByDis =inputOrder::where('distributor_id', auth()->user()->df_id)
-        ->where('status', 'confirm by distributor')
-        ->get();
-
-
-        for($i = 0; $i < $totalConfirmByDis->count(); $i++){
-             $totalProduct = Order::where('me_order_id', $totalConfirmByDis[$i]->order_id)->get();
-             $k= 0;
-             for($j = 0; $j < $totalProduct->count(); $j++){
-                if($totalProduct[$j]->status == 'deliver from company' || $totalProduct[$j]->status == 'rejected by company'){
-                    $k++;
-                }
-             }
-             if($k == $totalProduct->count()){
-                $totalConfirmByDis[$i]->update(['status' => 'ready to collect for distributor']);
-             }
-        }
 
         return InputOrderResource::collection(
             inputOrder::where('distributor_id', auth()->user()->df_id)
-            ->where('status', 'confirm by distributor')
-            ->get()
+                ->where('status', 'confirm by distributor')
+                ->orWhere('status', 'processing by company')
+                ->get()
         );
     }
 
@@ -190,6 +176,15 @@ class InputOrderController extends BaseController
     {
         return OrderResource::collection(
             Order::where('me_order_id', $id)->get()
+        );
+    }
+
+    public function meCollection()
+    {
+        return InputOrderResource::collection(
+            inputOrder::where('distributor_id', auth()->user()->df_id)
+                ->where('status', 'ready to collect for me')
+                ->get()
         );
     }
 }

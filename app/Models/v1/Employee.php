@@ -22,9 +22,6 @@ class Employee extends Model
         'phone',
         'type',
         'onboard_by',
-        'designation',
-        'previous_designation',
-        'previous_company',
         'photo',
         'date_of_birth',
         'present_address',
@@ -32,13 +29,12 @@ class Employee extends Model
         'home_district',
         'joining_date',
         'gender',
-        'department',
-        'work_place',
-        'comission',
-        'target_volume',
         'channel',
         'channel_assign_by',
-        'under'
+        'under',
+        'status',
+        'lat',
+        'long'
     ];
 
     protected $appends = [

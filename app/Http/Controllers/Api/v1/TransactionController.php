@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Models\v1\InputOrder;
 use App\Models\v1\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -24,6 +25,9 @@ class TransactionController extends BaseController
     {
         $data = $request->all();
         $data['transaction_id'] = 'Tr-' . $this->generateUUID().'-'.Carbon::now()->format('Ymd');
+        if($request->has('order_id')){
+          InputOrder::where('order_id', $request->order_id)->update(['payment_id' => $data['transaction_id']]);
+        }
         Transaction::create($data);
     }
 

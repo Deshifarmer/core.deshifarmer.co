@@ -36,7 +36,7 @@ return new class extends Migration
             $table->integer('number_of_children');
             $table->decimal('yearly_income');
             $table->decimal('year_of_stay_in');
-            $table->string('groyp_id')->nullable();
+            $table->string('group_id')->nullable();
             $table->bigInteger('farmer_role');
             $table->bigInteger('farm_id')->nullable();
             $table->boolean('is_active')->default(true);

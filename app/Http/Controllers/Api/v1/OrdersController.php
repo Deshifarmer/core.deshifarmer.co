@@ -49,17 +49,38 @@ class OrdersController extends Controller
 
         $totalProduct = Order::where('me_order_id', $order->me_order_id)->get();
 
-
-        for ($j = 0; $j < $totalProduct->count(); $j++) {
-            $k = 0;
-            if ($totalProduct[$j]->status == 'deliver from company' || $totalProduct[$j]->status == 'rejected by company') {
-                $k++;
+        if ($request->status == 'processing by company' || $request->status == 'rejected by company') {
+            $companyProductStatus = Order::where('me_order_id', $order->me_order_id)
+                ->where('status', 'rejected by company')
+                ->orWhere('status', 'processing by company')
+                ->get();
+            if ($companyProductStatus->count() == $totalProduct->count()) {
+                InputOrder::where('order_id', $order->me_order_id)
+                    ->update(['status' => 'processing by company']);
             }
-            if ($k == $totalProduct->count()) {
+        }
+        if($request->status == 'deliver from company'){
+            $companyProductStatus = Order::where('me_order_id', $order->me_order_id)
+                ->where('status', 'deliver from company')
+                ->orWhere('status', 'rejected by company')
+                ->get();
+            if ($companyProductStatus->count() == $totalProduct->count()) {
                 InputOrder::where('order_id', $order->me_order_id)
                     ->update(['status' => 'ready to collect for distributor']);
             }
         }
+        if($request->status == 'collected by distributor'){
+            $companyProductStatus = Order::where('me_order_id', $order->me_order_id)
+                ->where('status', 'collected by distributor')
+                ->orWhere('status', 'rejected by company')
+                ->get();
+            if ($companyProductStatus->count() == $totalProduct->count()) {
+                InputOrder::where('order_id', $order->me_order_id)
+                    ->update(['status' => 'ready to collect for me']);
+            }
+        }
+
+
 
         return Response([
             'message' => 'status updated'
@@ -100,6 +121,15 @@ class OrdersController extends Controller
     {
         return OrderResource::collection(
             Order::where('company_id', auth()->user()->df_id)
+                ->where('status', 'deliver from company')
+                ->get()
+        );
+    }
+
+    public function disCollectOrder()
+    {
+        return OrderResource::collection(
+            Order::where('distributor_id', auth()->user()->df_id)
                 ->where('status', 'deliver from company')
                 ->get()
         );

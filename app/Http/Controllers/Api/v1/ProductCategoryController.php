@@ -47,6 +47,8 @@ class ProductCategoryController extends BaseController
 
         $productCategory = ProductCategory::create($data);
         return new ProductCategoryResource($productCategory);
+
+
     }
 
     /**

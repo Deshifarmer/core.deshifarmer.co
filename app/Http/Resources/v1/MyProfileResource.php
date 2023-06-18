@@ -5,9 +5,11 @@ namespace App\Http\Resources\v1;
 use App\Models\v1\District;
 use App\Models\v1\Employee;
 use App\Models\v1\EmployeeAccount;
+use App\Models\v1\InputOrder;
 use App\Models\v1\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Symfony\Component\Console\Input\Input;
 
 class MyProfileResource extends JsonResource
 {
@@ -45,8 +47,11 @@ class MyProfileResource extends JsonResource
             'transactions' => Transaction::where('credited_to', $this->df_id)
                 ->orWhere('debited_from', $this->df_id)
                 ->get(),
+            'orders' => $this->when($request->routeIs('distributor.my_me_profile'), function () {
+                return InputOrder::where('me_id', $this->df_id)->get();
+            }),
 
-            
+
 
         ];
     }

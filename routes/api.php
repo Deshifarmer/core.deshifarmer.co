@@ -43,6 +43,9 @@ Route::prefix('v1/')
 
         Route::post('login', [AuthController::class, 'login']);
 
+        Route::post('employee', [EmployeeController::class, 'store']);
+
+
 
         Route::group(['middleware' => ['auth:sanctum']], function () {
             Route::post('logout', [AuthController::class, 'logout']);
@@ -57,10 +60,12 @@ Route::prefix('v1/')
             Route::get('all_category', [ProductCategoryController::class, 'index']);
             Route::get('sub_category', [ProductSubCategoryController::class, 'index']);
             Route::Post('sub_category', [ProductSubCategoryController::class, 'store']);
-            Route::get('all_product', [ProductController::class, 'index']);
+            Route::get('all_product', [ProductController::class, 'sort']);
             Route::get('product/sort', [ProductController::class, 'sort']);
 
             Route::get('product/{product}', [ProductController::class, 'show']);
+            Route::get('all_company', [UserController::class, 'allCompany'])->name('all_company');
+
         });
 
 
@@ -69,7 +74,7 @@ Route::prefix('v1/')
             Route::prefix('hq/')
                 ->group(function () {
                     Route::post('add', [AuthController::class, 'register'])->name('add_hq_co_dis_me');
-                    Route::get('all_company', [UserController::class, 'allCompany'])->name('all_company');
+
                     Route::get('all_distributor', [UserController::class, 'allDistributor'])->name('all_distributor');
                     Route::get('all_me', [UserController::class, 'allMicroEnt'])->name('all_me');
                     Route::get('all_farmer', [FarmerController::class, 'index']);
@@ -94,6 +99,8 @@ Route::prefix('v1/')
                     Route::get('farmer/profile/{farmer}', [FarmerController::class, 'show']);
                     Route::get('distributor/all_cash_in_request', [CashInRequestController::class, 'index'])->name('hq.distributor_cash_in_request');
                     Route::put('distributor/cash_in_request/{cash_in_request}', [CashInRequestController::class, 'update'])->name('hq.distributor_cash_in_request_update');
+
+                    Route::get('all_product', [ProductController::class, 'index'])->name('hq.all_product');
                     Route::put('product/{product}', [ProductController::class, 'update'])->name('hq.product_update');
                 });
         });
@@ -116,13 +123,17 @@ Route::prefix('v1/')
                 Route::group(['middleware' => ['auth:sanctum', 'user-access:DB']], function () {
                     Route::get('my_profile', [EmployeeController::class, 'myProfile'])->name('my_profile');
                     Route::get('my_me', [EmployeeController::class, 'myMe'])->name('distributor.my_me');
-                    
+                    Route::get('my_me/{employee}/profile', [EmployeeController::class, 'myMeProfile'])->name('distributor.my_me_profile');
+                    Route::get('me_collection', [InputOrderController::class, 'meCollection'])->name('distributor.me_collection');
+
                     Route::get('me_new_order', [InputOrderController::class, 'meNewOrder'])->name('distributor.me_new_order');
                     Route::get('me_confirm_order_status', [InputOrderController::class, 'meConfirmOrderStatus'])->name('distributor.me_confirm_order_status');
                     Route::get('me_order/{input_order}', [InputOrderController::class, 'input_order_details'])->name('dis.input_order_details');
                     Route::post('cash_in_request/', [CashInRequestController::class, 'store'])->name('dis.cash_in_request');
                     Route::get('my_cash_in_request/', [CashInRequestController::class, 'myCashInReq'])->name('dis.my_cash_in_request');
                     Route::put('me_order/{input_order}', [InputOrderController::class, 'update'])->name('dis.input_order_update');
+                    Route::get('collect_order', [OrdersController::class, 'disCollectOrder'])->name('dis.collectOrder');
+                    Route::put('collect_product/{order}', [OrdersController::class, 'update'])->name('dis.order_update');
                 });
             });
 

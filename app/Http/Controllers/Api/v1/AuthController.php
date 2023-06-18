@@ -39,23 +39,16 @@ class AuthController extends BaseController
             3 => 'ME-'
         ];
         $input['df_id'] = $arr[$input['role']] . $this->generateUuid();
-
-        Employee::create([
-            'df_id' => $input['df_id'],
-            'first_name' => $input['first_name'],
-            'last_name' => $input['last_name'],
-            'phone' => $input['phone'],
-            'email' => $input['email'],
-            'nid' => $input['nid'],
-            'type' => $input['role'],
-            'onboard_by' => auth()->user()->df_id,
-        ]);
+        $input['type'] = $input['role'];
+        $input['onboard_by'] = auth()->user()->df_id;
+        (new EmployeeController())->store(new Request($input));
         EmployeeAccount::create([
            'acc_number' => $input['df_id'],
         ]);
         $user = User::create($input);
-        // return AuthResource::make($user);
         return response()->json(['success' => 'User created successfully'], 201);
+
+        return new Request($input);
     }
 
     /**

@@ -12,6 +12,7 @@ use App\Http\Resources\v1\MyProfileResource;
 use App\Http\Resources\v1\UserResource;
 use App\Models\User;
 use App\Models\v1\Farmer;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -39,28 +40,35 @@ class EmployeeController extends BaseController
      */
     public function store(Request $request)
     {
-        // $validator = Validator::make($request->all(), [
-        //     'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        //     'nid' => 'required|string|unique:employees,nid',
-        //     'phone' => 'required|unique:Employees'
-        // ]);
+        $validator = Validator::make($request->all(), [
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'nid' => 'required|string|unique:employees,nid',
+            'phone' => 'required|unique:Employees'
+        ]);
 
-        // if ($validator->fails()) {
-        //     return $this->sendError('Error validation', $validator->errors());
-        // }
-        // $data = $request->all();
-        // if ($request->hasFile('profile_pic')){
-        //     $extension = $request->file('photo')->getClientOriginalExtension();
-        //     $request->file('photo')->storeAs('public/image/employee', $data['df_id'] . '.' . $extension);
-        //     $image_path = '/image/employee/' . $data['df_id'] . '.' . $extension;
-        // }
-        // else{
-        //     $image_path = "image/employee/default.png";
-        // }
-        // $data['photo'] =  $image_path;
-        // $employee = Employee::create($data);
-        // return $this->sendResponse(EmployeeResource::make($employee), 'Employee Created Successfully');
-        return $request->all();
+        if ($validator->fails()) {
+            return $this->sendError('Error validation', $validator->errors());
+        }
+
+
+        $data = $request->all();
+
+
+        if ($request->photo){
+            $extension = $request->photo->getClientOriginalExtension();
+
+            $request->photo->storeAs('public/image/employee',$request->df_id . '.' . $extension);
+            $image_path = '/image/employee/' . $request->df_id . '.' . $extension;
+        }
+        else{
+            $image_path = "/image/employee/default.png";
+        }
+        $data['photo'] =  $image_path;
+        $employee = Employee::create($data);
+       return Response()->json([
+            'message' => 'Employee created successfully',
+            'data' => $employee
+        ], 201);
     }
 
     /**
@@ -120,6 +128,11 @@ class EmployeeController extends BaseController
     public function myProfile()
     {
        return MyProfileResource::make(Employee::where('df_id', auth()->user()->df_id)->first());
+    }
+
+    public function myMeProfile(Employee $employee)
+    {
+        return MyProfileResource::make($employee);
     }
 
 }

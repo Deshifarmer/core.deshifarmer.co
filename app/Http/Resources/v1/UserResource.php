@@ -4,6 +4,7 @@ namespace App\Http\Resources\v1;
 
 use App\Models\v1\District;
 use App\Models\v1\Employee;
+use App\Models\v1\EmployeeAccount;
 use App\Models\v1\Farmer;
 use App\Models\v1\InputOrder;
 use App\Models\v1\Order;
@@ -27,9 +28,6 @@ class UserResource extends JsonResource
             'nid' => $this->nid,
             'phone' => $this->phone,
             'email' => $this->email,
-            'designation' => $this->designation,
-            'previous_designation' => $this->previous_designation,
-            'previous_company' => $this->previous_company,
             'photo' => $this->photo,
             'channel' => $this->channel,
             'date_of_birth' => $this->date_of_birth,
@@ -39,11 +37,9 @@ class UserResource extends JsonResource
             'joining_date' => $this->joining_date,
             'type' => $this->type,
             'gender' => $this->gender,
-            'department' => $this->department,
-            'work_place' => $this->work_place,
-            'commission' => $this->commission,
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
-            'target_volume' => $this->target_volume,
+            'status' => $this->status,
+            'balance' => EmployeeAccount::where('acc_number', $this->df_id)->get('net_balance')->implode('net_balance'),
 
             'me_list' => $this->when($this->type == 2, function () {
                 return Employee::where('under', $this->df_id)->get()->map(function ($employee) {
@@ -56,40 +52,10 @@ class UserResource extends JsonResource
                         'status' => $employee->status,
                         'total_order' => InputOrder::where('me_id', $employee->df_id)->count(),
                         'total_order_amount' => InputOrder::where('me_id', $employee->df_id)->sum('total_price'),
-                        // 'order_list' => InputOrder::where('me_id', $employee->df_id)->get('order_id')->map(function ($input_order) {
-                        //     return Order::where('me_order_id', $input_order->order_id)->get()->map(function ($order) {
 
-                        //         $productDet = Product::where('product_id', $order->product_id)->get(['name', 'image']);
-                        //         return [
-                        //             'id' => $order->id,
-                        //             'product_id' => $order->product_id,
-                        //             'quantity' => $order->quantity,
-                        //             'unit'=>Unit::where('id',$order->unit)->get('unit')->implode('unit'),
-                        //             'product_name'=> $productDet->implode('name'),
-                        //             'image'=> $productDet->implode('image'),
-                        //         ];
-                        //     });
-                        // }),
                     ];
                 });
             }),
-
-            // 'order_list' => $this->when($this->type == 2, function () {
-            //     return InputOrder::where('distributor_id', $this->df_id)->get('order_id')->map(function ($input_order) {
-            //         return
-            //         Order::where('me_order_id', $input_order->order_id)->get()->map(function ($order) {
-            //             $productDet = Product::where('product_id', $order->product_id)->get(['name', 'image']);
-            //             return [
-            //                 'id' => $order->id,
-            //                 'product_id' => $order->product_id,
-            //                 'quantity' => $order->quantity,
-            //                 'unit' => Unit::where('id', $order->unit)->get('unit')->implode('unit'),
-            //                 'product_name' => $productDet->implode('name'),
-            //                 'image' => $productDet->implode('image'),
-            //             ];
-            //         });
-            //     });
-            // }),
 
             'farmer_list' => $this->when($this->type == 3, function () {
                 return Farmer::where('input_by', $this->df_id)->get()->map(function ($farmer) {
