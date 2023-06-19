@@ -3,7 +3,7 @@
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\CashInRequestController;
 use App\Http\Controllers\Api\v1\ChannelController;
-
+use App\Http\Controllers\Api\v1\DistributorsFileController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\v1\FarmerController;
@@ -43,7 +43,7 @@ Route::prefix('v1/')
 
         Route::post('login', [AuthController::class, 'login']);
 
-        Route::post('employee', [EmployeeController::class, 'store']);
+        Route::post('file', [DistributorsFileController::class, 'store']);
 
 
 
@@ -76,6 +76,8 @@ Route::prefix('v1/')
                     Route::post('add', [AuthController::class, 'register'])->name('add_hq_co_dis_me');
 
                     Route::get('all_distributor', [UserController::class, 'allDistributor'])->name('all_distributor');
+                    Route::post('distributor_file', [DistributorsFileController::class, 'store']);
+                    Route::get('distributor_file/{distributors_file}', [DistributorsFileController::class, 'show']);
                     Route::get('all_me', [UserController::class, 'allMicroEnt'])->name('all_me');
                     Route::get('all_farmer', [FarmerController::class, 'index']);
                     Route::get('unassigned_distributor', [UserController::class, 'unassignedDistributor'])->name('unassigned_distributor');

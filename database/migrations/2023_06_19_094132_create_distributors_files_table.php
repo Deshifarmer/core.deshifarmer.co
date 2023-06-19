@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('distributor_infos', function (Blueprint $table) {
+        Schema::create('distributors_files', function (Blueprint $table) {
             $table->id();
             $table->string('df_id')->index();
             $table->string('business_present_address');
@@ -38,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('distributor_infos');
+        Schema::dropIfExists('distributors_files');
     }
 };
