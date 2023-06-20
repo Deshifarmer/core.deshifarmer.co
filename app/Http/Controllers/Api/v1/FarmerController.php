@@ -66,4 +66,10 @@ class FarmerController extends BaseController
     {
         //
     }
+
+    public function myFarmer()
+    {
+        $farmer = Farmer::where('input_by', auth()->user()->df_id)->get();
+        return FarmerResource::collection($farmer);
+    }
 }

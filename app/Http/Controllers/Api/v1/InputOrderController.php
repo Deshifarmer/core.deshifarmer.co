@@ -187,4 +187,13 @@ class InputOrderController extends BaseController
                 ->get()
         );
     }
+
+    public function myOrder()
+    {
+        return
+        InputOrderResource::collection(
+            inputOrder::where('me_id', auth()->user()->df_id)
+            ->get()
+            );
+    }
 }

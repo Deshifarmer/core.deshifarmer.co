@@ -92,7 +92,8 @@ class CashInRequestController extends Controller
                     new Request(
                         [
                             'amount' => $request->accepted_amount,
-                            'method' => 'cash_in',
+                            'cash_in_id'=> $cashInRequest->receipt_id,
+                            'method' => 'cash in',
                             'credited_to' => $cashInRequest->df_id,
                             'authorized_by'=> auth()->user()->df_id,
                         ]

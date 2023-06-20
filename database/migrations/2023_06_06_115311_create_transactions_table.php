@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('transaction_id')->index();
             $table->string('amount');
             $table->string('order_id')->nullable();
+            $table->string('cash_in_id')->nullable();
+            $table->string('cash_out_id')->nullable();
             $table->string('method');
             $table->string('credited_to')->nullable();
             $table->string('debited_from')->nullable();

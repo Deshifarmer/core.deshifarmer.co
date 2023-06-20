@@ -2,28 +2,24 @@
 
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\CashInRequestController;
+use App\Http\Controllers\Api\v1\CashOutRequestController;
 use App\Http\Controllers\Api\v1\ChannelController;
 use App\Http\Controllers\Api\v1\DistributorsFileController;
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\Api\v1\FarmerController;
 use App\Http\Controllers\Api\v1\UnitController;
 use App\Http\Controllers\Api\v1\UpazilaController;
 use App\Http\Controllers\Api\v1\DistrictController;
 use App\Http\Controllers\Api\v1\DivisionController;
-use App\Http\Controllers\Api\v1\EmployeeAccountController;
 use App\Http\Controllers\Api\v1\EmployeeController;
-use App\Http\Controllers\Api\v1\FarmerDepositController;
-use App\Http\Controllers\Api\v1\FarmersPointController;
 use App\Http\Controllers\Api\v1\InputOrderController;
-use App\Http\Controllers\Api\v1\MeController;
 use App\Http\Controllers\Api\v1\OrdersController;
 use App\Http\Controllers\Api\v1\ProductCategoryController;
 use App\Http\Controllers\Api\v1\ProductController;
 use App\Http\Controllers\Api\v1\ProductSubCategoryController;
 use App\Http\Controllers\Api\v1\TransactionController;
 use App\Http\Controllers\Api\v1\UserController;
-use App\Models\v1\Channel;
+
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -43,7 +39,7 @@ Route::prefix('v1/')
 
         Route::post('login', [AuthController::class, 'login']);
 
-        Route::post('file', [DistributorsFileController::class, 'store']);
+
 
 
 
@@ -65,6 +61,11 @@ Route::prefix('v1/')
 
             Route::get('product/{product}', [ProductController::class, 'show']);
             Route::get('all_company', [UserController::class, 'allCompany'])->name('all_company');
+
+
+            //test routes
+
+            //end test routes
 
         });
 
@@ -104,6 +105,10 @@ Route::prefix('v1/')
 
                     Route::get('all_product', [ProductController::class, 'index'])->name('hq.all_product');
                     Route::put('product/{product}', [ProductController::class, 'update'])->name('hq.product_update');
+
+                    Route::get('all_cash_out_request', [CashOutRequestController::class, 'index'])->name('hq.all_cash_out_request');
+                    Route::put('cash_out_request/{cashOutRequest}', [CashOutRequestController::class, 'update'])->name('hq.cash_out_request_update');
+                    Route::get('all_transaction',[TransactionController::class,'index'])->name('hq.all_transaction');
                 });
         });
 
@@ -116,6 +121,7 @@ Route::prefix('v1/')
                     Route::get('my_confirm_order', [OrdersController::class, 'company_confirm_order'])->name('co.my_confirm_order');
                     Route::get('my_delivery_history', [OrdersController::class, 'company_delivery_history'])->name('co.delivery_history');
                     Route::put('my_order/{order}', [OrdersController::class, 'update'])->name('co.order_update');
+                    Route::post('cash_out_request', [CashOutRequestController::class, 'store'])->name('co.cash_out_request');
                 });
         });
 
@@ -132,6 +138,7 @@ Route::prefix('v1/')
                     Route::get('me_confirm_order_status', [InputOrderController::class, 'meConfirmOrderStatus'])->name('distributor.me_confirm_order_status');
                     Route::get('me_order/{input_order}', [InputOrderController::class, 'input_order_details'])->name('dis.input_order_details');
                     Route::post('cash_in_request/', [CashInRequestController::class, 'store'])->name('dis.cash_in_request');
+                    Route::post('cash_out_request', [CashOutRequestController::class, 'store'])->name('dis.cash_out_request');
                     Route::get('my_cash_in_request/', [CashInRequestController::class, 'myCashInReq'])->name('dis.my_cash_in_request');
                     Route::put('me_order/{input_order}', [InputOrderController::class, 'update'])->name('dis.input_order_update');
                     Route::get('collect_order', [OrdersController::class, 'disCollectOrder'])->name('dis.collectOrder');
@@ -145,8 +152,10 @@ Route::prefix('v1/')
             Route::prefix('me/')
                 ->group(function () {
                     Route::post('add_farmer', [FarmerController::class, 'store'])->name('me.add_farmer');
-                    Route::get('my_farmer', [MeController::class, 'myFarmer'])->name('me.my_farmer');
+                    Route::get('my_farmer', [FarmerController::class, 'myFarmer'])->name('me.my_farmer');
                     Route::post('input_order', [InputOrderController::class, 'store'])->name('me.input_order.store');
+                    Route::get('order', [InputOrderController::class, 'myOrder'])->name('me.me_order');
+                    Route::post('cash_out_request', [CashOutRequestController::class, 'store'])->name('me.cash_out_request');
                 });
         });
 
@@ -154,156 +163,4 @@ Route::prefix('v1/')
         Route::group(['middleware' => ['auth:sanctum', 'user-access:CO|HQ']], function () {
             Route::post('add_product', [ProductController::class, 'store'])->name('add_product');
         });
-
-
-
-
-
-
-        // Route::prefix('employee_account')
-        //     ->group(function () {
-        //         Route::get('/', [EmployeeAccountController::class, 'index']);
-        //         Route::post('/', [EmployeeAccountController::class, 'store']);
-        //         Route::get('/{employee_account}', [EmployeeAccountController::class, 'show']);
-        //         Route::put('/{employee_account}', [EmployeeAccountController::class, 'update']);
-        //         Route::delete('/{employee_account}', [EmployeeAccountController::class, 'destroy']);
-        //     });
-
-        // Route::prefix('transaction')
-        //     ->group(function () {
-        //         Route::get('/', [TransactionController::class, 'index']);
-        //         Route::post('/', [EmployeeAccountController::class, 'store']);
-        //         Route::get('/{transaction}', [EmployeeAccountController::class, 'show']);
-        //         Route::put('/{transaction}', [EmployeeAccountController::class, 'update']);
-        //         Route::delete('/{transaction}', [EmployeeAccountController::class, 'destroy']);
-        //     });
-        // Route::prefix('cash_in_request')
-        //     ->group(function () {
-        //         Route::get('/', [CashInRequestController::class, 'index']);
-
-        //         Route::get('/{cash_in_request}', [CashInRequestController::class, 'show']);
-        //         // Route::put('/{cash_in_request}', [CashInRequestController::class, 'update']);
-        //         Route::delete('/{cash_in_request}', [CashInRequestController::class, 'destroy']);
-        //     });
-
-
-
-
-
-        // // All  route for HQ
-
-        // Route::prefix('product')
-        //     ->group(function () {
-
-        //         // Route::post('/', [ProductController::class, 'store']);
-        //         Route::get('/{product}', [ProductController::class, 'show']);
-        //         Route::put('/{product}', [ProductController::class, 'update']);
-        //         Route::delete('/{product}', [ProductController::class, 'destroy']);
-        //     });
-        // Route::prefix('company')
-        //     ->group(function () {
-        //         Route::get('/', [CompanyController::class, 'index']);
-        //         Route::post('/', [CompanyController::class, 'store']);
-        //         Route::get('/{company}', [CompanyController::class, 'show']);
-        //         Route::get('/{company}/orders', [CompanyController::class, 'companyOrders']);
-        //         // Route::put('/{product}', [CompanyController::class, 'update']);
-        //         // Route::delete('/{product}', [CompanyController::class, 'destroy']);
-        //     });
-        // Route::prefix('channel')
-        //     ->group(function () {
-        //         Route::get('/', [ChannelController::class, 'index']);
-        //         Route::put('/{channel}', [ChannelController::class, 'update']);
-        //         Route::delete('/{channel}', [ChannelController::class, 'destroy']);
-        //     });
-
-        // Route::prefix('employee')
-        //     ->group(function () {
-        //         Route::get('/', [EmployeeController::class, 'index']);
-        //         Route::post('/', [EmployeeController::class, 'store']);
-        //         Route::get('/{employee}', [EmployeeController::class, 'show']);
-        //         Route::put('/{employee}', [EmployeeController::class, 'update']);
-        //         Route::delete('/{employee}', [EmployeeController::class, 'destroy']);
-        //     });
-        // Route::prefix('farmer')
-        //     ->group(function () {
-        //         Route::get('/', [FarmerController::class, 'index']);
-        //         // Route::post('/', [FarmerController::class, 'store']);
-        //         Route::get('/{farmer}', [FarmerController::class, 'show']);
-        //         Route::put('/{farmer}', [FarmerController::class, 'update']);
-        //         Route::delete('/{farmer}', [FarmerController::class, 'destroy']);
-        //     });
-
-
-
-
-        // Route::prefix('distributor')
-        //     ->group(function () {
-        //         Route::get('/my_me', [DistributorController::class, 'myMe']);
-        //         Route::get('/', [DistributorController::class, 'index']);
-        //         // Route::get('/{distributor}', [DistributorController::class, 'show']);
-        //         Route::get('/info', [DistributorInfoController::class, 'index']);
-        //         Route::post('/info', [DistributorInfoController::class, 'store']);
-        //     });
-
-        //All routes for Micro Entrepreneur
-        // Route::prefix('me')
-        //     ->group(function () {
-        //         Route::get('/', [MeController::class, 'index']);
-        //         Route::post('/', [MeController::class, 'store']);
-        //         Route::get('/{me}', [MeController::class, 'show']);
-        //         Route::put('/{me}', [MeController::class, 'update']);
-        //         Route::delete('/{me}', [MeController::class, 'destroy']);
-        //     });
-        // Route::prefix('input_order')
-        //     ->group(function () {
-        //         // Route::get('/', [InputOrderController::class, 'index']);
-
-        //         Route::get('/{input_order}', [InputOrderController::class, 'show']);
-        //         Route::put('/{input_order}', [InputOrderController::class, 'update']);
-        //         Route::delete('/{input_order}', [InputOrderController::class, 'destroy']);
-        //     });
-        // Route::prefix('order')
-        //     ->group(function () {
-        //         Route::get('/', [OrdersController::class, 'index']);
-        //         Route::post('/', [OrdersController::class, 'store']);
-        //         Route::get('/me/{id}', [OrdersController::class, 'orderFromMe']);
-        //         Route::get('/farmer/{id}', [OrdersController::class, 'orderFromFarmer']);
-        //         Route::get('/{order}', [OrdersController::class, 'show']);
-        //         //;
-        //         // Route::delete('/{order}', [OrderFromMeController::class, 'destroy']);
-        //     });
-
-        // Route::prefix('farmer')
-        //     ->group(function () {
-        //         Route::get('/', [FarmerController::class, 'index']);
-        //         Route::post('/', [FarmerController::class, 'store']);
-        //         Route::get('/{farmer}', [FarmerController::class, 'show']);
-        //         Route::put('/{farmer}', [FarmerController::class, 'update']);
-        //         Route::delete('/{farmer}', [FarmerController::class, 'destroy']);
-        //     });
-
-        // Route::prefix('farmers_point')
-        //     ->group(function () {
-        //         Route::get('/', [FarmersPointController::class, 'index']);
-        //         Route::post('/', [FarmersPointController::class, 'store']);
-        //         Route::get('/{farmers_point}', [FarmersPointController::class, 'show']);
-        //         Route::put('/{farmers_point}', [FarmersPointController::class, 'update']);
-        //         Route::delete('/{farmers_point}', [FarmersPointController::class, 'destroy']);
-        //     });
-        // // Route::prefix('distributor')
-        // //     ->group(function () {
-
-        // //         Route::post('/', [DistributorInfoController::class, 'store']);
-        // //         Route::get('/{distributor}', [DistributorInfoController::class, 'show']);
-        // //         Route::put('/{distributor}', [DistributorInfoController::class, 'update']);
-        // //         Route::delete('/{distributor}', [DistributorInfoController::class, 'destroy']);
-        // //     });
-        // Route::prefix('farmer_deposit')
-        //     ->group(function () {
-        //         Route::get('/', [FarmerDepositController::class, 'index']);
-        //         Route::post('/', [FarmerDepositController::class, 'store']);
-        //         Route::get('/{farmer_deposit}', [FarmerDepositController::class, 'show']);
-        //         Route::put('/{farmer_deposit}', [FarmerDepositController::class, 'update']);
-        //         Route::delete('/{farmer_deposit}', [FarmerDepositController::class, 'destroy']);
-        //     });
     });

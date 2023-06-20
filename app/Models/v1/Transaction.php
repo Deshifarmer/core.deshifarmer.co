@@ -18,6 +18,8 @@ class Transaction extends Model
         'transaction_id',
         'amount',
         'order_id',
+        'cash_in_id',
+        'cash_out_id',
         'method',
         'credited_to',
         'debited_from',

@@ -25,6 +25,7 @@ class InputOrderResource extends JsonResource
             'channel_id' => $this->channel_id,
             'total_price' => $this->total_price,
             'sold_to' => $this->sold_to,
+            'farmer_details' => Farmer::where('farmer_id', $this->sold_to)->first(),
             'status' => $this->status,
             'payment_method'=> $this->payment_method,
             'payment_id' => $this->payment_id,
@@ -59,7 +60,7 @@ class InputOrderResource extends JsonResource
                 ];
 
             }),
-            'order_details' => $this->when($request->routeIs(['hq.single_input_order']), function () {
+            'order_details' => $this->when($request->routeIs(['hq.single_input_order', 'me.me_order']), function () {
                 return OrderResource::collection(Order::where('me_order_id', $this->order_id)->get());
             }),
 

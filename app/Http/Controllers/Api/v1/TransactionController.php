@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\v1\TransactionResource;
 use App\Models\v1\InputOrder;
 use App\Models\v1\Transaction;
 use Carbon\Carbon;
@@ -15,7 +16,7 @@ class TransactionController extends BaseController
      */
     public function index()
     {
-        return Transaction::all();
+        return TransactionResource::collection(Transaction::all());
     }
 
     /**

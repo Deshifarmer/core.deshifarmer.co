@@ -9,6 +9,7 @@ use App\Models\v1\Farmer;
 use App\Models\v1\InputOrder;
 use App\Models\v1\Order;
 use App\Models\v1\Product;
+use App\Models\v1\Transaction;
 use App\Models\v1\Unit;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -71,12 +72,20 @@ class UserResource extends JsonResource
                 return Product::where('company_id', $this->df_id)->get()->map(function ($product) {
                     return [
                         'product_id' => $product->product_id,
-                        'product_name' =>$product->name,
+                        'product_name' => $product->name,
                         'image' => $product->image,
-                        'buy_price_from_company'=>$product->buy_price_from_company,
-                        'sell_price_from_company'=>$product->sell_price_from_company
+                        'buy_price_from_company' => $product->buy_price_from_company,
+                        'sell_price_from_company' => $product->sell_price_from_company
                     ];
                 });
+            }),
+
+            'transaction' => $this->when($request->routeIs(['hq.profile.single_user']), function () {
+                return TransactionResource::collection(
+                    Transaction::where('credited_to', $this->df_id)
+                        ->orWhere('debited_from', $this->df_id)
+                        ->get()
+                );
             }),
         ];
     }
