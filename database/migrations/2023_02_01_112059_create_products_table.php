@@ -23,6 +23,7 @@ return new class extends Migration
             $table->bigInteger('category_id');
             $table->bigInteger('subcategory_id')->nullable();
             $table->string('company_id');
+            $table->string('unit');
             $table->decimal('buy_price_from_company');//hq buying price from company
             $table->decimal('sell_price_from_company');//Hq selling price set by company
             $table->decimal('sell_price'); // sell_price_from_company == sell_price (it could be modified by HQ)

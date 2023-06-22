@@ -55,4 +55,13 @@ class TransactionController extends BaseController
     {
         //
     }
+
+    public function myTransactions()
+    {
+        return TransactionResource::collection(
+            Transaction::where('credited_to', auth()->user()->df_id)
+            ->orWhere('debited_from', auth()->user()->df_id)
+            ->get()
+        );
+    }
 }

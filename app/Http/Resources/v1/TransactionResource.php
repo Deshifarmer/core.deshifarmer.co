@@ -24,6 +24,8 @@ class TransactionResource extends JsonResource
             $massage  = "Distributor name: $dfn, confirm payment for order: $this->order_id , amount: $this->amount";
         }elseif($this->method == 'cash in'){
             $massage  = "Distributor name: $ctn, cash in amount: $this->amount, cash in id: $this->cash_in_id";
+        }elseif($this->method == 'cash out'){
+            $massage  = "Name: $dfn, cash out amount: $this->amount, cash out id: $this->cash_out_id";
         }
 
         return [

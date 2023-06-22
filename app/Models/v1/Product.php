@@ -20,6 +20,7 @@ class Product extends Model
         'image',
         'description',
         'preferred',
+        'unit',
         'category_id',//category_id
         'subcategory_id',//subcategory_id
         'company_id',

@@ -85,7 +85,7 @@ class CashOutRequestController extends Controller
             }
         } else {
             return Response([
-                'message' => 'Cash out request already ' . $cashOutRequest->status
+                'message' => 'insufficient balance or invalid status'
             ], 400);
         }
     }
@@ -96,5 +96,10 @@ class CashOutRequestController extends Controller
     public function destroy(CashOutRequest $cashOutRequest)
     {
         //
+    }
+
+    public function myCashOutRequests()
+    {
+        return CashOutRequest::where('requested_by', auth()->user()->df_id)->get();
     }
 }

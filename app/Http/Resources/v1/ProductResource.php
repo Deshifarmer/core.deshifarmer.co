@@ -4,6 +4,7 @@ namespace App\Http\Resources\v1;
 
 use App\Models\User;
 use App\Models\v1\Company;
+use App\Models\v1\Order;
 use App\Models\v1\ProductCategory;
 use App\Models\v1\ProductSubcategory;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -28,9 +29,11 @@ class ProductResource extends JsonResource
             'category'=>ProductCategory::find($this->category_id)->title,
             'subcategory'=> $this->subcategory_id ? ProductSubcategory::find($this->subcategory_id)->title : null,
             'company'=>$companyDet->implode('first_name') . ' ' . $companyDet->implode('last_name'),
+            'unit'=>$this->unit,
             'sell_price' => $this->sell_price,
             'discount'=>$this->discount,
             'status'=>$this->status,
+            'total_order' => Order::where('product_id',$this->product_id)->count(),
 
             'hq_secret'=> $this->when(auth()->user()->role == 0, function () {
                 return [

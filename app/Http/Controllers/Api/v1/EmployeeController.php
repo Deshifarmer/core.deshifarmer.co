@@ -119,7 +119,6 @@ class EmployeeController extends BaseController
 
     public function myMe()
     {
-
         return UserResource::collection(
             Employee::where('under', auth()->user()->df_id)->get()
         );

@@ -39,10 +39,6 @@ Route::prefix('v1/')
 
         Route::post('login', [AuthController::class, 'login']);
 
-
-
-
-
         Route::group(['middleware' => ['auth:sanctum']], function () {
             Route::post('logout', [AuthController::class, 'logout']);
             Route::get('division', [DivisionController::class, 'index']);
@@ -122,6 +118,8 @@ Route::prefix('v1/')
                     Route::get('my_delivery_history', [OrdersController::class, 'company_delivery_history'])->name('co.delivery_history');
                     Route::put('my_order/{order}', [OrdersController::class, 'update'])->name('co.order_update');
                     Route::post('cash_out_request', [CashOutRequestController::class, 'store'])->name('co.cash_out_request');
+                    Route::get('my_profile', [EmployeeController::class, 'myProfile'])->name('co.my_profile');
+                    Route::get('all_transaction', [TransactionController::class, 'myTransactions'])->name('co.all_transaction');
                 });
         });
 
@@ -139,10 +137,12 @@ Route::prefix('v1/')
                     Route::get('me_order/{input_order}', [InputOrderController::class, 'input_order_details'])->name('dis.input_order_details');
                     Route::post('cash_in_request/', [CashInRequestController::class, 'store'])->name('dis.cash_in_request');
                     Route::post('cash_out_request', [CashOutRequestController::class, 'store'])->name('dis.cash_out_request');
+                    Route::get('my_cash_out_request', [CashOutRequestController::class, 'myCashOutRequests'])->name('dis.cash_out_request');
                     Route::get('my_cash_in_request/', [CashInRequestController::class, 'myCashInReq'])->name('dis.my_cash_in_request');
                     Route::put('me_order/{input_order}', [InputOrderController::class, 'update'])->name('dis.input_order_update');
                     Route::get('collect_order', [OrdersController::class, 'disCollectOrder'])->name('dis.collectOrder');
                     Route::put('collect_product/{order}', [OrdersController::class, 'update'])->name('dis.order_update');
+                    Route::get('all_transaction', [TransactionController::class, 'myTransactions'])->name('db.all_transaction');
                 });
             });
 
@@ -153,9 +153,11 @@ Route::prefix('v1/')
                 ->group(function () {
                     Route::post('add_farmer', [FarmerController::class, 'store'])->name('me.add_farmer');
                     Route::get('my_farmer', [FarmerController::class, 'myFarmer'])->name('me.my_farmer');
+                    Route::get('my_farmer/{farmer}', [FarmerController::class, 'show'])->name('me.my_farmer');
                     Route::post('input_order', [InputOrderController::class, 'store'])->name('me.input_order.store');
                     Route::get('order', [InputOrderController::class, 'myOrder'])->name('me.me_order');
                     Route::post('cash_out_request', [CashOutRequestController::class, 'store'])->name('me.cash_out_request');
+                    Route::get('order/{input_order}', [InputOrderController::class, 'input_order_details'])->name('me.single_input_order');
                 });
         });
 

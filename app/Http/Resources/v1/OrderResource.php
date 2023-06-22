@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\v1;
 
+use App\Models\v1\Farmer;
+use App\Models\v1\InputOrder;
 use App\Models\v1\Product;
 use App\Models\v1\Unit;
 use Carbon\Carbon;
@@ -31,6 +33,7 @@ class OrderResource extends JsonResource
             'status'=>$this->status,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'location' => $this->channel_id,
+            'farmer_name'=> Farmer::where('farmer_id',InputOrder::where('order_id', $this->me_order_id)->first()->sold_to)->get()->implode('first_name') . ' ' . Farmer::where('farmer_id',InputOrder::where('order_id', $this->me_order_id)->first()->sold_to)->get()->implode('last_name'),
         ];
     }
 }
