@@ -17,7 +17,9 @@ return new class extends Migration
             $table->id();
             $table->string('me_order_id');
             $table->string('me_id');
+            $table->decimal('me_commission');
             $table->string('distributor_id');
+            $table->decimal('distributor_commission');
             $table->string('product_id');
             $table->integer('unit');
             $table->double('quantity');

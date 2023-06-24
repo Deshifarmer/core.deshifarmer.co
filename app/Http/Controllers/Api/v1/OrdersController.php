@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\InputOrderResource;
 use App\Http\Resources\v1\OrderResource;
+use App\Models\v1\EmployeeAccount;
 use App\Models\v1\InputOrder;
 use App\Models\v1\order;
 use App\Models\v1\Product;
+use App\Models\v1\Transaction;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -50,6 +52,38 @@ class OrdersController extends Controller
         $totalProduct = Order::where('me_order_id', $order->me_order_id)->get();
 
         if ($request->status == 'processing by company' || $request->status == 'rejected by company') {
+            if ($request->status == 'rejected by company') {
+
+                $inputOrder = InputOrder::where('order_id', $order->me_order_id)->first();
+                $newTotal_price = $inputOrder->total_price - $order->total_price;
+                $pro =  Product::where('product_id', $order->product_id)->first();
+                $newMeCommission = $inputOrder->me_commission - round(floatval($pro->implode('sell_price')) * $order->quantity * floatval($pro->implode('me_commission')) / 100, 2);
+                $newDbCommission = $inputOrder->distributor_commission - round(floatval($pro->implode('sell_price')) * $order->quantity * floatval($pro->implode('distributor_commission')) / 100, 2);
+                $inputOrder->update([
+                    'total_price' => $newTotal_price,
+                    'me_commission' => $newMeCommission,
+                    'distributor_commission' => $newDbCommission,
+                ]);
+
+                (new TransactionController)->store(
+                    new Request([
+                        'method' => 'refund',
+                        'amount' => $order->total_price,
+                        'credited_to' => $order->distributor_id,
+                        'debited_from' => 'HQ-01',
+                    ])
+
+                );
+
+                EmployeeAccount::where('acc_number', $order->distributor_id)
+                    ->update([
+                        'net_balance' => EmployeeAccount::where('acc_number', $order->distributor_id)->first()->net_balance + $order->total_price
+                    ]);
+                EmployeeAccount::where('acc_number', 'HQ-01')
+                    ->update([
+                        'net_balance' => EmployeeAccount::where('acc_number', 'HQ-01')->first()->net_balance - $order->total_price
+                    ]);
+            }
             $companyProductStatus = Order::where('me_order_id', $order->me_order_id)
                 ->where('status', 'rejected by company')
                 ->orWhere('status', 'processing by company')
@@ -59,7 +93,7 @@ class OrdersController extends Controller
                     ->update(['status' => 'processing by company']);
             }
         }
-        if($request->status == 'deliver from company'){
+        if ($request->status == 'deliver from company') {
             $companyProductStatus = Order::where('me_order_id', $order->me_order_id)
                 ->where('status', 'deliver from company')
                 ->orWhere('status', 'rejected by company')
@@ -69,7 +103,7 @@ class OrdersController extends Controller
                     ->update(['status' => 'ready to collect for distributor']);
             }
         }
-        if($request->status == 'collected by distributor'){
+        if ($request->status == 'collected by distributor') {
             $companyProductStatus = Order::where('me_order_id', $order->me_order_id)
                 ->where('status', 'collected by distributor')
                 ->orWhere('status', 'rejected by company')

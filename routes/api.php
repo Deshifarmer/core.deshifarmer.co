@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\v1\TransactionController;
 use App\Http\Controllers\Api\v1\UserController;
 
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\Console\Input\Input;
 
 /*
 |--------------------------------------------------------------------------
@@ -137,7 +138,7 @@ Route::prefix('v1/')
                     Route::get('me_order/{input_order}', [InputOrderController::class, 'input_order_details'])->name('dis.input_order_details');
                     Route::post('cash_in_request/', [CashInRequestController::class, 'store'])->name('dis.cash_in_request');
                     Route::post('cash_out_request', [CashOutRequestController::class, 'store'])->name('dis.cash_out_request');
-                    Route::get('my_cash_out_request', [CashOutRequestController::class, 'myCashOutRequests'])->name('dis.cash_out_request');
+                    Route::get('my_cash_out_request', [CashOutRequestController::class, 'myCashOutRequests'])->name('dis.my_cash_out_request');
                     Route::get('my_cash_in_request/', [CashInRequestController::class, 'myCashInReq'])->name('dis.my_cash_in_request');
                     Route::put('me_order/{input_order}', [InputOrderController::class, 'update'])->name('dis.input_order_update');
                     Route::get('collect_order', [OrdersController::class, 'disCollectOrder'])->name('dis.collectOrder');
@@ -153,11 +154,13 @@ Route::prefix('v1/')
                 ->group(function () {
                     Route::post('add_farmer', [FarmerController::class, 'store'])->name('me.add_farmer');
                     Route::get('my_farmer', [FarmerController::class, 'myFarmer'])->name('me.my_farmer');
-                    Route::get('my_farmer/{farmer}', [FarmerController::class, 'show'])->name('me.my_farmer');
+                    Route::get('my_farmer/{farmer}', [FarmerController::class, 'show'])->name('me.my_single_farmer');
                     Route::post('input_order', [InputOrderController::class, 'store'])->name('me.input_order.store');
                     Route::get('order', [InputOrderController::class, 'myOrder'])->name('me.me_order');
                     Route::post('cash_out_request', [CashOutRequestController::class, 'store'])->name('me.cash_out_request');
                     Route::get('order/{input_order}', [InputOrderController::class, 'input_order_details'])->name('me.single_input_order');
+                    Route::get('collect_order', [InputOrderController::class, 'collectOrder'])->name('me.collectOrder');
+                    Route::put('collect_order/{input_order}', [InputOrderController::class, 'update'])->name('me.input_order_update');
                 });
         });
 
