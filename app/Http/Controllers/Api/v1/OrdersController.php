@@ -93,7 +93,7 @@ class OrdersController extends Controller
                     ->update(['status' => 'processing by company']);
             }
         }
-        if ($request->status == 'deliver from company') {
+        if ($request->status == 'deliver from company' ) {
             $companyProductStatus = Order::where('me_order_id', $order->me_order_id)
                 ->where('status', 'deliver from company')
                 ->orWhere('status', 'rejected by company')
@@ -102,20 +102,49 @@ class OrdersController extends Controller
                 InputOrder::where('order_id', $order->me_order_id)
                     ->update(['status' => 'ready to collect for distributor']);
             }
+            return  InputOrder::where('order_id', $order->me_order_id)->get();
         }
+
         if ($request->status == 'collected by distributor') {
             $companyProductStatus = Order::where('me_order_id', $order->me_order_id)
                 ->where('status', 'collected by distributor')
                 ->orWhere('status', 'rejected by company')
                 ->get();
+
+            $companyNetBalance = EmployeeAccount::where('acc_number', $order->company_id)->get()->implode('net_balance');
+            $companyBuyPrice = Product::where('product_id', $order->product_id)->get()->implode('buy_price_from_company');
+
+            EmployeeAccount::where('acc_number', $order->company_id)->update(
+                [
+                    'net_balance' => floatval($companyNetBalance) + (floatval($companyBuyPrice) * $order->quantity)
+                ]
+            );
+            EmployeeAccount::where('acc_number', 'HQ-01')->update(
+                [
+                    'net_balance' =>  floatval(EmployeeAccount::where('acc_number', 'HQ-01')->implode('net_balance')) -  (floatval($companyBuyPrice) * $order->quantity)
+                ]
+            );
+
+            (new TransactionController)->store(
+                new Request(
+                    [
+                        'amount' => $companyBuyPrice,
+                        'order_id' => $order->me_order_id,
+                        'method' => 'paid to company',
+                        'credited_to' => $order->company_id,
+                        'debited_from' => 'HQ-01',
+                        'authorized_by' => 'portal',
+                    ]
+                )
+            );
+
+
             if ($companyProductStatus->count() == $totalProduct->count()) {
+                $order->id;
                 InputOrder::where('order_id', $order->me_order_id)
                     ->update(['status' => 'ready to collect for me']);
             }
         }
-
-
-
         return Response([
             'message' => 'status updated'
         ], 201);

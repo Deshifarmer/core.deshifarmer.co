@@ -152,6 +152,7 @@ Route::prefix('v1/')
         Route::group(['middleware' => ['auth:sanctum', 'user-access:ME']], function () {
             Route::prefix('me/')
                 ->group(function () {
+                    Route::get('my_profile', [EmployeeController::class, 'myProfile'])->name('me.my_profile');
                     Route::post('add_farmer', [FarmerController::class, 'store'])->name('me.add_farmer');
                     Route::get('my_farmer', [FarmerController::class, 'myFarmer'])->name('me.my_farmer');
                     Route::get('my_farmer/{farmer}', [FarmerController::class, 'show'])->name('me.my_single_farmer');

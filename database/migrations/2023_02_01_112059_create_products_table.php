@@ -18,8 +18,8 @@ return new class extends Migration
             $table->uuid('product_id')->index();
             $table->string('name');
             $table->string('image');
-            $table->string('description')->nullable();
-            $table->string('preferred')->nullable();
+            $table->longText('description')->nullable();
+            $table->longText ('preferred')->nullable();
             $table->bigInteger('category_id');
             $table->bigInteger('subcategory_id')->nullable();
             $table->string('company_id');

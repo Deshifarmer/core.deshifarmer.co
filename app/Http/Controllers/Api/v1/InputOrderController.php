@@ -142,49 +142,59 @@ class InputOrderController extends BaseController
                     ]
                 );
             }
-        } elseif ($request->status == 'collected by distributor' && $inputOrder->status == 'ready to collect for distributor') {
-            $productList = Order::where('me_order_id', $inputOrder->order_id)
-                // ->where('status', 'ready to collect for distributor')
-                ->get('product_id')->implode('product_id', ',');
+        }
 
-            $productArray = explode(',', $productList);
+        // ** not need now **
+        // elseif ($request->status == 'collected by distributor' && $inputOrder->status == 'ready to collect for distributor') {
+        //     $productList = Order::where('me_order_id', $inputOrder->order_id)
+        //         ->where('status', 'ready to collect for distributor')
+        //         ->get('product_id')->implode('product_id', ',');
+
+        //     $productArray = explode(',', $productList);
 
 
-            for ($i = 0; $i < count($productArray); $i++) {
-                $product = Product::where('product_id', $productArray[$i])->get();
+        //     for ($i = 0; $i < count($productArray); $i++) {
+        //         $product = Product::where('product_id', $productArray[$i])->get();
 
-                $productCompany = $product->implode('company_id');
-                $CompanyAccount = EmployeeAccount::where('acc_number', $productCompany)->get('net_balance')->implode('net_balance');
-                $companyBuyPrice = floatval($product->implode('buy_price_from_company'))  * floatval( Order::where('me_order_id', $inputOrder->order_id)->where('product_id', $productArray[$i])->get('quantity')->implode('quantity'));
+        //         $productCompany = $product->implode('company_id');
+        //         $CompanyAccount = EmployeeAccount::where('acc_number', $productCompany)->get('net_balance')->implode('net_balance');
+        //         $companyBuyPrice = floatval($product->implode('buy_price_from_company'))  * floatval(Order::where('me_order_id', $inputOrder->order_id)->where('product_id', $productArray[$i])->get('quantity')->implode('quantity'));
 
-                $companyNewBalance = floatval($CompanyAccount) + $companyBuyPrice;
+        //         $companyNewBalance = floatval($CompanyAccount) + $companyBuyPrice;
 
-                EmployeeAccount::where('acc_number', $productCompany)->update(['net_balance' => $companyNewBalance]);
-                EmployeeAccount::where('acc_number', 'HQ-01')->update(
-                    [
-                        'net_balance' =>  floatval(EmployeeAccount::where('acc_number', 'HQ-01')->implode('net_balance')) - $companyBuyPrice
-                    ]
-                );
-                (new TransactionController)->store(
-                    new Request(
-                        [
-                            'amount' => $companyBuyPrice,
-                            'order_id' => $inputOrder->order_id,
-                            'method' => 'buy from company',
-                            'credited_to' => $productCompany,
-                            'debited_from' => 'HQ-01',
-                            'authorized_by' => 'portal',
-                        ]
-                    )
-                );
-            }
-            $inputOrder->update($request->all());
-            return Response(
-                [
-                    'message' => 'Updated Successfully'
-                ]
-            );
-        } elseif ($request->status == 'collected by me' && $inputOrder->status == 'ready to collect for me') {
+        //         EmployeeAccount::where('acc_number', $productCompany)->update(
+        //             [
+        //                 'net_balance' =>  $companyNewBalance
+        //             ]
+        //         );
+
+        //         EmployeeAccount::where('acc_number', 'HQ-01')->update(
+        //             [
+        //                 'net_balance' =>  floatval(EmployeeAccount::where('acc_number', 'HQ-01')->implode('net_balance')) - $companyBuyPrice
+        //             ]
+        //         );
+        //         (new TransactionController)->store(
+        //             new Request(
+        //                 [
+        //                     'amount' => $companyBuyPrice,
+        //                     'order_id' => $inputOrder->order_id,
+        //                     'method' => 'paid to company',
+        //                     'credited_to' => $productCompany,
+        //                     'debited_from' => 'HQ-01',
+        //                     'authorized_by' => 'portal',
+        //                 ]
+        //             )
+        //         );
+        //     }
+
+        //     $inputOrder->update($request->all());
+        //     return Response(
+        //         [
+        //             'message' => 'Updated Successfully'
+        //         ]
+        //     );
+        // }
+        elseif ($request->status == 'collected by me' && $inputOrder->status == 'ready to collect for me') {
 
             $distributorAccount =  EmployeeAccount::where('acc_number', $inputOrder->distributor_id)->get();
 
@@ -252,7 +262,7 @@ class InputOrderController extends BaseController
         } else {
             return Response(
                 [
-                    'message' => 'already confirm by distributor'
+                    'message' => 'still processing'
                 ]
             );
         }
