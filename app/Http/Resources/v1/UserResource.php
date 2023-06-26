@@ -40,7 +40,21 @@ class UserResource extends JsonResource
             'gender' => $this->gender,
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
             'status' => $this->status,
+            'joining_date' => $this->created_at->format('Y-m-d H:i:s'),
             'balance' => EmployeeAccount::where('acc_number', $this->df_id)->get('net_balance')->implode('net_balance'),
+
+            'all_transaction' => $this->when(auth()->user()->type == 0 && $this->type == 2, function () {
+               return Transaction::where('debited_from' ,$this->df_id)
+               ->orWhere('credited_to' ,$this->df_id)->sum('amount');
+            }),
+
+            'total_sale'=> $this->when(auth()->user()->type == 0 && $this->type == 2, function () {
+                return Order::where('distributor_id', $this->df_id)->sum('quantity');
+             }),
+             'balance'=> $this->when(auth()->user()->type == 0 && $this->type == 2, function () {
+                return EmployeeAccount::where('acc_number', $this->df_id)->get('net_balance')->implode('net_balance');
+             }),
+
 
             'me_list' => $this->when($this->type == 2, function () {
                 return Employee::where('under', $this->df_id)->get()->map(function ($employee) {

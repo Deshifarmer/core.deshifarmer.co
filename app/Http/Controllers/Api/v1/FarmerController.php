@@ -34,7 +34,7 @@ class FarmerController extends BaseController
 
         $data = $request->all();
         $data['farmer_id'] = 'far-' . $this->generateUUID();
-        $data['input_by'] = auth()->user()->df_id;
+        $data['onboard_by'] = auth()->user()->df_id;
         $extension = $request->file('image')->getClientOriginalExtension();
         $request->file('image')->storeAs('public/image/farmer', $data['farmer_id'] . '.' . $extension);
         $image_path = '/image/farmer/' . $data['farmer_id'] . '.' . $extension;
@@ -69,7 +69,7 @@ class FarmerController extends BaseController
 
     public function myFarmer()
     {
-        $farmer = Farmer::where('input_by', auth()->user()->df_id)->get();
+        $farmer = Farmer::where('onboard_by', auth()->user()->df_id)->get();
         return FarmerResource::collection($farmer);
     }
 }

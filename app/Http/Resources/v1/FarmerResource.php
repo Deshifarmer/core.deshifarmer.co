@@ -43,11 +43,11 @@ class FarmerResource extends JsonResource
             'number_of_children' => $this->number_of_children,
             'yearly_income' => $this->yearly_income,
             'year_of_stay_in' => $this->year_of_stay_in,
-            'groyp_id' => $this->groyp_id,
+            'group_id' => $this->group_id,
             'farmer_role' => $this->farmer_role,
             'farm_id' => $this->farm_id,
             'is_active' => $this->is_active,
-            // 'created_at' => $this->created_at->diffForHumans(),
+            'onboard_date' => $this->created_at->format('Y-m-d H:i:s'),
             // 'updated_at' => $this->updated_at->diffForHumans(),
 
             'order_list' => InputOrderResource::collection(InputOrder::where('sold_to',$this->farmer_id)->get())

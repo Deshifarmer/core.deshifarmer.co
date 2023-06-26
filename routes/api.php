@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\CashInRequestController;
 use App\Http\Controllers\Api\v1\CashOutRequestController;
 use App\Http\Controllers\Api\v1\ChannelController;
+use App\Http\Controllers\Api\v1\ClusterController;
 use App\Http\Controllers\Api\v1\DistributorsFileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\v1\FarmerController;
@@ -12,6 +13,8 @@ use App\Http\Controllers\Api\v1\UpazilaController;
 use App\Http\Controllers\Api\v1\DistrictController;
 use App\Http\Controllers\Api\v1\DivisionController;
 use App\Http\Controllers\Api\v1\EmployeeController;
+use App\Http\Controllers\Api\v1\FarmController;
+use App\Http\Controllers\Api\v1\FarmerGroupController;
 use App\Http\Controllers\Api\v1\InputOrderController;
 use App\Http\Controllers\Api\v1\OrdersController;
 use App\Http\Controllers\Api\v1\ProductCategoryController;
@@ -37,6 +40,24 @@ use Symfony\Component\Console\Input\Input;
 Route::prefix('v1/')
     ->middleware(['cors'])
     ->group(function () {
+
+        // Route::get('farm',[FarmController::class,'index'])->name('farm');
+        // Route::get('farm/{farm}',[FarmController::class,'show'])->name('farm.show');
+        // Route::post('farm',[FarmController::class,'store'])->name('farm.store');
+        // Route::put('farm/{farm}',[FarmController::class,'update'])->name('farm.update');
+        // Route::delete('farm/{farm}',[FarmController::class,'destroy'])->name('farm.destroy');
+
+        // Route::get('cluster',[ClusterController::class,'index'])->name('cluster');
+        // Route::get('cluster/{cluster}',[ClusterController::class,'show'])->name('cluster.show');
+        // Route::post('cluster',[ClusterController::class,'store'])->name('cluster.store');
+        // Route::put('cluster/{cluster}',[ClusterController::class,'update'])->name('cluster.update');
+        // Route::delete('cluster/{cluster}',[ClusterController::class,'destroy'])->name('cluster.destroy');
+
+        // Route::get('farmer_group',[FarmerGroupController::class,'index'])->name('farmer_group');
+        // Route::get('farmer_group/{farmer_group}',[FarmerGroupController::class,'show'])->name('farmer_group.show');
+        // Route::post('farmer_group',[FarmerGroupController::class,'store'])->name('farmer_group.store');
+        // Route::put('farmer_group/{farmer_group}',[FarmerGroupController::class,'update'])->name('farmer_group.update');
+        // Route::delete('farmer_group/{farmer_group}',[FarmerGroupController::class,'destroy'])->name('farmer_group.destroy');
 
         Route::post('login', [AuthController::class, 'login']);
 
@@ -162,10 +183,11 @@ Route::prefix('v1/')
                     Route::get('order/{input_order}', [InputOrderController::class, 'input_order_details'])->name('me.single_input_order');
                     Route::get('collect_order', [InputOrderController::class, 'collectOrder'])->name('me.collectOrder');
                     Route::put('collect_order/{input_order}', [InputOrderController::class, 'update'])->name('me.input_order_update');
+                    Route::post('add_farm',[FarmController::class,'store'])->name('farm.store');
                 });
         });
 
-        //all route for HeadQuatre and Company
+        // route for HeadQuatre and Company
         Route::group(['middleware' => ['auth:sanctum', 'user-access:CO|HQ']], function () {
             Route::post('add_product', [ProductController::class, 'store'])->name('add_product');
         });
