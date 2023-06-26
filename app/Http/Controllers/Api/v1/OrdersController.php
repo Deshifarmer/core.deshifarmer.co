@@ -93,7 +93,7 @@ class OrdersController extends Controller
                     ->update(['status' => 'processing by company']);
             }
         }
-        if ($request->status == 'deliver from company' ) {
+        if ($request->status == 'deliver from company') {
             $companyProductStatus = Order::where('me_order_id', $order->me_order_id)
                 ->where('status', 'deliver from company')
                 ->orWhere('status', 'rejected by company')
@@ -184,9 +184,11 @@ class OrdersController extends Controller
     {
         return OrderResource::collection(
             Order::where('company_id', auth()->user()->df_id)
-                ->where('status', 'deliver from company')
+                 ->whereNotIn('status', ['pending','confirm by distributor', 'processing by company'])
                 ->get()
         );
+
+
     }
 
     public function disCollectOrder()

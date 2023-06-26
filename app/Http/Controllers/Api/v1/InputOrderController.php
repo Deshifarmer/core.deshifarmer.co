@@ -194,6 +194,7 @@ class InputOrderController extends BaseController
         //         ]
         //     );
         // }
+        // ** not need now **
         elseif ($request->status == 'collected by me' && $inputOrder->status == 'ready to collect for me') {
 
             $distributorAccount =  EmployeeAccount::where('acc_number', $inputOrder->distributor_id)->get();
@@ -282,6 +283,13 @@ class InputOrderController extends BaseController
         return InputOrderResource::collection(
             inputOrder::where('distributor_id', auth()->user()->df_id)
                 ->where('status', 'pending')
+                ->get()
+        );
+    }
+    public function disOrderHistory(){
+        return InputOrderResource::collection(
+            inputOrder::where('distributor_id', auth()->user()->df_id)
+            ->whereNotIn('status', ['pending', 'confirm by distributor'])
                 ->get()
         );
     }

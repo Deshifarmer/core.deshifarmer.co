@@ -132,7 +132,6 @@ Route::prefix('v1/')
                     Route::get('my_me', [EmployeeController::class, 'myMe'])->name('distributor.my_me');
                     Route::get('my_me/{employee}/profile', [EmployeeController::class, 'myMeProfile'])->name('distributor.my_me_profile');
                     Route::get('me_collection', [InputOrderController::class, 'meCollection'])->name('distributor.me_collection');
-
                     Route::get('me_new_order', [InputOrderController::class, 'meNewOrder'])->name('distributor.me_new_order');
                     Route::get('me_confirm_order_status', [InputOrderController::class, 'meConfirmOrderStatus'])->name('distributor.me_confirm_order_status');
                     Route::get('me_order/{input_order}', [InputOrderController::class, 'input_order_details'])->name('dis.input_order_details');
@@ -143,6 +142,7 @@ Route::prefix('v1/')
                     Route::put('me_order/{input_order}', [InputOrderController::class, 'update'])->name('dis.input_order_update');
                     Route::get('collect_order', [OrdersController::class, 'disCollectOrder'])->name('dis.collectOrder');
                     Route::put('collect_product/{order}', [OrdersController::class, 'update'])->name('dis.order_update');
+                    Route::get('order_history', [InputOrderController::class, 'disOrderHistory'])->name('dis.order_history');
                     Route::get('all_transaction', [TransactionController::class, 'myTransactions'])->name('db.all_transaction');
                 });
             });
