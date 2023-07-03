@@ -22,7 +22,7 @@ class FarmerGroupController extends BaseController
     public function store(Request $request)
     {
         $data =$request->all();
-        $data['farmer_group_id'] ='Fg-' . $this->generateUUID();
+        $data['farmer_group_id'] ='FG-' . $this->generateUUID();
         $farmerGroup = FarmerGroup::create($data);
         return response()->json($farmerGroup, 201);
     }

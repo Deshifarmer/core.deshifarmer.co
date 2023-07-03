@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('cluster_id')->index();
             $table->string('cluster_name');
-            $table->string('created_by');// me id or admin id
+            $table->string('created_by');// me id 
             $table->string('channel_id');
             $table->timestamps();
         });

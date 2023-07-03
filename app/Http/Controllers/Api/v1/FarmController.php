@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Models\v1\Farm;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class FarmController extends BaseController
 {
@@ -22,9 +23,27 @@ class FarmController extends BaseController
     public function store(Request $request)
     {
         $data = $request->all();
-        $data['farm_id'] ='Farm-'.$this->generateUUID();
+        $paths = [];
+        $data['farm_id'] = 'Farm-' . $this->generateUUID();
+        if ($request->has('gallery')) {
+
+
+            $gallery = $request->gallery;
+            foreach ($gallery as $key => $image) {
+                $extension = $image->getClientOriginalExtension();
+                $image->storeAs('public/farm/gallery', $key . $data['farm_id'] . '.' . $extension);
+                $imagePath = 'farm/gallery/' . $key . $data['farm_id'] . '.' . $extension;
+
+                $paths[] = $imagePath;
+            }
+        }
+        $data['gallery'] = $paths;
+
+
         $farm = Farm::create($data);
-        return response()->json($farm, 201);
+        return response()->json([
+            "message" => "Farm created Successfully",
+        ], 201);
     }
 
     /**

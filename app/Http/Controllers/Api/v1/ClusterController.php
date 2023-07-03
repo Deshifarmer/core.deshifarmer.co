@@ -13,7 +13,7 @@ class ClusterController extends BaseController
      */
     public function index()
     {
-       return Cluster::all();
+        return Cluster::all();
     }
 
     /**
@@ -22,10 +22,12 @@ class ClusterController extends BaseController
     public function store(Request $request)
     {
         $data = $request->all();
-        $data['cluster_id'] ='Clust-'. $this->generateUUID();
+        $data['cluster_id'] = 'Clust-' . $this->generateUUID();
         $data['created_by'] = auth()->user()->id;
-        $cluster = Cluster::create($data);
-        return response()->json($cluster, 201);
+        Cluster::create($data);
+        return response()->json([
+            'message' => 'Cluster created successfully',
+        ], 201);
     }
 
     /**
@@ -33,7 +35,7 @@ class ClusterController extends BaseController
      */
     public function show(Cluster $cluster)
     {
-      return $cluster;
+        return $cluster;
     }
 
     /**

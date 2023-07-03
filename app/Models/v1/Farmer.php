@@ -51,14 +51,22 @@ class Farmer extends Model
         'cultivation_practice',
         'is_active',
     ];
-    protected $ast =[
-        'group_id',
-        'bank_details',
-        'mfs_account',
-        'current_producing_crop',
-        'focused_crop',
-        'farm_id',
+    protected $casts =[
+        'group_id'=>'json',
+        'bank_details'=>'json',
+        'mfs_account'=>'json',
+        'current_producing_crop'=>'json',
+        'focused_crop'=>'json',
+        'farm_id'=>'json',
     ];
+    protected $appends = [
+        'full_name',
+    ];
+
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
 
 
 }

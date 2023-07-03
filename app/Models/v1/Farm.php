@@ -31,4 +31,8 @@ class Farm extends Model
         'isActive',
     ];
 
+    protected $casts = [
+        'gallery' => 'array',
+    ];
+
 }

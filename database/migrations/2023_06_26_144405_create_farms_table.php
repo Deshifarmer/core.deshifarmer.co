@@ -16,13 +16,13 @@ return new class extends Migration
             $table->uuid('farm_id')->index();
             $table->string('farmer_id');
             $table->string('farm_name');
-            $table->string('gallery')->nullable();
+            $table->json('gallery')->nullable();
             $table->string('farm_reg_no')->nullable();
             $table->string('address');
             $table->string('union');
             $table->string('mouaza');
-            $table->decimal('lat')->nullable();
-            $table->decimal('long')->nullable();
+            $table->decimal('lat',10,8)->nullable();
+            $table->decimal('long',10,8)->nullable();
             $table->string('farm_area');
             $table->string('soil_type');
             $table->string('current_crop');
