@@ -6,15 +6,10 @@ use App\Http\Controllers\Controller;
 
 use App\Models\v1\Employee;
 use Illuminate\Http\Request;
-use App\Http\Resources\v1\EmployeeResource;
-use App\Http\Resources\v1\FarmerResource;
 use App\Http\Resources\v1\MyProfileResource;
 use App\Http\Resources\v1\UserResource;
-use App\Models\User;
-use App\Models\v1\Farmer;
-use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
+
 
 
 class EmployeeController extends BaseController
@@ -43,7 +38,7 @@ class EmployeeController extends BaseController
         $validator = Validator::make($request->all(), [
             'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'nid' => 'required|string|unique:employees,nid',
-            'phone' => 'required|unique:Employees'
+            'phone' => 'required|unique:employees,phone'
         ]);
 
         if ($validator->fails()) {

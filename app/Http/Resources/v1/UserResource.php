@@ -73,7 +73,7 @@ class UserResource extends JsonResource
             }),
 
             'farmer_list' => $this->when($this->type == 3, function () {
-                return Farmer::where('input_by', $this->df_id)->get()->map(function ($farmer) {
+                return Farmer::where('onboard_by', $this->df_id)->get()->map(function ($farmer) {
                     return [
                         'farmer_id' => $farmer->farmer_id,
                         'full_name' => "$farmer->first_name $farmer->last_name",

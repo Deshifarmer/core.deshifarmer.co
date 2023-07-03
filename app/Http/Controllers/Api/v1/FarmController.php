@@ -43,6 +43,7 @@ class FarmController extends BaseController
         $farm = Farm::create($data);
         return response()->json([
             "message" => "Farm created Successfully",
+            $farm
         ], 201);
     }
 

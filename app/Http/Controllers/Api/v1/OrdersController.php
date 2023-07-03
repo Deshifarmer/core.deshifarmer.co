@@ -7,13 +7,11 @@ use App\Http\Resources\v1\InputOrderResource;
 use App\Http\Resources\v1\OrderResource;
 use App\Models\v1\EmployeeAccount;
 use App\Models\v1\InputOrder;
-use App\Models\v1\order;
+use App\Models\v1\Order;
 use App\Models\v1\Product;
-use App\Models\v1\Transaction;
-use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Symfony\Component\Console\Input\Input;
+
 
 class OrdersController extends Controller
 {

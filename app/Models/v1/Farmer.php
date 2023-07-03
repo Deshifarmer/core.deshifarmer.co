@@ -53,7 +53,7 @@ class Farmer extends Model
     ];
     protected $casts =[
         'group_id'=>'json',
-        'bank_details'=>'json',
+        'bank_details'=>'object',
         'mfs_account'=>'json',
         'current_producing_crop'=>'json',
         'focused_crop'=>'json',

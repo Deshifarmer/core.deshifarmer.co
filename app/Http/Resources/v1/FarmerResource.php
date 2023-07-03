@@ -50,6 +50,7 @@ class FarmerResource extends JsonResource
             'group_id' => $this->group_id,
             'bank_details' => $this->bank_details,
             'mfs_account' => $this->mfs_account,
+            // json decode
             'current_producing_crop' => $this->current_producing_crop,
             'focused_crop' => $this->focused_crop,
             'cropping_intensity' => $this->cropping_intensity,

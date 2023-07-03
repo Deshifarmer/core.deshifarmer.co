@@ -7,7 +7,7 @@ use App\Http\Resources\v1\InputOrderResource;
 use App\Http\Resources\v1\OrderResource;
 use App\Models\v1\Employee;
 use App\Models\v1\EmployeeAccount;
-use App\Models\v1\inputOrder;
+use App\Models\v1\InputOrder;
 use App\Models\v1\Order;
 use App\Models\v1\Product;
 use App\Models\v1\Transaction;
@@ -22,7 +22,7 @@ class InputOrderController extends BaseController
      */
     public function index()
     {
-        return InputOrderResource::collection(inputOrder::all());
+        return InputOrderResource::collection(InputOrder::all());
     }
 
     /**
@@ -67,7 +67,7 @@ class InputOrderController extends BaseController
         $data['hq_commission'] =  $totalHqCommission;
         $data['distributor_commission'] =  $totalDistributorCommission;
         $data['me_commission'] =  $totalMeCommission;
-        $orderFromMe = inputOrder::create($data);
+        $orderFromMe = InputOrder::create($data);
         // return new InputOrderResource($orderFromMe);
         return response()->json([
             'message' => 'Successfully and you will get ' . $totalMeCommission . ' tk as commission',
@@ -77,21 +77,21 @@ class InputOrderController extends BaseController
     /**
      * Display the specified resource.
      */
-    public function show(inputOrder $inputOrder)
+    public function show(InputOrder $InputOrder)
     {
-        return new InputOrderResource($inputOrder);
+        return new InputOrderResource($InputOrder);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, inputOrder $inputOrder)
+    public function update(Request $request, InputOrder $InputOrder)
     {
 
-        if ($request->status == 'confirm by distributor' && $inputOrder->status == 'pending') {
+        if ($request->status == 'confirm by distributor' && $InputOrder->status == 'pending') {
 
-            $orderTotalPrice = $inputOrder->total_price;
-            $distributorAccount =  EmployeeAccount::where('acc_number', $inputOrder->distributor_id)->get();
+            $orderTotalPrice = $InputOrder->total_price;
+            $distributorAccount =  EmployeeAccount::where('acc_number', $InputOrder->distributor_id)->get();
 
             $newBalance = floatval($distributorAccount->implode('net_balance')) - floatval($orderTotalPrice);
 
@@ -106,10 +106,10 @@ class InputOrderController extends BaseController
                 (new TransactionController)->store(new Request(
                     [
                         'amount' => $orderTotalPrice,
-                        'order_id' => $inputOrder->order_id,
+                        'order_id' => $InputOrder->order_id,
                         'method' => 'order payment',
                         'credited_to' => 'HQ-01',
-                        'debited_from' => $inputOrder->distributor_id,
+                        'debited_from' => $InputOrder->distributor_id,
                         'authorized_by' => 'portal',
                     ]
                 ));
@@ -118,7 +118,7 @@ class InputOrderController extends BaseController
                     [
                         'net_balance' => $newBalance
                     ]
-                ), EmployeeAccount::where('acc_number', $inputOrder->distributor_id)->first());
+                ), EmployeeAccount::where('acc_number', $InputOrder->distributor_id)->first());
 
                 $hqAccount =  EmployeeAccount::where('acc_number', 'HQ-01')->first();
                 (new EmployeeAccountController)->update(new Request(
@@ -132,9 +132,9 @@ class InputOrderController extends BaseController
                 $data = $request->all();
                 $data['payment_method'] = 'by portal';
 
-                $inputOrder->update($data);
+                $InputOrder->update($data);
 
-                Order::where('me_order_id', $inputOrder->order_id)->update(['status' => 'confirm by distributor']);
+                Order::where('me_order_id', $InputOrder->order_id)->update(['status' => 'confirm by distributor']);
 
                 return Response(
                     [
@@ -195,47 +195,47 @@ class InputOrderController extends BaseController
         //     );
         // }
         // ** not need now **
-        elseif ($request->status == 'collected by me' && $inputOrder->status == 'ready to collect for me') {
+        elseif ($request->status == 'collected by me' && $InputOrder->status == 'ready to collect for me') {
 
-            $distributorAccount =  EmployeeAccount::where('acc_number', $inputOrder->distributor_id)->get();
+            $distributorAccount =  EmployeeAccount::where('acc_number', $InputOrder->distributor_id)->get();
 
-            $newBalance = floatval($distributorAccount->implode('net_balance')) + floatval($inputOrder->distributor_commission);
+            $newBalance = floatval($distributorAccount->implode('net_balance')) + floatval($InputOrder->distributor_commission);
 
             (new EmployeeAccountController)->update(new Request(
                 [
                     'net_balance' => $newBalance
                 ]
-            ), EmployeeAccount::where('acc_number', $inputOrder->distributor_id)->first());
+            ), EmployeeAccount::where('acc_number', $InputOrder->distributor_id)->first());
 
             (new TransactionController)->store(
                 new Request(
                     [
-                        'amount' => $inputOrder->distributor_commission,
-                        'order_id' => $inputOrder->order_id,
+                        'amount' => $InputOrder->distributor_commission,
+                        'order_id' => $InputOrder->order_id,
                         'method' => 'commission',
-                        'credited_to' => $inputOrder->distributor_id,
+                        'credited_to' => $InputOrder->distributor_id,
                         'debited_from' => 'HQ-01',
                         'authorized_by' => 'portal',
                     ]
                 )
             );
 
-            $meAccount =  EmployeeAccount::where('acc_number', $inputOrder->me_id)->get();
+            $meAccount =  EmployeeAccount::where('acc_number', $InputOrder->me_id)->get();
 
-            $meNewBalance = floatval($meAccount->implode('net_balance')) + floatval($inputOrder->me_commission);
+            $meNewBalance = floatval($meAccount->implode('net_balance')) + floatval($InputOrder->me_commission);
             (new EmployeeAccountController)->update(new Request(
                 [
                     'net_balance' => $meNewBalance
                 ]
-            ), EmployeeAccount::where('acc_number', $inputOrder->me_id)->first());
+            ), EmployeeAccount::where('acc_number', $InputOrder->me_id)->first());
 
             (new TransactionController)->store(
                 new Request(
                     [
-                        'amount' => $inputOrder->me_commission,
-                        'order_id' => $inputOrder->order_id,
+                        'amount' => $InputOrder->me_commission,
+                        'order_id' => $InputOrder->order_id,
                         'method' => 'commission',
-                        'credited_to' => $inputOrder->me_id,
+                        'credited_to' => $InputOrder->me_id,
                         'debited_from' => 'HQ-01',
                         'authorized_by' => 'portal',
                     ]
@@ -245,15 +245,15 @@ class InputOrderController extends BaseController
             $hqAccount =  EmployeeAccount::where('acc_number', 'HQ-01')->first();
             (new EmployeeAccountController)->update(new Request(
                 [
-                    'net_balance' =>  floatval($hqAccount->implode('net_balance')) - (floatval($inputOrder->distributor_commission) + floatval($inputOrder->me_commission))
+                    'net_balance' =>  floatval($hqAccount->implode('net_balance')) - (floatval($InputOrder->distributor_commission) + floatval($InputOrder->me_commission))
                 ]
             ), EmployeeAccount::where('acc_number', 'HQ-01')->first());
 
-            Order::where('me_order_id', $inputOrder->order_id)
+            Order::where('me_order_id', $InputOrder->order_id)
                 ->whereNotIn('status', ['rejected by company'])
                 ->update(['status' => 'collected by me']);
 
-            $inputOrder->update($request->all());
+            $InputOrder->update($request->all());
 
             return Response(
                 [
@@ -281,14 +281,14 @@ class InputOrderController extends BaseController
     public function meNewOrder()
     {
         return InputOrderResource::collection(
-            inputOrder::where('distributor_id', auth()->user()->df_id)
+            InputOrder::where('distributor_id', auth()->user()->df_id)
                 ->where('status', 'pending')
                 ->get()
         );
     }
     public function disOrderHistory(){
         return InputOrderResource::collection(
-            inputOrder::where('distributor_id', auth()->user()->df_id)
+            InputOrder::where('distributor_id', auth()->user()->df_id)
             ->whereNotIn('status', ['pending', 'confirm by distributor'])
                 ->get()
         );
@@ -298,7 +298,7 @@ class InputOrderController extends BaseController
     {
 
         return InputOrderResource::collection(
-            inputOrder::where('distributor_id', auth()->user()->df_id)
+            InputOrder::where('distributor_id', auth()->user()->df_id)
                 ->where('status', 'confirm by distributor')
                 ->orWhere('status', 'processing by company')
                 ->get()
@@ -315,7 +315,7 @@ class InputOrderController extends BaseController
     public function meCollection()
     {
         return InputOrderResource::collection(
-            inputOrder::where('distributor_id', auth()->user()->df_id)
+            InputOrder::where('distributor_id', auth()->user()->df_id)
                 ->where('status', 'ready to collect for me')
                 ->get()
         );
@@ -324,7 +324,7 @@ class InputOrderController extends BaseController
     public function collectOrder()
     {
         return InputOrderResource::collection(
-            inputOrder::where('me_id', auth()->user()->df_id)
+            InputOrder::where('me_id', auth()->user()->df_id)
                 ->where('status', 'ready to collect for me')
                 ->get()
         );
@@ -335,7 +335,7 @@ class InputOrderController extends BaseController
     {
         return
             InputOrderResource::collection(
-                inputOrder::where('me_id', auth()->user()->df_id)
+                InputOrder::where('me_id', auth()->user()->df_id)
                     ->get()
             );
     }
