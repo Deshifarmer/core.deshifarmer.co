@@ -9,6 +9,7 @@ use App\Models\v1\EmployeeAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Route;
 
 class AuthController extends BaseController
 {
@@ -42,7 +43,7 @@ class AuthController extends BaseController
         $input['onboard_by'] = auth()->user()->df_id;
         (new EmployeeController())->store(new Request($input));
         EmployeeAccount::create([
-           'acc_number' => $input['df_id'],
+            'acc_number' => $input['df_id'],
         ]);
         $user = User::create($input);
         return response()->json(['success' => 'User created successfully'], 201);
@@ -57,21 +58,22 @@ class AuthController extends BaseController
      */
     public function login(Request $request)
     {
+
         $credentials = $request->only('email', 'password');
         $fieldType = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
 
         if (Auth::attempt([$fieldType => $credentials['email'], 'password' => $credentials['password']])) {
             $user = Auth::user();
+            // return Route::currentRouteName();
             if ($user->access_revoked) {
-
                 return response()->json(['error' => 'Access revoked'], 401);
             }
-            if ($user->role == 0 || $user->role == 1) {
+            if ($user->role == 0 && Route::currentRouteName() == 'hq_login' || $user->role == 1 && Route::currentRouteName() == 'co_login') {
                 return AuthResource::make($user);
             }
-            if ($user->role == 2 && Employee::where('df_id', $user->df_id)->first()->channel != null) {
+            if ($user->role == 2 && Employee::where('df_id', $user->df_id)->first()->channel != null && Route::currentRouteName() == 'distributor_login') {
                 return AuthResource::make($user);
-            } else if ($user->role == 3 && Employee::where('df_id', $user->df_id)->first()->under != null) {
+            } else if ($user->role == 3 && Employee::where('df_id', $user->df_id)->first()->under != null && Route::currentRouteName() == 'me_login') {
                 return AuthResource::make($user);
             } else {
 
@@ -94,7 +96,7 @@ class AuthController extends BaseController
     {
         auth()->user()->tokens()->delete();
         return [
-            'message' => 'user logged out successfull'
+            'message' => 'user logged out successful'
         ];
     }
 }

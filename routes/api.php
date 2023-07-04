@@ -59,7 +59,10 @@ Route::prefix('v1/')
         // Route::put('farmer_group/{farmer_group}',[FarmerGroupController::class,'update'])->name('farmer_group.update');
         // Route::delete('farmer_group/{farmer_group}',[FarmerGroupController::class,'destroy'])->name('farmer_group.destroy');
 
-        Route::post('login', [AuthController::class, 'login']);
+        Route::post('hq/login', [AuthController::class, 'login'])->name('hq_login');
+        Route::post('co/login', [AuthController::class, 'login'])->name('co_login');
+        Route::post('distributor/login', [AuthController::class, 'login'])->name('distributor_login');
+        Route::post('me/login', [AuthController::class, 'login'])->name('me_login');
 
         Route::group(['middleware' => ['auth:sanctum']], function () {
             Route::post('logout', [AuthController::class, 'logout']);
@@ -119,7 +122,7 @@ Route::prefix('v1/')
                     Route::put('product/{product}', [ProductController::class, 'update'])->name('hq.product_update');
                     Route::get('all_cash_out_request', [CashOutRequestController::class, 'index'])->name('hq.all_cash_out_request');
                     Route::put('cash_out_request/{cashOutRequest}', [CashOutRequestController::class, 'update'])->name('hq.cash_out_request_update');
-                    Route::get('all_transaction',[TransactionController::class,'index'])->name('hq.all_transaction');
+                    Route::get('all_transaction', [TransactionController::class, 'index'])->name('hq.all_transaction');
                 });
         });
 
@@ -176,7 +179,7 @@ Route::prefix('v1/')
                     Route::get('order/{input_order}', [InputOrderController::class, 'input_order_details'])->name('me.single_input_order');
                     Route::get('collect_order', [InputOrderController::class, 'collectOrder'])->name('me.collectOrder');
                     Route::put('collect_order/{input_order}', [InputOrderController::class, 'update'])->name('me.input_order_update');
-                    Route::post('add_farm',[FarmController::class,'store'])->name('farm.store');
+                    Route::post('add_farm', [FarmController::class, 'store'])->name('farm.store');
                     // Route::get('all_channel', [ChannelController::class, 'index'])->name('me.all_channel');
                     // Route::post('add_cluster',[ClusterController::class,'store'])->name('me.cluster.store');
                 });

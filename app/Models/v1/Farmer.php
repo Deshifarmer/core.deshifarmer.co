@@ -41,7 +41,6 @@ class Farmer extends Model
         'yearly_income',
         'year_of_stay_in',
         'group_id',
-        // 'farmer_role',
         'bank_details',
         'mfs_account',
         'current_producing_crop',
@@ -51,14 +50,14 @@ class Farmer extends Model
         'cultivation_practice',
         'is_active',
     ];
-    protected $casts =[
-        'group_id'=>'json',
-        'bank_details'=>'object',
-        'mfs_account'=>'json',
-        'current_producing_crop'=>'json',
-        'focused_crop'=>'json',
-        'farm_id'=>'json',
-    ];
+    // protected $casts =[
+    //     'group_id'=>'json',
+    //     'bank_details'=>'json',
+    //     'mfs_account'=>'json',
+    //     'current_producing_crop'=>'json',
+    //     'focused_crop'=>'json',
+    //     'farm_id'=>'json',
+    // ];
     protected $appends = [
         'full_name',
     ];
