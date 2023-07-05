@@ -55,8 +55,8 @@ class OrdersController extends Controller
                 $inputOrder = InputOrder::where('order_id', $order->me_order_id)->first();
                 $newTotal_price = $inputOrder->total_price - $order->total_price;
                 $pro =  Product::where('product_id', $order->product_id)->first();
-                $newMeCommission = $inputOrder->me_commission - round(floatval($pro->implode('sell_price')) * $order->quantity * floatval($pro->implode('me_commission')) / 100, 2);
-                $newDbCommission = $inputOrder->distributor_commission - round(floatval($pro->implode('sell_price')) * $order->quantity * floatval($pro->implode('distributor_commission')) / 100, 2);
+                $newMeCommission = $inputOrder->me_commission - round(floatval($pro->implode('sell_price') - $pro->implode('buy_price_from_company')) * $order->quantity * floatval($pro->implode('me_commission')) / 100, 2);
+                $newDbCommission = $inputOrder->distributor_commission - round(floatval($pro->implode('sell_price')- $pro->implode('buy_price_from_company')) * $order->quantity * floatval($pro->implode('distributor_commission')) / 100, 2);
                 $inputOrder->update([
                     'total_price' => $newTotal_price,
                     'me_commission' => $newMeCommission,

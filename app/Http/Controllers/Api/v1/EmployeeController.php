@@ -37,8 +37,8 @@ class EmployeeController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'nid' => 'required|string|unique:employees,nid',
-            'phone' => 'required|unique:employees,phone'
+            'nid' => 'required|string',
+            'phone' => 'required'
         ]);
 
         if ($validator->fails()) {

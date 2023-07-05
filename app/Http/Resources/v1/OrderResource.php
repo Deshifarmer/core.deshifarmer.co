@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\v1;
 
+use App\Models\v1\Distributors_file;
 use App\Models\v1\Farmer;
 use App\Models\v1\InputOrder;
 use App\Models\v1\Product;
@@ -25,6 +26,8 @@ class OrderResource extends JsonResource
             'me_order_id' => $this->me_order_id,
             'me_id' => $this->me_id,
             'distributor_id' => $this->distributor_id,
+            // 'delivery_address' => Distributors_file::where('distributor_id', $this->distributor_id)->get()->implode('business_present_address'),
+            // 'delivery_contact' => Distributors_file::where('distributor_id', $this->distributor_id)->get()->implode('business_contact_no'),
             'product_id' => $this->product_id,
             'product_details' => new ProductResource(Product::where('product_id', $this->product_id)->first()),
             'unit' =>Unit::where('id', $this->unit)->get()->implode('unit'),

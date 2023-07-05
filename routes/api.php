@@ -135,6 +135,7 @@ Route::prefix('v1/')
                     Route::get('my_confirm_order', [OrdersController::class, 'company_confirm_order'])->name('co.my_confirm_order');
                     Route::get('my_delivery_history', [OrdersController::class, 'company_delivery_history'])->name('co.delivery_history');
                     Route::put('my_order/{order}', [OrdersController::class, 'update'])->name('co.order_update');
+                    Route::get('order/{order}', [OrdersController::class, 'show'])->name('co.single_order');
                     Route::post('cash_out_request', [CashOutRequestController::class, 'store'])->name('co.cash_out_request');
                     Route::get('my_profile', [EmployeeController::class, 'myProfile'])->name('co.my_profile');
                     Route::get('all_transaction', [TransactionController::class, 'myTransactions'])->name('co.all_transaction');
