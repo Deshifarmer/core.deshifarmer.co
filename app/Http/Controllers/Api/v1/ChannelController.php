@@ -99,14 +99,13 @@ class ChannelController extends BaseController
     }
     public function assignMe(Request $request, channel $channel)
     {
-
         foreach ($request->list as $key => $value) {
             $employee = Employee::where('df_id', $value);
             $alreadyAssign = $employee->get('channel')->implode('channel');
 
             if ($alreadyAssign != null) {
                 return response()->json([
-                    'message' => $value . ' ' . 'This Micro-Entreprenure Already Assign',
+                    'message' => $value . ' ' . 'This Micro-Entrepreneurs Already Assign',
                     'status' => 'error',
                 ], 422);
             } else {

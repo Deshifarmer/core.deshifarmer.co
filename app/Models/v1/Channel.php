@@ -17,9 +17,7 @@ class Channel extends Model
     protected $fillable = [
         'channel_name',
         'upazila_id',
-        // 'distributor_id',
+        'under'
     ];
-    // protected $casts = [
-    //     'distributor_id' => 'json',
-    // ];
+   
 }

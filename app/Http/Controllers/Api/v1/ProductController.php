@@ -40,20 +40,18 @@ class ProductController extends BaseController
         }
 
         $input = $request->all();
-        $input["product_id"] = 'pro-'. $this->generateUUID();
+        $input["product_id"] = 'pro-' . $this->generateUUID();
         $extension = $request->file('image')->getClientOriginalExtension();
         $request->file('image')->storeAs('public/image/product', $input["product_id"] . '.' . $extension);
         $image_path = '/image/product/' . $input["product_id"] . '.' . $extension;
         $input['image'] =  $image_path;
-        $input['company_id'] =  $request->company_id == null ? auth()->user()->df_id : $input['company_id'] ;
+        $input['company_id'] =  $request->company_id == null ? auth()->user()->df_id : $input['company_id'];
         $input['sell_price'] = $input['sell_price_from_company'];
         $product = Product::create($input);
         return Response()->json([
             'message' => 'Product Created Successfully',
             'status' => 'success',
         ], 201);
-
-
     }
 
     /**
@@ -104,20 +102,38 @@ class ProductController extends BaseController
             $products = Product::where('company_id', $request->company_id)
                 ->where('category_id', $request->category_id)
                 ->where('status', 'active')
+                ->orderBy('created_at', 'desc')
+                ->get();
+            return ProductResource::collection($products);
+        } elseif ($request->has('product_name') && $request->has('company_id')) {
+            $products = Product::where('name', 'LIKE', '%' . $request->product_name . '%')
+                ->Where('company_id', $request->company_id)
+                ->where('status', 'active')
+                ->orderBy('created_at', 'desc')
                 ->get();
             return ProductResource::collection($products);
         } elseif ($request->has('company_id')) {
             $products = Product::where('company_id', $request->company_id)
-            ->where('status', 'active')
-            ->get();
+                ->where('status', 'active')
+                ->orderBy('created_at', 'desc')
+                ->get();
             return ProductResource::collection($products);
         } elseif ($request->has('category_id')) {
             $products = Product::where('category_id', $request->category_id)
-            ->where('status', 'active')
-            ->get();
+                ->where('status', 'active')
+                ->orderBy('created_at', 'desc')
+                ->get();
+            return ProductResource::collection($products);
+        } elseif ($request->has('product_name')) {
+            $products = Product::where('name', 'LIKE', '%' . $request->product_name . '%')
+                ->where('status', 'active')
+                ->orderBy('created_at', 'desc')
+                ->get();
             return ProductResource::collection($products);
         } else {
-            return ProductResource::collection(Product::where('status', 'active')->get());
+            return ProductResource::collection(Product::where('status', 'active')
+                ->orderBy('created_at', 'desc')
+                ->get());
         }
     }
 
@@ -125,6 +141,5 @@ class ProductController extends BaseController
     {
         $products = Product::where('company_id', auth()->user()->df_id)->get();
         return ProductResource::collection($products);
-
     }
 }

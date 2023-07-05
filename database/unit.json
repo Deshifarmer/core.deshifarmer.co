@@ -1,26 +1,22 @@
 [
     {
         "id":1,
-        "unit":"Kg"
+        "unit":"kg"
     },
     {
         "id":2,
-        "unit":"Ton"
+        "unit":"gram"
     },
     {
         "id":3,
-        "unit":"Mon"
+        "unit":"bosta"
     },
     {
         "id":4,
-        "unit":"Psc"
+        "unit":"packet"
     },
     {
         "id":5,
-        "unit":"Ati"
-    },
-    {
-        "id":6,
-        "unit":"Palla"
+        "unit":"bottle"
     }
 ]

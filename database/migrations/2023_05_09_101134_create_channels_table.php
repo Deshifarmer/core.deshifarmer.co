@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('channel_name')->index();
             $table->string('upazila_id');
-            // $table->json('distributor_id')->nullable();
+            $table->string('under')->nullable();
             $table->timestamps();
         });
     }

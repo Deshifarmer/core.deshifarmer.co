@@ -27,7 +27,12 @@ class AuthController extends BaseController
         ]);
 
         if ($validator->fails()) {
-            return $validator->errors();
+            return response()->json(
+                [
+                    'error' => $validator->errors()
+                ],
+                422
+            );
         }
 
         $input = $request->all();
@@ -45,6 +50,10 @@ class AuthController extends BaseController
         EmployeeAccount::create([
             'acc_number' => $input['df_id'],
         ]);
+        if ($input['role'] == 2) {
+            (new DistributorsFileController())
+                ->store(new Request($input));
+        }
         $user = User::create($input);
         return response()->json(['success' => 'User created successfully'], 201);
 

@@ -283,6 +283,7 @@ class InputOrderController extends BaseController
         return InputOrderResource::collection(
             InputOrder::where('distributor_id', auth()->user()->df_id)
                 ->where('status', 'pending')
+                ->orderBy('created_at', 'desc')
                 ->get()
         );
     }
@@ -290,6 +291,7 @@ class InputOrderController extends BaseController
         return InputOrderResource::collection(
             InputOrder::where('distributor_id', auth()->user()->df_id)
             ->whereNotIn('status', ['pending', 'confirm by distributor'])
+            ->orderBy('created_at', 'desc')
                 ->get()
         );
     }
@@ -301,6 +303,7 @@ class InputOrderController extends BaseController
             InputOrder::where('distributor_id', auth()->user()->df_id)
                 ->where('status', 'confirm by distributor')
                 ->orWhere('status', 'processing by company')
+                ->orderBy('created_at', 'desc')
                 ->get()
         );
     }
@@ -308,7 +311,9 @@ class InputOrderController extends BaseController
     public function input_order_details($id)
     {
         return OrderResource::collection(
-            Order::where('me_order_id', $id)->get()
+            Order::where('me_order_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->get()
         );
     }
 
@@ -317,6 +322,7 @@ class InputOrderController extends BaseController
         return InputOrderResource::collection(
             InputOrder::where('distributor_id', auth()->user()->df_id)
                 ->where('status', 'ready to collect for me')
+                ->orderBy('created_at', 'desc')
                 ->get()
         );
     }
@@ -326,6 +332,7 @@ class InputOrderController extends BaseController
         return InputOrderResource::collection(
             InputOrder::where('me_id', auth()->user()->df_id)
                 ->where('status', 'ready to collect for me')
+                ->orderBy('created_at', 'desc')
                 ->get()
         );
     }
@@ -336,6 +343,7 @@ class InputOrderController extends BaseController
         return
             InputOrderResource::collection(
                 InputOrder::where('me_id', auth()->user()->df_id)
+                    ->orderBy('created_at', 'desc')
                     ->get()
             );
     }

@@ -35,17 +35,15 @@ class EmployeeController extends BaseController
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'nid' => 'required|string',
-            'phone' => 'required'
-        ]);
+        // $validator = Validator::make($request->all(), [
+        //     'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        //     'nid' => 'required|string',
+        //     'phone' => 'required'
+        // ]);
 
-        if ($validator->fails()) {
-            return $this->sendError('Error validation', $validator->errors());
-        }
-
-
+        // if ($validator->fails()) {
+        //     return $this->sendError('Error validation', $validator->errors());
+        // }
         $data = $request->all();
 
 
