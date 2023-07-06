@@ -127,10 +127,8 @@ class InputOrderController extends BaseController
                     ]
                 ), $hqAccount);
 
-
-
                 $data = $request->all();
-                $data['payment_method'] = 'by portal';
+                // $data['payment_method'] = 'by portal';
 
                 $InputOrder->update($data);
 

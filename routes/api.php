@@ -181,6 +181,7 @@ Route::prefix('v1/')
                     Route::get('collect_order', [InputOrderController::class, 'collectOrder'])->name('me.collectOrder');
                     Route::put('collect_order/{input_order}', [InputOrderController::class, 'update'])->name('me.input_order_update');
                     Route::post('add_farm', [FarmController::class, 'store'])->name('farm.store');
+                    Route::get('all_transaction', [TransactionController::class, 'myTransactions'])->name('me.all_transaction');
                     // Route::get('all_channel', [ChannelController::class, 'index'])->name('me.all_channel');
                     // Route::post('add_cluster',[ClusterController::class,'store'])->name('me.cluster.store');
                 });

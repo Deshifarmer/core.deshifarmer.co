@@ -38,7 +38,9 @@ class OrderResource extends JsonResource
             'status'=>$this->status,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'location' => $this->channel_id,
+            'farmer_id'=>InputOrder::where('order_id', $this->me_order_id)->first()->sold_to,
             'farmer_name'=> Farmer::where('farmer_id',InputOrder::where('order_id', $this->me_order_id)->first()->sold_to)->get()->implode('first_name') . ' ' . Farmer::where('farmer_id',InputOrder::where('order_id', $this->me_order_id)->first()->sold_to)->get()->implode('last_name'),
+            'farmer_address'=> Farmer::where('farmer_id',InputOrder::where('order_id', $this->me_order_id)->first()->sold_to)->get()->implode('address'),
         ];
     }
 }

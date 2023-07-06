@@ -6,6 +6,7 @@ use App\Models\v1\District;
 use App\Models\v1\Employee;
 use App\Models\v1\EmployeeAccount;
 use App\Models\v1\InputOrder;
+use App\Models\v1\Order;
 use App\Models\v1\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -50,8 +51,9 @@ class MyProfileResource extends JsonResource
             'orders' => $this->when($request->routeIs('distributor.my_me_profile'), function () {
                 return InputOrder::where('me_id', $this->df_id)->get();
             }),
-
-
+            'total_sale' => $this->when($request->routeIs('me.my_profile'), function () {
+                return Order::where('me_id', $this->df_id)->count('quantity');
+            }),
 
         ];
     }

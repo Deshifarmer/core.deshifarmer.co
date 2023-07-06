@@ -37,6 +37,7 @@ return new class extends Migration
             $table->string('status')->default('active');
             $table->decimal('lat')->nullable();
             $table->decimal('long')->nullable();
+            $table->integer('target_volume')->nullable();
 
             $table->timestamps();
         });

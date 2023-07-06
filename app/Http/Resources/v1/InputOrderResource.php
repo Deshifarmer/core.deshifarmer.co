@@ -25,16 +25,15 @@ class InputOrderResource extends JsonResource
             'channel_id' => $this->channel_id,
             'total_price' => $this->total_price,
             'sold_to' => $this->sold_to,
-            'farmer_details' => Farmer::where('farmer_id', $this->sold_to)->first(),
             'status' => $this->status,
             'payment_method'=> $this->payment_method,
             'payment_id' => $this->payment_id,
             'delivery_status' => $this->delivery_status,
-            'hq_commission' => $this->hq_commission,
             'me_commission' => $this->me_commission,
             'distributor_commission' => $this->distributor_commission,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
+
 
             'distributor_details' => $this->when($request->routeIs(['hq.single_input_order']), function () {
                 $distributor_details = Employee::where('df_id', $this->distributor_id)->get();
@@ -52,7 +51,7 @@ class InputOrderResource extends JsonResource
                 ];
 
             }),
-            'farmer_details' => $this->when($request->routeIs(['hq.single_input_order']), function () {
+            'farmer_details' => $this->when($request->routeIs(['hq.single_input_order','me.me_order']), function () {
                 $farmer_details = Farmer::where('farmer_id', $this->sold_to)->get();
                 return [
                     'farmer_name' => $farmer_details->implode('first_name') . ' ' . $farmer_details->implode('last_name'),
