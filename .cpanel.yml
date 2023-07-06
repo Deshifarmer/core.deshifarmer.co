@@ -1,11 +1,7 @@
----
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/coredeshi/public_html/
-    - /bin/cp -R .vscode $DEPLOYPATH
-    - /bin/cp -R assets $DEPLOYPATH
-    - /bin/cp -R css $DEPLOYPATH
-    - /bin/cp -R fonts $DEPLOYPATH
-    - /bin/cp -R img $DEPLOYPATH
-    - /bin/cp -R js $DEPLOYPATH
-    /bin/cp index.html $DEPLOYPATH
+    - export DEPLOYPATH=/home/coredeshi/public_html
+    - /bin/cp -r * $DEPLOYPATH #copy all from root
+#    - /bin/cp -r ./public/* $DEPLOYPATH/public_html/
+    - /bin/cp ./public/js/*.js $DEPLOYPATH/public_html/js
+    - /bin/cp ./public/css/*.css $DEPLOYPATH/public_html/css
