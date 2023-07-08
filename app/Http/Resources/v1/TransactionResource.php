@@ -21,14 +21,16 @@ class TransactionResource extends JsonResource
 
 
         if($this->method == 'order payment'){
-            $massage  = "Distributor name: $dfn, confirm payment for order: $this->order_id , amount: $this->amount";
+            $massage  = "Distributor name: $dfn, confirm payment for order: $this->order_id Tk, amount: $this->amount";
         }elseif($this->method == 'cash in'){
-            $massage  = "Distributor name: $ctn, cash in amount: $this->amount, cash in id: $this->cash_in_id";
+            $massage  = "Distributor name: $ctn, cash in amount: $this->amount Tk, cash in id: $this->cash_in_id";
         }elseif($this->method == 'cash out'){
-            $massage  = "Name: $dfn, cash out amount: $this->amount, cash out id: $this->cash_out_id";
-        }else(
-            $massage = "Name: $ctn, commission: $this->amount, order: $this->order_id"
-        );
+            $massage  = "Name: $dfn, cash out amount: $this->amount Tk, cash out id: $this->cash_out_id";
+        }elseif($this->method == 'commission'){
+            $massage = "Name: $ctn, commission: $this->amount Tk, order: $this->order_id";
+        }elseif($this->method == 'paid to company'){
+            $massage = "Name: $ctn, sold: $this->amount Tk, order: $this->order_id";
+        }
 
         return [
             'transaction_id' => $this->transaction_id,

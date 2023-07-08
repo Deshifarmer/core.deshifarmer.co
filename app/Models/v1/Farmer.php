@@ -30,6 +30,7 @@ class Farmer extends Model
         'gender',
         'date_of_birth',
         'address',
+        'union',
         'village',
         'upazila',
         'district',

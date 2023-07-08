@@ -25,6 +25,8 @@ return new class extends Migration
             $table->integer('type'); // 0 = HQ, 1 = CO, 2 = DB, 3 = ME
             $table->string('onboard_by');
             $table->string('photo')->default('/image/employee/default.png');
+            $table->string('business_present_address')->nullable();
+            $table->string('business_contact_no')->nullable();
             $table->dateTimeTz('date_of_birth')->nullable();
             $table->string('present_address')->nullable();
             $table->string('permanent_address')->nullable();

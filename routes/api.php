@@ -146,7 +146,7 @@ Route::prefix('v1/')
         Route::prefix('distributor')
             ->group(function () {
                 Route::group(['middleware' => ['auth:sanctum', 'user-access:DB']], function () {
-                    Route::get('my_profile', [EmployeeController::class, 'myProfile'])->name('my_profile');
+                    Route::get('my_profile', [EmployeeController::class, 'myProfile'])->name('db.my_profile');
                     Route::get('my_me', [EmployeeController::class, 'myMe'])->name('distributor.my_me');
                     Route::get('my_me/{employee}/profile', [EmployeeController::class, 'myMeProfile'])->name('distributor.my_me_profile');
                     Route::get('me_collection', [InputOrderController::class, 'meCollection'])->name('distributor.me_collection');

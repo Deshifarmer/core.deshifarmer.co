@@ -30,6 +30,7 @@ return new class extends Migration
             $table->date('date_of_birth');
             $table->string('address');
             $table->string('village');
+            $table->string('union')->nullable();
             $table->integer('upazila');
             $table->integer('district');
             $table->integer('division');

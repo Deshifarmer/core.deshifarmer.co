@@ -19,6 +19,15 @@ class TransactionController extends BaseController
         return TransactionResource::collection(Transaction::all());
     }
 
+    // public function timelyTransactions(Request $request)
+    // {
+    //     return TransactionResource::collection(
+    //         Transaction::where('created_at', '>=',$request->start_date)
+    //         ->where('created_at', '<=',$request->end_date)
+    //         ->get()
+    //     );
+    // }
+
     /**
      * Store a newly created resource in storage.
      */

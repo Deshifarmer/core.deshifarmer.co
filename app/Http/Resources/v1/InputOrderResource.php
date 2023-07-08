@@ -26,7 +26,7 @@ class InputOrderResource extends JsonResource
             'total_price' => $this->total_price,
             'sold_to' => $this->sold_to,
             'status' => $this->status,
-            'payment_method'=> $this->payment_method,
+            'payment_method' => $this->payment_method,
             'payment_id' => $this->payment_id,
             'delivery_status' => $this->delivery_status,
             'me_commission' => $this->me_commission,
@@ -35,31 +35,48 @@ class InputOrderResource extends JsonResource
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
 
 
-            'distributor_details' => $this->when($request->routeIs(['hq.single_input_order']), function () {
+            'distributor_details' => $this->when($request->routeIs(
+                [
+                    'hq.single_input_order'
+                ]
+            ), function () {
                 $distributor_details = Employee::where('df_id', $this->distributor_id)->get();
                 return [
                     'distributor_name' => $distributor_details->implode('full_name'),
                     'distributor_phone' => $distributor_details->implode('phone'),
                 ];
-
             }),
-            'me_details' => $this->when($request->routeIs(['hq.single_input_order']), function () {
+            'me_details' => $this->when($request->routeIs(
+                [
+                    'hq.single_input_order',
+                    'distributor.me_new_order',
+                    'distributor.me_confirm_order_status'
+                ]
+            ), function () {
                 $me_details = Employee::where('df_id', $this->distributor_id)->get();
                 return [
                     'me_name' => $me_details->implode('full_name'),
                     'me_phone' => $me_details->implode('phone'),
                 ];
-
             }),
-            'farmer_details' => $this->when($request->routeIs(['hq.single_input_order','me.me_order']), function () {
+            'farmer_details' => $this->when($request->routeIs(
+                [
+                    'hq.single_input_order',
+                    'me.me_order'
+                ]
+            ), function () {
                 $farmer_details = Farmer::where('farmer_id', $this->sold_to)->get();
                 return [
                     'farmer_name' => $farmer_details->implode('first_name') . ' ' . $farmer_details->implode('last_name'),
                     'farmer_phone' => $farmer_details->implode('phone'),
                 ];
-
             }),
-            'order_details' => $this->when($request->routeIs(['hq.single_input_order', 'me.me_order']), function () {
+            'order_details' => $this->when($request->routeIs(
+                [
+                    'hq.single_input_order',
+                    'me.me_order'
+                ]
+            ), function () {
                 return OrderResource::collection(Order::where('me_order_id', $this->order_id)->get());
             }),
 

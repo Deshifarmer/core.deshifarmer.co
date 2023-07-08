@@ -35,7 +35,9 @@ class Employee extends Model
         'status',
         'lat',
         'long',
-        'target_volume'
+        'target_volume',
+        'business_contact_no',
+        'business_present_address'
     ];
 
     protected $appends = [

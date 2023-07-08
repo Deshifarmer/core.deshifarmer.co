@@ -50,10 +50,10 @@ class AuthController extends BaseController
         EmployeeAccount::create([
             'acc_number' => $input['df_id'],
         ]);
-        if ($input['role'] == 2) {
-            (new DistributorsFileController())
-                ->store(new Request($input));
-        }
+        // if ($input['role'] == 2) {
+        //     (new DistributorsFileController())
+        //         ->store(new Request($input));
+        // }
         $user = User::create($input);
         return response()->json(['success' => 'User created successfully'], 201);
 

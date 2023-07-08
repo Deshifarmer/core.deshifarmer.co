@@ -43,10 +43,14 @@ class InputOrderController extends BaseController
 
         for ($i = 0; $i < count($request->{"order"}); $i++) {
             $product_details = Product::where('product_id', $request->{"order"}[$i]["product_id"])->get();
-            $product_price = $product_details->implode('sell_price');
-            $total_price +=  $product_price * $request->{"order"}[$i]["quantity"];
+            $product_price =floatval($product_details->implode('sell_price')-$product_details->implode('buy_price_from_company'));
+
+            $total_price += $product_details->implode('sell_price') * $request->{"order"}[$i]["quantity"];
+
             $priceIntoQuantity = $product_price * $request->{"order"}[$i]["quantity"];
+
             $totalHqCommission += round($priceIntoQuantity * floatval($product_details->implode('hq_commission')) / 100, 2);
+
             $totalMeCommission += round($priceIntoQuantity * floatval($product_details->implode('me_commission')) / 100, 2);
             $totalDistributorCommission += round($priceIntoQuantity * floatval($product_details->implode('distributor_commission')) / 100, 2);
             (new OrdersController)->store(new Request([
@@ -60,7 +64,7 @@ class InputOrderController extends BaseController
                 'distributor_commission' => round($priceIntoQuantity * floatval($product_details->implode('distributor_commission')) / 100, 2),
                 'channel_id' => $data['channel_id'],
                 'company_id' => Product::where('product_id', $request->{"order"}[$i]["product_id"])->get('company_id')->implode('company_id'),
-                'total_price' => $priceIntoQuantity,
+                'total_price' => $product_details->implode('sell_price')*$request->{"order"}[$i]["quantity"],
             ]));
         }
         $data['total_price'] = $total_price;

@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources\v1;
 
+use App\Models\v1\Distributors_file;
 use App\Models\v1\District;
 use App\Models\v1\Employee;
 use App\Models\v1\EmployeeAccount;
+use App\Models\v1\Farmer;
 use App\Models\v1\InputOrder;
 use App\Models\v1\Order;
 use App\Models\v1\Transaction;
@@ -45,6 +47,7 @@ class MyProfileResource extends JsonResource
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
             'target_volume' => $this->target_volume,
             'account_details' => EmployeeAccount::where('acc_number', $this->df_id)->get(),
+
             'transactions' => Transaction::where('credited_to', $this->df_id)
                 ->orWhere('debited_from', $this->df_id)
                 ->get(),
@@ -53,6 +56,37 @@ class MyProfileResource extends JsonResource
             }),
             'total_sale' => $this->when($request->routeIs('me.my_profile'), function () {
                 return Order::where('me_id', $this->df_id)->count('quantity');
+            }),
+            'total_farmer' => $this->when($request->routeIs('me.my_profile'), function () {
+                return Farmer::where('onboard_by', $this->df_id)->count();
+            }),
+            'distributors_files' => $this->when($request->routeIs('db.my_profile'), function () {
+                if (Distributors_file::where('df_id', $this->df_id)->exists()) {
+                    return Distributors_file::where('df_id', $this->df_id)->get();
+                } else {
+                    return "not a single file uploaded";
+                }
+            }),
+            'total_me' => $this->when($request->routeIs('db.my_profile'), function () {
+                return Employee::where('under', $this->df_id)->count();
+            }),
+            'this_month_earning' => $this->when($request->routeIs(['distributor.my_me_profile']), function () {
+                return Transaction::where('credited_to', $this->df_id)
+                    ->whereMonth('created_at', date('m'))
+                    ->sum('amount');
+            }),
+            'lifetime_earning' => $this->when($request->routeIs(['distributor.my_me_profile']), function () {
+                return Transaction::where('credited_to', $this->df_id)
+                ->sum('amount');
+            }),
+            'this_month_total_sales' => $this->when($request->routeIs(['distributor.my_me_profile']), function () {
+                return Order::where('me_id', $this->df_id)
+                    ->whereMonth('created_at', date('m'))
+                    ->count('quantity');
+            }),
+            'lifetime_total_sales' => $this->when($request->routeIs(['distributor.my_me_profile']), function () {
+                return Order::where('me_id', $this->df_id)
+                    ->count('quantity');
             }),
 
         ];
