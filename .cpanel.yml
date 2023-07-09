@@ -2,7 +2,7 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/coredeshi/public_html/
-    - /bin/cp -a * $DEPLOYPATH
+    - /bin/cp -a * /../../$DEPLOYPATH
 
 
     #`- /bin/cp -a * $DEPLOYPATH` is the command that copies all the files from the repository to the deployment path.
