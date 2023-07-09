@@ -33,6 +33,10 @@ class UserController extends Controller
     {
        return UserResource::collection(Employee::where('type',3)->get()) ;
     }
+    public function allTerritoryManager()
+    {
+       return UserResource::collection(Employee::where('type',4)->get()) ;
+    }
     public function unassignedDistributor()
     {
         return UserResource::collection(Employee::where('type',2)
@@ -81,5 +85,5 @@ class UserController extends Controller
         //
     }
 
-    
+
 }

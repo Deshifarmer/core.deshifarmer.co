@@ -153,4 +153,10 @@ class ChannelController extends BaseController
     {
         //
     }
+
+    public function unAssignChannel(){
+
+        return ChannelResource::collection(Channel::where('under',null)->get());
+
+    }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('farmer_group_id')->index();
             $table->string('farmer_group_name');
-            $table->string('cluster_id');
+            $table->string('cluster_id')->nullable();
             $table->boolean('isActive')->default(true);
             $table->dateTime('inactive_at')->nullable();
             $table->string('group_manager_id'); // me id

@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
-
+use App\Http\Resources\v1\ChannelResource;
 use App\Models\v1\Employee;
 use Illuminate\Http\Request;
 use App\Http\Resources\v1\MyProfileResource;
 use App\Http\Resources\v1\UserResource;
+use App\Models\v1\Channel;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -125,6 +126,27 @@ class EmployeeController extends BaseController
     public function myMeProfile(Employee $employee)
     {
         return MyProfileResource::make($employee);
+    }
+
+    public function assignChannel(Request $request, Employee $employee)
+    {
+        foreach($request->list as $key => $value){
+            (new ChannelController)->update(
+                new Request([
+                    'under' => $employee->df_id,
+                ]),Channel::where('channel_name', $value)->first()
+            );
+        }
+
+        return Response()->json([
+            'message' => 'Channel assigned successfully',
+        ], 201);
+    }
+
+
+    public function channelList(Employee $employee)
+    {
+        return Channel::where('under', $employee->df_id)->get();
     }
 
 }

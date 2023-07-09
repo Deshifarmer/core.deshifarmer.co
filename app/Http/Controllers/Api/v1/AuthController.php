@@ -21,7 +21,7 @@ class AuthController extends BaseController
             'email' => 'required|email|unique:users',
             'phone' => 'required|unique:users,phone',
             'nid' => 'required|unique:users,nid',
-            'role' => 'required|in:0,1,2,3',
+            'role' => 'required|in:0,1,2,3,4',
             'password' => 'required',
             'c_password' => 'required|same:password',
         ]);
@@ -41,7 +41,8 @@ class AuthController extends BaseController
             0 => 'HQ-',
             1 => 'CO-',
             2 => 'DB-',
-            3 => 'ME-'
+            3 => 'ME-',
+            4 => 'TM-',
         ];
         $input['df_id'] = $arr[$input['role']] . $this->generateUuid();
         $input['type'] = $input['role'];
@@ -50,10 +51,7 @@ class AuthController extends BaseController
         EmployeeAccount::create([
             'acc_number' => $input['df_id'],
         ]);
-        // if ($input['role'] == 2) {
-        //     (new DistributorsFileController())
-        //         ->store(new Request($input));
-        // }
+
         $user = User::create($input);
         return response()->json(['success' => 'User created successfully'], 201);
 

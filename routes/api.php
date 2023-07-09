@@ -100,10 +100,12 @@ Route::prefix('v1/')
                     Route::post('distributor_file', [DistributorsFileController::class, 'store']);
                     Route::get('distributor_file/{distributors_file}', [DistributorsFileController::class, 'show']);
                     Route::get('all_me', [UserController::class, 'allMicroEnt'])->name('all_me');
+                    Route::get('all_tm', [UserController::class, 'allTerritoryManager'])->name('all_tm');
                     Route::get('all_farmer', [FarmerController::class, 'index']);
                     Route::get('unassigned_distributor', [UserController::class, 'unassignedDistributor'])->name('unassigned_distributor');
                     Route::get('unassigned_me', [UserController::class, 'unassignedMe'])->name('unassigned_me');
                     Route::get('all_channel', [ChannelController::class, 'index'])->name('hq.all_channel');
+                    Route::get('unassigned_channel', [ChannelController::class, 'unAssignChannel'])->name('hq.unassign_channel');
                     Route::get('profile/{employee}', [EmployeeController::class, 'show'])->name('hq.profile.single_user');
                     Route::post('add_channel', [ChannelController::class, 'store'])->name('hq.add_channel');
                     Route::get('channel/{channel}', [ChannelController::class, 'show'])->name('hq.single_channel');
@@ -123,6 +125,8 @@ Route::prefix('v1/')
                     Route::get('all_cash_out_request', [CashOutRequestController::class, 'index'])->name('hq.all_cash_out_request');
                     Route::put('cash_out_request/{cashOutRequest}', [CashOutRequestController::class, 'update'])->name('hq.cash_out_request_update');
                     Route::get('all_transaction', [TransactionController::class, 'index'])->name('hq.all_transaction');
+                    Route::post('assign_channel/{employee}', [EmployeeController::class, 'assignChannel'])->name('hq.assign_channel');
+                    Route::get('channel_list/{employee}', [EmployeeController::class, 'channelList'])->name('hq.channel_list');
                 });
         });
 

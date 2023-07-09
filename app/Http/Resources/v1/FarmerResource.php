@@ -40,6 +40,7 @@ class FarmerResource extends JsonResource
             'upazila' => Upazila::where('id', $this->upazila)->get()->implode('name'),
             'district' => District::where('id', $this->district)->get()->implode('name'),
             'division' => Division::where('id', $this->division)->get()->implode('name'),
+            'union' => $this->union,
             'credit_score' => $this->credit_score,
             'resident_type' => $this->resident_type,
             'land_status' => $this->land_status,
