@@ -28,7 +28,7 @@ class ProductResource extends JsonResource
             'description'=>$this->description,
             'preferred'=>$this->preferred,
             'category'=>ProductCategory::find($this->category_id)->title,
-            'subcategory'=> $this->subcategory_id ? ProductSubcategory::find($this->subcategory_id)->title : null,
+            // 'subcategory'=> $this->subcategory_id ? ProductSubcategory::find($this->subcategory_id)->title : null,
             'company_id'=>$this->company_id,
             'company'=>$companyDet->implode('first_name') . ' ' . $companyDet->implode('last_name'),
             'unit'=>Unit::where('id',$this->unit)->first()->unit,

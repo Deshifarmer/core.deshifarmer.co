@@ -12,7 +12,6 @@ use App\Models\v1\Order;
 use App\Models\v1\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Symfony\Component\Console\Input\Input;
 
 class MyProfileResource extends JsonResource
 {
@@ -70,23 +69,40 @@ class MyProfileResource extends JsonResource
             'total_me' => $this->when($request->routeIs('db.my_profile'), function () {
                 return Employee::where('under', $this->df_id)->count();
             }),
-            'this_month_earning' => $this->when($request->routeIs(['distributor.my_me_profile']), function () {
+            'this_month_earning' => $this->when($request->routeIs(['distributor.my_me_profile', 'db.my_profile']), function () {
                 return Transaction::where('credited_to', $this->df_id)
                     ->whereMonth('created_at', date('m'))
+                    ->where('method', 'commission')
                     ->sum('amount');
             }),
-            'lifetime_earning' => $this->when($request->routeIs(['distributor.my_me_profile']), function () {
+            'lifetime_earning' => $this->when($request->routeIs(['distributor.my_me_profile', 'db.my_profile']), function () {
                 return Transaction::where('credited_to', $this->df_id)
-                ->sum('amount');
+                    ->where('method', 'commission')
+                    ->sum('amount');
             }),
-            'this_month_total_sales' => $this->when($request->routeIs(['distributor.my_me_profile']), function () {
-                return Order::where('me_id', $this->df_id)
-                    ->whereMonth('created_at', date('m'))
-                    ->count('quantity');
+            'this_month_total_sales' => $this->when($request->routeIs(['distributor.my_me_profile', 'db.my_profile']), function () {
+                if ($this->type == 3) {
+                    return Order::where('me_id', $this->df_id)
+
+                        ->whereMonth('created_at', date('m'))
+                        ->count('quantity');
+                } elseif ($this->type == 2) {
+                    return Order::where('distributor_id', $this->df_id)
+
+                        ->whereMonth('created_at', date('m'))
+                        ->count('quantity');
+                }
             }),
-            'lifetime_total_sales' => $this->when($request->routeIs(['distributor.my_me_profile']), function () {
-                return Order::where('me_id', $this->df_id)
-                    ->count('quantity');
+            'lifetime_total_sales' => $this->when($request->routeIs(['distributor.my_me_profile', 'db.my_profile']), function () {
+                // return Order::where('me_id', $this->df_id)
+                //     ->count('quantity');
+                if ($this->type == 3) {
+                    return Order::where('me_id', $this->df_id)
+                        ->count('quantity');
+                } elseif ($this->type == 2) {
+                    return Order::where('distributor_id', $this->df_id)
+                        ->count('quantity');
+                }
             }),
 
         ];
