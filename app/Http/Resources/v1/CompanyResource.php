@@ -28,6 +28,7 @@ class CompanyResource extends JsonResource
                     ->where('status','pending')
                     ->get();
             })
+            
         ];
     }
 }

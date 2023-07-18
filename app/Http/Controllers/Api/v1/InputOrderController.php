@@ -92,7 +92,7 @@ class InputOrderController extends BaseController
     public function update(Request $request, InputOrder $InputOrder)
     {
 
-        if ($request->status == 'confirm by distributor' && $InputOrder->status == 'pending') {
+        if ($request->status == 'confirm by df cp' && $InputOrder->status == 'pending') {
 
             $orderTotalPrice = $InputOrder->total_price;
             $distributorAccount =  EmployeeAccount::where('acc_number', $InputOrder->distributor_id)->get();
@@ -132,11 +132,11 @@ class InputOrderController extends BaseController
                 ), $hqAccount);
 
                 $data = $request->all();
-                // $data['payment_method'] = 'by portal';
+
 
                 $InputOrder->update($data);
 
-                Order::where('me_order_id', $InputOrder->order_id)->update(['status' => 'confirm by distributor']);
+                Order::where('me_order_id', $InputOrder->order_id)->update(['status' => 'confirm by df cp']);
 
                 return Response(
                     [
@@ -292,7 +292,7 @@ class InputOrderController extends BaseController
     public function disOrderHistory(){
         return InputOrderResource::collection(
             InputOrder::where('distributor_id', auth()->user()->df_id)
-            ->whereNotIn('status', ['pending', 'confirm by distributor'])
+            ->whereNotIn('status', ['pending', 'confirm by df cp'])
             ->orderBy('created_at', 'desc')
                 ->get()
         );
@@ -303,7 +303,7 @@ class InputOrderController extends BaseController
 
         return InputOrderResource::collection(
             InputOrder::where('distributor_id', auth()->user()->df_id)
-                ->where('status', 'confirm by distributor')
+                ->where('status', 'confirm by df cp')
                 ->orWhere('status', 'processing by company')
                 ->orderBy('created_at', 'desc')
                 ->get()

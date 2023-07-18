@@ -98,42 +98,51 @@ class ProductController extends BaseController
 
     public function sort(Request $request)
     {
+        $per_page = 10;
+        if($request->has('per_page')){
+            $per_page = $request->per_page;
+        }
         if ($request->has('company_id') && $request->has('category_id')) {
             $products = Product::where('company_id', $request->company_id)
                 ->where('category_id', $request->category_id)
                 ->where('status', 'active')
                 ->orderBy('created_at', 'desc')
-                ->get();
+                ->paginate($per_page)
+                ->appends(request()->query());
             return ProductResource::collection($products);
         } elseif ($request->has('product_name') && $request->has('company_id')) {
             $products = Product::where('name', 'LIKE', '%' . $request->product_name . '%')
                 ->Where('company_id', $request->company_id)
                 ->where('status', 'active')
                 ->orderBy('created_at', 'desc')
-                ->get();
+                ->paginate($per_page)
+                ->appends(request()->query());
             return ProductResource::collection($products);
         } elseif ($request->has('company_id')) {
             $products = Product::where('company_id', $request->company_id)
                 ->where('status', 'active')
                 ->orderBy('created_at', 'desc')
-                ->get();
+                ->paginate($per_page)
+                ->appends(request()->query());
             return ProductResource::collection($products);
         } elseif ($request->has('category_id')) {
             $products = Product::where('category_id', $request->category_id)
                 ->where('status', 'active')
                 ->orderBy('created_at', 'desc')
-                ->get();
+                ->paginate($per_page)
+                ->appends(request()->query());
             return ProductResource::collection($products);
         } elseif ($request->has('product_name')) {
             $products = Product::where('name', 'LIKE', '%' . $request->product_name . '%')
                 ->where('status', 'active')
                 ->orderBy('created_at', 'desc')
-                ->get();
+                ->paginate($per_page)
+                ->appends(request()->query());
             return ProductResource::collection($products);
         } else {
             return ProductResource::collection(Product::where('status', 'active')
                 ->orderBy('created_at', 'desc')
-                ->get());
+                ->paginate($per_page));
         }
     }
 

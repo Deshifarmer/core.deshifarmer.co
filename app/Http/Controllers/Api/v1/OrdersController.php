@@ -45,18 +45,20 @@ class OrdersController extends Controller
      */
     public function update(Request $request, order $order)
     {
+
         $order->update($request->all());
 
         $totalProduct = Order::where('me_order_id', $order->me_order_id)->get();
-
         if ($request->status == 'processing by company' || $request->status == 'rejected by company') {
             if ($request->status == 'rejected by company') {
 
                 $inputOrder = InputOrder::where('order_id', $order->me_order_id)->first();
+
                 $newTotal_price = $inputOrder->total_price - $order->total_price;
                 $pro =  Product::where('product_id', $order->product_id)->first();
-                $newMeCommission = $inputOrder->me_commission - round(floatval($pro->implode('sell_price') - $pro->implode('buy_price_from_company')) * $order->quantity * floatval($pro->implode('me_commission')) / 100, 2);
-                $newDbCommission = $inputOrder->distributor_commission - round(floatval($pro->implode('sell_price')- $pro->implode('buy_price_from_company')) * $order->quantity * floatval($pro->implode('distributor_commission')) / 100, 2);
+                $newMeCommission = floatval($inputOrder->me_commission) -  floatval($order->me_commission);
+                $newDbCommission =  floatval($inputOrder->distributor_commission) - floatval($order->distributor_commission);
+
                 $inputOrder->update([
                     'total_price' => $newTotal_price,
                     'me_commission' => $newMeCommission,
@@ -81,6 +83,10 @@ class OrdersController extends Controller
                     ->update([
                         'net_balance' => EmployeeAccount::where('acc_number', 'HQ-01')->first()->net_balance - $order->total_price
                     ]);
+                $order->update([
+                    'me_commission' => 0.0,
+                    'distributor_commission' => 0.0
+                ]);
             }
             $companyProductStatus = Order::where('me_order_id', $order->me_order_id)
                 ->where('status', 'rejected by company')
@@ -89,6 +95,13 @@ class OrdersController extends Controller
             if ($companyProductStatus->count() == $totalProduct->count()) {
                 InputOrder::where('order_id', $order->me_order_id)
                     ->update(['status' => 'processing by company']);
+            }
+            $companyrejectStatus = Order::where('me_order_id', $order->me_order_id)
+                ->where('status', 'rejected by company')
+                ->get();
+            if ($companyrejectStatus->count() == $totalProduct->count()) {
+                InputOrder::where('order_id', $order->me_order_id)
+                    ->update(['status' => 'rejected by company']);
             }
         }
         if ($request->status == 'deliver from company') {
@@ -166,7 +179,7 @@ class OrdersController extends Controller
     {
         return OrderResource::collection(
             Order::where('company_id', auth()->user()->df_id)
-                ->where('status', 'confirm by distributor')
+                ->where('status', 'confirm by df cp')
                 ->get()
         );
     }
@@ -182,11 +195,9 @@ class OrdersController extends Controller
     {
         return OrderResource::collection(
             Order::where('company_id', auth()->user()->df_id)
-                 ->whereNotIn('status', ['pending','confirm by distributor', 'processing by company'])
+                ->whereNotIn('status', ['pending', 'confirm by df cp', 'processing by company'])
                 ->get()
         );
-
-
     }
 
     public function disCollectOrder()

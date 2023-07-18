@@ -70,6 +70,7 @@ class TransactionController extends BaseController
         return TransactionResource::collection(
             Transaction::where('credited_to', auth()->user()->df_id)
             ->orWhere('debited_from', auth()->user()->df_id)
+            ->orderBy('created_at', 'desc')
             ->get()
         );
     }
