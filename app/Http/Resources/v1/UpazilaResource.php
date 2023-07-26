@@ -16,7 +16,7 @@ class UpazilaResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            // 'district_id' => $this->district_id,
+            'district_id' => $this->district_id,
             'name' => $this->name,
             'bn_name' => $this->bn_name,
         ];

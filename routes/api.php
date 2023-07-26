@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\v1\CashInRequestController;
 use App\Http\Controllers\Api\v1\CashOutRequestController;
 use App\Http\Controllers\Api\v1\ChannelController;
 use App\Http\Controllers\Api\v1\ClusterController;
+use App\Http\Controllers\Api\v1\DashboardController;
 use App\Http\Controllers\Api\v1\DistributorsFileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\v1\FarmerController;
@@ -59,6 +60,8 @@ Route::prefix('v1/')
         // Route::put('farmer_group/{farmer_group}',[FarmerGroupController::class,'update'])->name('farmer_group.update');
         // Route::delete('farmer_group/{farmer_group}',[FarmerGroupController::class,'destroy'])->name('farmer_group.destroy');
 
+        route::get('dashboard/all_member',[DashboardController::class,'all_member'])->name('all_member');
+
         Route::post('hq/login', [AuthController::class, 'login'])->name('hq_login');
         Route::post('co/login', [AuthController::class, 'login'])->name('co_login');
         Route::post('distributor/login', [AuthController::class, 'login'])->name('distributor_login');
@@ -70,7 +73,7 @@ Route::prefix('v1/')
             Route::get('division/{division}', [DivisionController::class, 'show']);
             Route::get('district', [DistrictController::class, 'index']);
             Route::get('upazila', [UpazilaController::class, 'index']);
-            Route::get('upazila', [UpazilaController::class, 'index']);
+            // Route::get('upazila', [UpazilaController::class, 'index']);
             Route::get('unit', [UnitController::class, 'index']);
             Route::post('unit', [UnitController::class, 'store']);
 

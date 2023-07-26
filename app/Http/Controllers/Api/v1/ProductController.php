@@ -14,18 +14,18 @@ class ProductController extends BaseController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
-        return ProductResource::collection(Product::all());
+        return ProductResource::collection(Product::orderBy('created_at', 'desc')->get());
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -58,7 +58,7 @@ class ProductController extends BaseController
      * Display the specified resource.
      *
      * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
+     * @return ProductResource|Response
      */
     public function show(Product $product)
     {
@@ -98,52 +98,69 @@ class ProductController extends BaseController
 
     public function sort(Request $request)
     {
-        $per_page = 10;
-        if($request->has('per_page')){
-            $per_page = $request->per_page;
-        }
-        if ($request->has('company_id') && $request->has('category_id')) {
-            $products = Product::where('company_id', $request->company_id)
-                ->where('category_id', $request->category_id)
-                ->where('status', 'active')
-                ->orderBy('created_at', 'desc')
-                ->paginate($per_page)
-                ->appends(request()->query());
-            return ProductResource::collection($products);
-        } elseif ($request->has('product_name') && $request->has('company_id')) {
-            $products = Product::where('name', 'LIKE', '%' . $request->product_name . '%')
-                ->Where('company_id', $request->company_id)
-                ->where('status', 'active')
-                ->orderBy('created_at', 'desc')
-                ->paginate($per_page)
-                ->appends(request()->query());
-            return ProductResource::collection($products);
-        } elseif ($request->has('company_id')) {
-            $products = Product::where('company_id', $request->company_id)
-                ->where('status', 'active')
-                ->orderBy('created_at', 'desc')
-                ->paginate($per_page)
-                ->appends(request()->query());
-            return ProductResource::collection($products);
-        } elseif ($request->has('category_id')) {
-            $products = Product::where('category_id', $request->category_id)
-                ->where('status', 'active')
-                ->orderBy('created_at', 'desc')
-                ->paginate($per_page)
-                ->appends(request()->query());
-            return ProductResource::collection($products);
-        } elseif ($request->has('product_name')) {
-            $products = Product::where('name', 'LIKE', '%' . $request->product_name . '%')
-                ->where('status', 'active')
-                ->orderBy('created_at', 'desc')
-                ->paginate($per_page)
-                ->appends(request()->query());
-            return ProductResource::collection($products);
-        } else {
-            return ProductResource::collection(Product::where('status', 'active')
-                ->orderBy('created_at', 'desc')
-                ->paginate($per_page));
-        }
+        // $per_page = 10;
+        // if ($request->has('per_page')) {
+        //     $per_page = $request->per_page;
+        // }
+        // if ($request->has('company_id') && $request->has('category_id')) {
+        //     $products = Product::where('company_id', $request->company_id)
+        //         ->where('category_id', $request->category_id)
+        //         ->where('status', 'active')
+        //         ->orderBy('created_at', 'desc')
+        //         ->paginate($per_page)
+        //         ->appends(request()->query());
+        //     return ProductResource::collection($products);
+        // } elseif ($request->has('product_name') && $request->has('company_id')) {
+        //     $products = Product::where('name', 'LIKE', '%' . $request->product_name . '%')
+        //         ->Where('company_id', $request->company_id)
+        //         ->where('status', 'active')
+        //         ->orderBy('created_at', 'desc')
+        //         ->paginate($per_page)
+        //         ->appends(request()->query());
+        //     return ProductResource::collection($products);
+        // } elseif ($request->has('company_id')) {
+        //     $products = Product::where('company_id', $request->company_id)
+        //         ->where('status', 'active')
+        //         ->orderBy('created_at', 'desc')
+        //         ->paginate($per_page)
+        //         ->appends(request()->query());
+        //     return ProductResource::collection($products);
+        // } elseif ($request->has('category_id')) {
+        //     $products = Product::where('category_id', $request->category_id)
+        //         ->where('status', 'active')
+        //         ->orderBy('created_at', 'desc')
+        //         ->paginate($per_page)
+        //         ->appends(request()->query());
+        //     return ProductResource::collection($products);
+        // } elseif ($request->has('product_name')) {
+        //     $products = Product::where('name', 'LIKE', '%' . $request->product_name . '%')
+        //         ->where('status', 'active')
+        //         ->orderBy('created_at', 'desc')
+        //         ->paginate($per_page)
+        //         ->appends(request()->query());
+        //     return ProductResource::collection($products);
+        // } else {
+        //     return ProductResource::collection(Product::where('status', 'active')
+        //         ->inRandomOrder()
+        //         ->paginate($per_page));
+        // }
+
+        $products = Product::query()
+            ->when($request->has('company_id'), function ($query) use ($request) {
+                $query->where('company_id', $request->company_id);
+            })
+            ->when($request->has('category_id'), function ($query) use ($request) {
+                $query->where('category_id', $request->category_id);
+            })
+            ->when($request->has('product_name'), function ($query) use ($request) {
+                $query->where('name', 'LIKE', '%' . $request->product_name . '%');
+            })
+            ->where('status', 'active')
+            ->inRandomOrder()
+            ->paginate($request->input('per_page', 10))
+            ->appends(request()->query());
+
+        return ProductResource::collection($products);
     }
 
     public function companyWiseProduct()

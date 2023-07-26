@@ -38,7 +38,7 @@ return new class extends Migration
             $table->string('resident_type'); // own house rent house
             $table->integer('family_member');
             $table->integer('number_of_children');
-            $table->decimal('yearly_income');
+            $table->bigInteger('yearly_income');
             $table->decimal('year_of_stay_in');
             $table->json('group_id')->nullable(); //array nullable
             // $table->bigInteger('farmer_role');

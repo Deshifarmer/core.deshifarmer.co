@@ -4,6 +4,7 @@ namespace App\Http\Resources\v1;
 
 use App\Models\v1\District;
 use App\Models\v1\Division;
+use App\Models\v1\Farm;
 use App\Models\v1\InputOrder;
 use App\Models\v1\Order;
 use App\Models\v1\Upazila;
@@ -62,7 +63,11 @@ class FarmerResource extends JsonResource
             'onboard_date' => $this->created_at->format('Y-m-d H:i:s'),
             // 'updated_at' => $this->updated_at->diffForHumans(),
 
-            'order_list' => InputOrderResource::collection(InputOrder::where('sold_to',$this->farmer_id)->get())
+            'order_list' => InputOrderResource::collection(InputOrder::where('sold_to',$this->farmer_id)->get()),
+
+            'farm_list' => $this->when($request->routeIs('me.my_single_farmer'), function () {
+                return Farm::where('farmer_id', $this->farmer_id)->orderBy('id', 'desc')->get();
+            }),
         ];
     }
 }
