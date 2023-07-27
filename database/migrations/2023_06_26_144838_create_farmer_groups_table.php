@@ -16,10 +16,11 @@ return new class extends Migration
             $table->uuid('farmer_group_id')->index();
             $table->string('farmer_group_name');
             $table->string('cluster_id')->nullable();
+            $table->string('color')->nullable();
             $table->boolean('isActive')->default(true);
             $table->dateTime('inactive_at')->nullable();
-            $table->string('group_manager_id'); // me id
-            $table->string('group_leader'); // Farmer id
+            $table->string('group_manager_id')->nullable(); // me id
+            $table->string('group_leader')->nullable(); // Farmer id
             $table->timestamps();
         });
     }

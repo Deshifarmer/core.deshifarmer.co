@@ -57,10 +57,16 @@ Route::prefix('v1/')
         // Route::get('farmer_group',[FarmerGroupController::class,'index'])->name('farmer_group');
         // Route::get('farmer_group/{farmer_group}',[FarmerGroupController::class,'show'])->name('farmer_group.show');
         //
-        // Route::put('farmer_group/{farmer_group}',[FarmerGroupController::class,'update'])->name('farmer_group.update');
+        //
         // Route::delete('farmer_group/{farmer_group}',[FarmerGroupController::class,'destroy'])->name('farmer_group.destroy');
 
-        route::get('dashboard/all_member',[DashboardController::class,'all_member'])->name('all_member');
+
+
+
+
+
+
+
 
         Route::post('hq/login', [AuthController::class, 'login'])->name('hq_login');
         Route::post('co/login', [AuthController::class, 'login'])->name('co_login');
@@ -133,7 +139,12 @@ Route::prefix('v1/')
                     Route::post('assign_channel/{employee}', [EmployeeController::class, 'assignChannel'])->name('hq.assign_channel');
                     Route::get('channel_list/{employee}', [EmployeeController::class, 'channelList'])->name('hq.channel_list');
 
-                    route::get('dashboard/all_member',[DashboardController::class,'all_member'])->name('all_member');
+                    Route::prefix('dashboard/')->group(
+                        function () {
+                            route::get('all_member', [DashboardController::class, 'all_member'])->name('all_member');
+
+                        }
+                    );
                 });
         });
 
@@ -193,6 +204,14 @@ Route::prefix('v1/')
                     Route::put('collect_order/{input_order}', [InputOrderController::class, 'update'])->name('me.input_order_update');
                     Route::post('add_farm', [FarmController::class, 'store'])->name('farm.store');
                     Route::get('all_transaction', [TransactionController::class, 'myTransactions'])->name('me.all_transaction');
+
+                    Route::post('create_group',[FarmerGroupController::class,'store'])->name('me.create_group');
+                    Route::get('group/{farmer_group}',[FarmerGroupController::class,'show'])->name('group.show');
+                    Route::get('group',[FarmerGroupController::class,'myGroup'])->name('me.my_group');
+                    Route::get('unassign_farmer', [FarmerController::class, 'myFarmer'])->name('me.unassign_farmer');
+
+                    Route::put('farmer_group/{farmer_group}',[FarmerGroupController::class,'update'])->name('farmer_group.update');
+                    Route::post('farmer_group/{farmer_group}/assign', [FarmerGroupController::class, 'assignFarmer'])->name('farmer_group.assignFarmer');
                     // Route::get('all_channel', [ChannelController::class, 'index'])->name('me.all_channel');
                     // Route::post('add_cluster',[ClusterController::class,'store'])->name('me.cluster.store');
                 });

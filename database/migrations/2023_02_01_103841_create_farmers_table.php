@@ -42,6 +42,8 @@ return new class extends Migration
             $table->decimal('year_of_stay_in');
             $table->json('group_id')->nullable(); //array nullable
             // $table->bigInteger('farmer_role');
+            $table->string('farm_area')->nullable();
+            $table->string('farm_type')->nullable();
             $table->json("bank_details")->nullable();
             $table->json("mfs_account")->nullable();
             $table->json("current_producing_crop")->nullable();

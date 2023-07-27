@@ -10,6 +10,7 @@ use App\Models\v1\Farmer;
 use App\Models\v1\InputOrder;
 use App\Models\v1\Order;
 use App\Models\v1\Transaction;
+use App\Models\v1\Upazila;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -33,6 +34,7 @@ class MyProfileResource extends JsonResource
             'previous_company' => $this->previous_company,
             'photo' => $this->photo,
             'channel' => $this->channel,
+            'upazila_id'=> Upazila::where('name',$this->channel)->get()->implode('id',','),
             'date_of_birth' => $this->date_of_birth,
             'present_address' => $this->present_address,
             'permanent_address' => $this->permanent_address,

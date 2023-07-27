@@ -42,6 +42,8 @@ class Farmer extends Model
         'yearly_income',
         'year_of_stay_in',
         'group_id',
+        'farm_area',
+        'farm_type',
         'bank_details',
         'mfs_account',
         'current_producing_crop',

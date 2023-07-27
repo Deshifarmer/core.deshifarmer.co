@@ -21,5 +21,6 @@ class FarmerGroup extends Model
         'inactive_at',
         'group_manager_id',
         'group_leader',
+        'color'
     ];
 }

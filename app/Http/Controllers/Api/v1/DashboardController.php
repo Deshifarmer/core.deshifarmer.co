@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\v1\Channel;
+use App\Models\v1\Employee;
 use App\Models\v1\Farmer;
+use App\Models\v1\Product;
 use Illuminate\Http\Request;
+use PhpParser\Node\Name\FullyQualified;
 
 class DashboardController extends Controller
 {
@@ -32,6 +35,8 @@ class DashboardController extends Controller
             'total_channel' => Channel::count(),
         ]);
     }
+
+   
     // all Co Dashboard info
     // all Distributor Dashboard info
     // all Me Dashboard info

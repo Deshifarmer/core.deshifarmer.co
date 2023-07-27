@@ -56,7 +56,9 @@ class FarmerController extends BaseController
      */
     public function update(Request $request, Farmer $farmer)
     {
-        //
+
+        $farmer->update($request->all());
+        return new FarmerResource($farmer);
     }
 
     /**
@@ -70,6 +72,13 @@ class FarmerController extends BaseController
     public function myFarmer()
     {
         $farmer = Farmer::where('onboard_by', auth()->user()->df_id)->get()->sortByDesc('created_at');
+        return FarmerResource::collection($farmer);
+    }
+    public function unassignedFarmer()
+    {
+        $farmer = Farmer::where('onboard_by', auth()->user()->df_id)
+            ->where('group_id', null)
+            ->get()->sortByDesc('created_at');
         return FarmerResource::collection($farmer);
     }
 }
