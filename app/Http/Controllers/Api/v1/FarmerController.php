@@ -15,7 +15,7 @@ class FarmerController extends BaseController
      */
     public function index()
     {
-        return FarmerResource::collection(Farmer::all());
+        return FarmerResource::collection(Farmer::all()->sortByDesc('created_at'));
     }
 
     /**
@@ -69,7 +69,7 @@ class FarmerController extends BaseController
 
     public function myFarmer()
     {
-        $farmer = Farmer::where('onboard_by', auth()->user()->df_id)->get();
+        $farmer = Farmer::where('onboard_by', auth()->user()->df_id)->get()->sortByDesc('created_at');
         return FarmerResource::collection($farmer);
     }
 }

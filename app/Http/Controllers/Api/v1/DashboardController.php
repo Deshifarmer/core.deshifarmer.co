@@ -23,7 +23,7 @@ class DashboardController extends Controller
             ->toArray();
 
         return response()->json([
-            'total_member' => array_sum($counts),
+            'total_member' => array_sum($counts) + Farmer::count(),
             'total_co' => $counts[1] ?? 0,
             'total_cp' => $counts[2] ?? 0,
             'total_me' => $counts[3] ?? 0,

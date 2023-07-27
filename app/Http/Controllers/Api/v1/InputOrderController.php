@@ -22,7 +22,7 @@ class InputOrderController extends BaseController
      */
     public function index()
     {
-        return InputOrderResource::collection(InputOrder::all());
+        return InputOrderResource::collection(InputOrder::all()->sortByDesc('created_at'));
     }
 
     /**

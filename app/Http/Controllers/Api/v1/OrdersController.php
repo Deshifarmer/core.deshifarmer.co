@@ -171,7 +171,7 @@ class OrdersController extends Controller
 
     public function orderFromMe($id)
     {
-        return InputOrderResource::collection(InputOrder::where('me_id', $id)->get());
+        return InputOrderResource::collection(InputOrder::where('me_id', $id)->get()->sortByDesc('created_at'));
     }
 
     //company wise order

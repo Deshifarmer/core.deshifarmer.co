@@ -20,22 +20,22 @@ class UserController extends Controller
     }
     public function allCompany()
     {
-        return UserResource::collection(Employee::where('type',1)->get()) ;
+        return UserResource::collection(Employee::where('type',1)->get()->sortByDesc('created_at')) ;
 
     }
 
     public function allDistributor()
     {
-        return UserResource::collection(Employee::where('type',2)->get()) ;
+        return UserResource::collection(Employee::where('type',2)->get()->sortByDesc('created_at')) ;
     }
 
     public function allMicroEnt()
     {
-       return UserResource::collection(Employee::where('type',3)->get()) ;
+       return UserResource::collection(Employee::where('type',3)->get()->sortByDesc('created_at')) ;
     }
     public function allTerritoryManager()
     {
-       return UserResource::collection(Employee::where('type',4)->get()) ;
+       return UserResource::collection(Employee::where('type',4)->get()->sortByDesc('created_at')) ;
     }
     public function unassignedDistributor()
     {

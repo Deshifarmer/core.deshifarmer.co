@@ -16,7 +16,7 @@ class TransactionController extends BaseController
      */
     public function index()
     {
-        return TransactionResource::collection(Transaction::all());
+        return TransactionResource::collection(Transaction::all()->sortByDesc('created_at'));
     }
 
     // public function timelyTransactions(Request $request)

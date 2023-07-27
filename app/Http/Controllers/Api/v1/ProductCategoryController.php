@@ -19,7 +19,7 @@ class ProductCategoryController extends BaseController
     public function index()
     {
         return ProductCategoryResource::collection(
-            ProductCategory::all()
+            ProductCategory::all()->sortByDesc('created_at')
         );
     }
 

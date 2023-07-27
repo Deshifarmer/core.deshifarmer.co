@@ -18,7 +18,7 @@ class ChannelController extends BaseController
      */
     public function index()
     {
-        return ChannelResource::collection(Channel::all());
+        return ChannelResource::collection(Channel::all()->sortByDesc('created_at'));
     }
 
     /**

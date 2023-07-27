@@ -87,6 +87,8 @@ Route::prefix('v1/')
             Route::get('all_company', [UserController::class, 'allCompany'])->name('all_company');
 
 
+
+
             //test routes
 
             //end test routes
@@ -130,6 +132,8 @@ Route::prefix('v1/')
                     Route::get('all_transaction', [TransactionController::class, 'index'])->name('hq.all_transaction');
                     Route::post('assign_channel/{employee}', [EmployeeController::class, 'assignChannel'])->name('hq.assign_channel');
                     Route::get('channel_list/{employee}', [EmployeeController::class, 'channelList'])->name('hq.channel_list');
+
+                    route::get('dashboard/all_member',[DashboardController::class,'all_member'])->name('all_member');
                 });
         });
 
