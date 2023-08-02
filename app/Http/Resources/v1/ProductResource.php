@@ -37,11 +37,11 @@ class ProductResource extends JsonResource
             'discount'=>$this->discount,
             'status'=>$this->status,
             'total_order' => Order::where('product_id',$this->product_id)->count(),
+            'sell_price_from_company'=>$this->sell_price_from_company,
 
             'hq_secret'=> $this->when(auth()->user()->role == 0, function () {
                 return [
                     'buy_price_from_company'=>$this->buy_price_from_company,
-                    'sell_price_from_company'=>$this->sell_price_from_company,
                     'hq_commission'=>$this->hq_commission,
                     'me_commission'=>$this->me_commission,
                     'distributor_commission'=>$this->distributor_commission,

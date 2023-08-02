@@ -7,6 +7,7 @@ use App\Http\Resources\v1\ProductResource;
 use App\Models\v1\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends BaseController
@@ -74,11 +75,26 @@ class ProductController extends BaseController
      */
     public function update(Request $request, Product $product)
     {
+        $validator = Validator::make($request->all(), [
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Error validation', $validator->errors());
+        }
+        $input = $request->all();
+        if($request->hasFile('image')){
+            Storage::delete('public/'.$product->image);
+            $extension = $request->file('image')->getClientOriginalExtension();
+            $request->file('image')->storeAs('public/image/product', $product->product_id . '.' . $extension);
+            $image_path = '/image/product/' . $product->product_id . '.' . $extension;
+            $input['image'] =  $image_path;
+        }
         $product->update(
-            $request->all()
+            $input
         );
 
         return Response()->json([
+
             'message' => 'Product Updated Successfully',
             'status' => 'success',
         ], 200);

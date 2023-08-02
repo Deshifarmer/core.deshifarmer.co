@@ -40,7 +40,7 @@ return new class extends Migration
             $table->integer('number_of_children');
             $table->bigInteger('yearly_income');
             $table->decimal('year_of_stay_in');
-            $table->json('group_id')->nullable(); //array nullable
+            $table->string('group_id')->nullable(); //array nullable
             // $table->bigInteger('farmer_role');
             $table->string('farm_area')->nullable();
             $table->string('farm_type')->nullable();

@@ -43,7 +43,7 @@ class InputOrderController extends BaseController
 
         for ($i = 0; $i < count($request->{"order"}); $i++) {
             $product_details = Product::where('product_id', $request->{"order"}[$i]["product_id"])->get();
-            $product_price =floatval($product_details->implode('sell_price')-$product_details->implode('buy_price_from_company'));
+            $product_price = floatval($product_details->implode('sell_price') - $product_details->implode('buy_price_from_company')); //profit
 
             $total_price += $product_details->implode('sell_price') * $request->{"order"}[$i]["quantity"];
 
@@ -64,7 +64,7 @@ class InputOrderController extends BaseController
                 'distributor_commission' => round($priceIntoQuantity * floatval($product_details->implode('distributor_commission')) / 100, 2),
                 'channel_id' => $data['channel_id'],
                 'company_id' => Product::where('product_id', $request->{"order"}[$i]["product_id"])->get('company_id')->implode('company_id'),
-                'total_price' => $product_details->implode('sell_price')*$request->{"order"}[$i]["quantity"],
+                'total_price' => $product_details->implode('sell_price') * $request->{"order"}[$i]["quantity"],
             ]));
         }
         $data['total_price'] = $total_price;
@@ -289,11 +289,12 @@ class InputOrderController extends BaseController
                 ->get()
         );
     }
-    public function disOrderHistory(){
+    public function disOrderHistory()
+    {
         return InputOrderResource::collection(
             InputOrder::where('distributor_id', auth()->user()->df_id)
-            ->whereNotIn('status', ['pending', 'confirm by df cp'])
-            ->orderBy('created_at', 'desc')
+                ->whereNotIn('status', ['pending', 'confirm by df cp'])
+                ->orderBy('created_at', 'desc')
                 ->get()
         );
     }
@@ -314,8 +315,8 @@ class InputOrderController extends BaseController
     {
         return OrderResource::collection(
             Order::where('me_order_id', $id)
-            ->orderBy('created_at', 'desc')
-            ->get()
+                ->orderBy('created_at', 'desc')
+                ->get()
         );
     }
 

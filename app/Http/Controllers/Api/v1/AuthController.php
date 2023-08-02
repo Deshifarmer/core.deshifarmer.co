@@ -77,13 +77,13 @@ class AuthController extends BaseController
             }
             if ($user->role == 0 && Route::currentRouteName() == 'hq_login' || $user->role == 1 && Route::currentRouteName() == 'co_login') {
                 return AuthResource::make($user);
-            }
-            if ($user->role == 2 && Employee::where('df_id', $user->df_id)->first()->channel != null && Route::currentRouteName() == 'distributor_login') {
+            } else if ($user->role == 2 && Employee::where('df_id', $user->df_id)->first()->channel != null && Route::currentRouteName() == 'distributor_login') {
                 return AuthResource::make($user);
             } else if ($user->role == 3 && Employee::where('df_id', $user->df_id)->first()->under != null && Route::currentRouteName() == 'me_login') {
                 return AuthResource::make($user);
+            } else if ($user->role == 4 && Route::currentRouteName() == 'pm_login') {
+                return AuthResource::make($user);
             } else {
-
                 return response()->json(
                     ['error' => 'You  do not have access to this portal'],
                     401

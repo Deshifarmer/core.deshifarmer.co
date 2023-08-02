@@ -22,14 +22,14 @@ class FarmerGroupResource extends JsonResource
             'isActive' => $this->isActive,
             'inactive_at' => $this->inactive_at,
             'group_manager_id' => $this->group_manager_id,
-            'group_leader' => $this->group_leader,
+            'group_leader' => FarmerResource::make(Farmer::where('farmer_id', $this->group_leader)->first()),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'color' => $this->color,
             'total_farmers' => Farmer::where('group_id', $this->farmer_group_id)->count(),
             'farmer_list' => $this->when($request->routeIs('group.show'), function () {
                 return FarmerResource::collection(Farmer::where('group_id', $this->farmer_group_id)
-                    ->where('id', '!=', $this->group_manager_id)
+                    ->where('farmer_id', '!=', $this->group_leader)
                     ->get());
             }),
         ];

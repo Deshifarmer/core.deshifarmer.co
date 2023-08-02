@@ -65,13 +65,11 @@ Route::prefix('v1/')
 
 
 
-
-
-
         Route::post('hq/login', [AuthController::class, 'login'])->name('hq_login');
         Route::post('co/login', [AuthController::class, 'login'])->name('co_login');
         Route::post('distributor/login', [AuthController::class, 'login'])->name('distributor_login');
         Route::post('me/login', [AuthController::class, 'login'])->name('me_login');
+        Route::post('pm/login', [AuthController::class, 'login'])->name('pm_login');
 
         Route::group(['middleware' => ['auth:sanctum']], function () {
             Route::post('logout', [AuthController::class, 'logout']);
@@ -91,14 +89,6 @@ Route::prefix('v1/')
 
             Route::get('product/{product}', [ProductController::class, 'show']);
             Route::get('all_company', [UserController::class, 'allCompany'])->name('all_company');
-
-
-
-
-            //test routes
-
-            //end test routes
-
         });
 
 
@@ -132,7 +122,8 @@ Route::prefix('v1/')
                     Route::get('distributor/all_cash_in_request', [CashInRequestController::class, 'index'])->name('hq.distributor_cash_in_request');
                     Route::put('distributor/cash_in_request/{cash_in_request}', [CashInRequestController::class, 'update'])->name('hq.distributor_cash_in_request_update');
                     Route::get('all_product', [ProductController::class, 'index'])->name('hq.all_product');
-                    Route::put('product/{product}', [ProductController::class, 'update'])->name('hq.product_update');
+                    Route::post('product/{product}', [ProductController::class, 'update'])->name('hq.product_update');
+
                     Route::get('all_cash_out_request', [CashOutRequestController::class, 'index'])->name('hq.all_cash_out_request');
                     Route::put('cash_out_request/{cashOutRequest}', [CashOutRequestController::class, 'update'])->name('hq.cash_out_request_update');
                     Route::get('all_transaction', [TransactionController::class, 'index'])->name('hq.all_transaction');
@@ -141,12 +132,14 @@ Route::prefix('v1/')
 
                     Route::prefix('dashboard/')->group(
                         function () {
-                            route::get('all_member', [DashboardController::class, 'all_member'])->name('all_member');
-
+                            Route::get('all_member', [DashboardController::class, 'all_member'])->name('all_member');
+                            Route::get('total_group', [DashboardController::class, 'total_group'])->name('total_group');
                         }
                     );
                 });
         });
+
+
 
         //all route only for Company
         Route::group(['middleware' => ['auth:sanctum', 'user-access:CO']], function () {
@@ -204,13 +197,11 @@ Route::prefix('v1/')
                     Route::put('collect_order/{input_order}', [InputOrderController::class, 'update'])->name('me.input_order_update');
                     Route::post('add_farm', [FarmController::class, 'store'])->name('farm.store');
                     Route::get('all_transaction', [TransactionController::class, 'myTransactions'])->name('me.all_transaction');
-
-                    Route::post('create_group',[FarmerGroupController::class,'store'])->name('me.create_group');
-                    Route::get('group/{farmer_group}',[FarmerGroupController::class,'show'])->name('group.show');
-                    Route::get('group',[FarmerGroupController::class,'myGroup'])->name('me.my_group');
-                    Route::get('unassign_farmer', [FarmerController::class, 'myFarmer'])->name('me.unassign_farmer');
-
-                    Route::put('farmer_group/{farmer_group}',[FarmerGroupController::class,'update'])->name('farmer_group.update');
+                    Route::post('create_group', [FarmerGroupController::class, 'store'])->name('me.create_group');
+                    Route::get('group/{farmer_group}', [FarmerGroupController::class, 'show'])->name('group.show');
+                    Route::get('group', [FarmerGroupController::class, 'myGroup'])->name('me.my_group');
+                    Route::get('unassign_farmer', [FarmerController::class, 'unassignedFarmer'])->name('me.unassign_farmer');
+                    Route::put('farmer_group/{farmer_group}', [FarmerGroupController::class, 'update'])->name('farmer_group.update');
                     Route::post('farmer_group/{farmer_group}/assign', [FarmerGroupController::class, 'assignFarmer'])->name('farmer_group.assignFarmer');
                     // Route::get('all_channel', [ChannelController::class, 'index'])->name('me.all_channel');
                     // Route::post('add_cluster',[ClusterController::class,'store'])->name('me.cluster.store');
@@ -218,7 +209,16 @@ Route::prefix('v1/')
         });
 
         // route for HeadQuatre and Company
-        Route::group(['middleware' => ['auth:sanctum', 'user-access:CO|HQ']], function () {
-            Route::post('add_product', [ProductController::class, 'store'])->name('add_product');
+        Route::group(['middleware' => ['auth:sanctum', 'user-access:HQ_MAN']], function () {
+            Route::prefix('manager/dashboard')
+                ->group(function () {
+                    Route::get('company_wise_product', [DashboardController::class, 'company_wise_product'])->name('company_wise_product');
+                    Route::get('all_member', [DashboardController::class, 'all_member'])->name('all_member');
+                    Route::get('upazila_wise_farmer', [DashboardController::class, 'upazila_wise_farmer'])->name('upazila_wise_farmer');
+                    Route::get('total_group', [DashboardController::class, 'total_group'])->name('total_group');
+                    Route::get('farmer_added', [DashboardController::class, 'farmer_added'])->name('farmer_added');
+
+                });
         });
+
     });
