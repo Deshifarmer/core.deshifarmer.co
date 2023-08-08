@@ -50,16 +50,16 @@ class UserResource extends JsonResource
 
 
             'all_transaction' => $this->when(auth()->user()->type == 0 && $this->type == 2, function () {
-               return Transaction::where('debited_from' ,$this->df_id)
-               ->orWhere('credited_to' ,$this->df_id)->sum('amount');
+                return Transaction::where('debited_from', $this->df_id)
+                    ->orWhere('credited_to', $this->df_id)->sum('amount');
             }),
 
-            'total_sale'=> $this->when(auth()->user()->type == 0 && $this->type == 2, function () {
+            'total_sale' => $this->when(auth()->user()->type == 0 && $this->type == 2, function () {
                 return Order::where('distributor_id', $this->df_id)->sum('quantity');
-             }),
-             'balance'=> $this->when(auth()->user()->type == 0 && $this->type == 2, function () {
+            }),
+            'balance' => $this->when(auth()->user()->type == 0 && $this->type == 2, function () {
                 return EmployeeAccount::where('acc_number', $this->df_id)->get('net_balance')->implode('net_balance');
-             }),
+            }),
 
 
             'me_list' => $this->when($this->type == 2, function () {
@@ -84,14 +84,15 @@ class UserResource extends JsonResource
                         'farmer_id' => $farmer->farmer_id,
                         'full_name' => "$farmer->first_name $farmer->last_name",
                         'phone' => $farmer->phone,
+                        'image' => $farmer->image,
                     ];
                 });
             }),
             'total_farmer' => $this->when($this->type == 3, function () {
-               return Farmer::where('onboard_by', $this->df_id)->count();
+                return Farmer::where('onboard_by', $this->df_id)->count();
             }),
 
-            'total_product'=> $this->when($this->type == 1, function () {
+            'total_product' => $this->when($this->type == 1, function () {
                 return Product::where('company_id', $this->df_id)->count();
             }),
 

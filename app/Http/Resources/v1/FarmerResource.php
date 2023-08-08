@@ -45,9 +45,10 @@ class FarmerResource extends JsonResource
             // 'credit_score' => $this->credit_score,
             // 'resident_type' => $this->resident_type,
             // 'land_status' => $this->land_status,
-            // 'family_member' => $this->family_member,
+            'family_member' => $this->family_member,
             // 'number_of_children' => $this->number_of_children,
-            // 'yearly_income' => $this->yearly_income,
+
+            
             // 'year_of_stay_in' => $this->year_of_stay_in,
             'group_id' => $this->group_id,
             // 'bank_details' => $this->bank_details,
