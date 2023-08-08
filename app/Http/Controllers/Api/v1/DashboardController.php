@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\v1\Channel;
+use App\Models\v1\District;
+use App\Models\v1\Division;
 use App\Models\v1\Employee;
 use App\Models\v1\Farmer;
 use App\Models\v1\FarmerGroup;
 use App\Models\v1\Product;
 use App\Models\v1\Upazila;
 use Illuminate\Http\Request;
+use InvalidArgumentException;
 use PhpParser\Node\Name\FullyQualified;
 
 class DashboardController extends Controller
@@ -78,26 +81,7 @@ class DashboardController extends Controller
         return  $collection;
     }
 
-    public function upazila_wise_farmer()
-    {
-        $collection = collect([]);
-        $upazilas = Farmer::selectRaw('COUNT(*) as total, upazila')
-            ->groupBy('upazila')
-            ->get()
-            ->pluck('total', 'upazila')
-            ->toArray();
 
-        foreach ($upazilas as $key => $value) {
-            $uName = Upazila::where('id', $key)->get();
-
-            $collection->push([
-                'upazila' => $uName->implode('name', ' ') . ' ' . $uName->implode('bn_name', ' '),
-                'total' => $value,
-            ]);
-        }
-
-        return $collection;
-    }
 
 
     public function farmer_added(Request $request)
@@ -130,8 +114,63 @@ class DashboardController extends Controller
         }
 
         return $collection;
-
     }
+    public function location_wise_farmer(Request $request)
+    {
+        $groupBy = $request->input('location');
+        $collection = collect([]);
+        $query = Farmer::selectRaw('COUNT(*) as total, ' . $groupBy)
+            ->groupBy($groupBy);
+        if ($request->has('date')) {
+            $date = $request->input('date');
+            $query->whereDate('created_at', $date);
+        } elseif ($request->has('start_date') && $request->has('end_date')) {
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        }
+        $results =  $query->pluck('total', $groupBy)->toArray();
+        foreach ($results as $key => $value) {
+            //add union name
+            $model = $groupBy == 'district' ? District::class : ($groupBy == 'division' ? Division::class : Upazila::class);
+
+            $uName = $model::where('id', $key)->get();
+
+            $collection->push([
+                $groupBy . "_name" => $uName->implode('name', ' '),
+                $groupBy . "_bn_name" => $uName->implode('bn_name', ' '),
+                'total' => $value,
+            ]);
+        }
+        return $collection;
+    }
+
+    public function distributor_wise_farmer()
+    {
+        $collection = collect([]);
+        $distributors = Employee::where('type', 2)->get();
+
+        $distributors->map(function ($distributor) use ($collection) {
+            $cpName = $distributor->full_name;
+            $cpId = $distributor->df_id;
+            $cpPhone = $distributor->phone;
+            $cpImage = $distributor->photo;
+            $mes = Employee::where('type', 3)->where('under', $distributor->df_id)->get()->map(function ($me) {
+                return Farmer::where('onboard_by', $me->df_id)->count();
+            })->sum();
+
+            $collection->push([
+                'cp_name' => $cpName,
+                'cp_id' => $cpId,
+                'cp_phone' => $cpPhone,
+                'cp_image' => $cpImage,
+                'total' => $mes,
+            ]);
+
+        });
+        return $collection;
+    }
+
 
 
     // all Co Dashboard info

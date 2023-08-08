@@ -31,6 +31,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'photo' => $this->photo,
             'channel' => $this->channel,
+
             'date_of_birth' => $this->date_of_birth,
             'present_address' => $this->present_address,
             'permanent_address' => $this->permanent_address,
@@ -42,6 +43,11 @@ class UserResource extends JsonResource
             'status' => $this->status,
             'joining_date' => $this->created_at->format('Y-m-d H:i:s'),
             'balance' => EmployeeAccount::where('acc_number', $this->df_id)->get('net_balance')->implode('net_balance'),
+
+            'under' => $this->when($this->type == 3, function () {
+                return $this->under ?? null;
+            }),
+
 
             'all_transaction' => $this->when(auth()->user()->type == 0 && $this->type == 2, function () {
                return Transaction::where('debited_from' ,$this->df_id)
@@ -72,7 +78,7 @@ class UserResource extends JsonResource
                 });
             }),
 
-            'farmer_list' => $this->when($this->type == 3, function () {
+            'farmer_list' => $this->when($this->type == 3 && $request->routeIs('hq.profile.single_user'), function () {
                 return Farmer::where('onboard_by', $this->df_id)->get()->map(function ($farmer) {
                     return [
                         'farmer_id' => $farmer->farmer_id,
@@ -81,8 +87,15 @@ class UserResource extends JsonResource
                     ];
                 });
             }),
+            'total_farmer' => $this->when($this->type == 3, function () {
+               return Farmer::where('onboard_by', $this->df_id)->count();
+            }),
 
-            'product_list' => $this->when($this->type == 1, function () {
+            'total_product'=> $this->when($this->type == 1, function () {
+                return Product::where('company_id', $this->df_id)->count();
+            }),
+
+            'product_list' => $this->when($this->type == 1 && $request->routeIs('hq.profile.single_user'), function () {
                 return Product::where('company_id', $this->df_id)->get()->map(function ($product) {
                     return [
                         'product_id' => $product->product_id,

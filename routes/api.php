@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\v1\OrdersController;
 use App\Http\Controllers\Api\v1\ProductCategoryController;
 use App\Http\Controllers\Api\v1\ProductController;
 use App\Http\Controllers\Api\v1\ProductSubCategoryController;
+use App\Http\Controllers\Api\v1\SurveyController;
 use App\Http\Controllers\Api\v1\TransactionController;
 use App\Http\Controllers\Api\v1\UserController;
 
@@ -59,7 +60,6 @@ Route::prefix('v1/')
         //
         //
         // Route::delete('farmer_group/{farmer_group}',[FarmerGroupController::class,'destroy'])->name('farmer_group.destroy');
-
 
 
 
@@ -200,9 +200,13 @@ Route::prefix('v1/')
                     Route::post('create_group', [FarmerGroupController::class, 'store'])->name('me.create_group');
                     Route::get('group/{farmer_group}', [FarmerGroupController::class, 'show'])->name('group.show');
                     Route::get('group', [FarmerGroupController::class, 'myGroup'])->name('me.my_group');
+                    Route::get('free_group', [FarmerGroupController::class, 'freeGroup'])->name('me.free_group');
                     Route::get('unassign_farmer', [FarmerController::class, 'unassignedFarmer'])->name('me.unassign_farmer');
                     Route::put('farmer_group/{farmer_group}', [FarmerGroupController::class, 'update'])->name('farmer_group.update');
                     Route::post('farmer_group/{farmer_group}/assign', [FarmerGroupController::class, 'assignFarmer'])->name('farmer_group.assignFarmer');
+
+                    Route::post('survey', [SurveyController::class, 'store'])->name('me.survey.store');
+
                     // Route::get('all_channel', [ChannelController::class, 'index'])->name('me.all_channel');
                     // Route::post('add_cluster',[ClusterController::class,'store'])->name('me.cluster.store');
                 });
@@ -214,11 +218,12 @@ Route::prefix('v1/')
                 ->group(function () {
                     Route::get('company_wise_product', [DashboardController::class, 'company_wise_product'])->name('company_wise_product');
                     Route::get('all_member', [DashboardController::class, 'all_member'])->name('all_member');
-                    Route::get('upazila_wise_farmer', [DashboardController::class, 'upazila_wise_farmer'])->name('upazila_wise_farmer');
                     Route::get('total_group', [DashboardController::class, 'total_group'])->name('total_group');
                     Route::get('farmer_added', [DashboardController::class, 'farmer_added'])->name('farmer_added');
-
+                    Route::get('location_wise_farmer', [DashboardController::class, 'location_wise_farmer'])->name('district_wise_farmer');
+                    Route::get('cp_wise_farmer', [DashboardController::class, 'distributor_wise_farmer'])->name('distributor_wise_farmer');
                 });
         });
+
 
     });

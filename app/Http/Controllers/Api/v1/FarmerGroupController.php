@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Resources\v1\FarmerGroupResource;
 use App\Models\v1\Farmer;
 use App\Models\v1\FarmerGroup;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -40,6 +39,15 @@ class FarmerGroupController extends BaseController
         $data = $request->all();
         $data['farmer_group_id'] = 'FG-' . $this->generateUUID();
         $data['group_manager_id'] = auth()->user()->df_id;
+        if ($request->has('group_leader')) {
+            (new FarmerController)->update(
+                new Request(
+                    [
+                        'group_id' => $data['farmer_group_id'],
+                    ]
+                ),
+                Farmer::where('farmer_id', $request->group_leader)->first());
+        }
         $farmerGroup = FarmerGroup::create($data);
         return response()->json($farmerGroup, 201);
     }
@@ -98,6 +106,17 @@ class FarmerGroupController extends BaseController
     public function myGroup()
     {
         $farmerGroup = FarmerGroup::where('group_manager_id', auth()->user()->df_id)->get()->sortByDesc('created_at');
+        return FarmerGroupResource::collection($farmerGroup);
+    }
+
+    public function freeGroup()
+    
+    {
+        $farmerGroup = FarmerGroup::where('group_manager_id', auth()->user()->df_id)->get()->sortByDesc('created_at');
+        $farmerGroup = $farmerGroup->filter(function ($value, $key) {
+            $test = Farmer::where('group_id', $value->farmer_group_id)->count();
+            return $test < 25 ;
+        });
         return FarmerGroupResource::collection($farmerGroup);
     }
 }
