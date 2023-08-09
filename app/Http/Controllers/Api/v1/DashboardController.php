@@ -166,7 +166,55 @@ class DashboardController extends Controller
                 'cp_image' => $cpImage,
                 'total' => $mes,
             ]);
+        });
+        return $collection;
+    }
 
+
+    public function test(Request $request)
+    {
+
+
+        $collection = collect([]);
+
+        $distributors = Employee::where('type', 2)->get();
+
+        $distributors->map(function ($distributor) use ($collection) {
+            $meCollection = collect([]);
+            $cpName = $distributor->full_name;
+            $cpId = $distributor->df_id;
+            $cpPhone = $distributor->phone;
+            $cpImage = $distributor->photo;
+
+            $mes = Employee::where('type', 3)->where('under', $distributor->df_id)->get()->map(function ($me) use ($meCollection) {
+                $meName = $me->full_name;
+                $meId = $me->df_id;
+                $mePhone = $me->phone;
+                $meImage = $me->photo;
+                $sum = 0;
+
+                $farmerCount = Farmer::where('onboard_by', $me->df_id)
+                    ->count();
+                $sum += $farmerCount;
+                $meCollection->push([
+                    'me_name' => $meName,
+                    'me_id' => $meId,
+                    'me_phone' => $mePhone,
+                    'me_image' => $meImage,
+                    'me_total_farmer' => $farmerCount,
+                ]);
+                return $sum;
+            });
+
+            $collection->push([
+                'cp_name' => $cpName,
+                'cp_id' => $cpId,
+                'cp_phone' => $cpPhone,
+                'cp_image' => $cpImage,
+                'cp_total_farmer' => $mes->sum(),
+                'me_list' => $meCollection,
+
+            ]);
         });
         return $collection;
     }

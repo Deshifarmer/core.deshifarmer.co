@@ -225,5 +225,7 @@ Route::prefix('v1/')
                 });
         });
 
+        Route::get('test',[DashboardController::class,'test'])->name('test');
+
 
     });

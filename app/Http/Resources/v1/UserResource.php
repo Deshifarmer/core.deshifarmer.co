@@ -73,6 +73,7 @@ class UserResource extends JsonResource
                         'status' => $employee->status,
                         'total_order' => InputOrder::where('me_id', $employee->df_id)->count(),
                         'total_order_amount' => InputOrder::where('me_id', $employee->df_id)->sum('total_price'),
+                        'total_farmer' => Farmer::where('onboard_by', $employee->df_id)->count(),
 
                     ];
                 });
