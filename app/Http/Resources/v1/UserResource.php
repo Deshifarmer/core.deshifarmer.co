@@ -3,6 +3,7 @@
 namespace App\Http\Resources\v1;
 
 use App\Models\v1\District;
+use App\Models\v1\Division;
 use App\Models\v1\Employee;
 use App\Models\v1\EmployeeAccount;
 use App\Models\v1\Farmer;
@@ -11,6 +12,7 @@ use App\Models\v1\Order;
 use App\Models\v1\Product;
 use App\Models\v1\Transaction;
 use App\Models\v1\Unit;
+use App\Models\v1\Upazila;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
@@ -79,13 +81,27 @@ class UserResource extends JsonResource
                 });
             }),
 
-            'farmer_list' => $this->when($this->type == 3 && $request->routeIs('hq.profile.single_user'), function () {
+            'farmer_list' => $this->when($this->type == 3  && $request->routeIs('hq.profile.single_user') , function () {
                 return Farmer::where('onboard_by', $this->df_id)->get()->map(function ($farmer) {
                     return [
                         'farmer_id' => $farmer->farmer_id,
+                        "first_name" => $farmer->first_name,
+                        "last_name" => $farmer->last_name,
                         'full_name' => "$farmer->first_name $farmer->last_name",
                         'phone' => $farmer->phone,
+                        "gender" => $farmer->gender,
                         'image' => $farmer->image,
+                        'created_at' => $farmer->created_at->diffForHumans(),
+                        'gender' =>  $farmer->gender,
+                        'date_of_birth' =>  $farmer->date_of_birth,
+                        'address' =>  $farmer->address,
+                        'village' =>  $farmer->village,
+                        'upazila' => Upazila::where('id',  $farmer->upazila)->get()->implode('name'),
+                        'district' => District::where('id',  $farmer->district)->get()->implode('name'),
+                        'division' => Division::where('id',  $farmer->division)->get()->implode('name'),
+                        'union' => $farmer->union,
+                        'father_name' =>  $farmer->fathers_name,
+                        'farm_area'=> $farmer->farm_area,
                     ];
                 });
             }),

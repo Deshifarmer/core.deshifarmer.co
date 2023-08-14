@@ -40,7 +40,7 @@ use Symfony\Component\Console\Input\Input;
 */
 
 Route::prefix('v1/')
-    ->middleware(['cors'])
+    ->middleware(['cors', 'json'])
     ->group(function () {
 
         // Route::get('farm',[FarmController::class,'index'])->name('farm');
@@ -103,6 +103,7 @@ Route::prefix('v1/')
                     Route::get('all_me', [UserController::class, 'allMicroEnt'])->name('all_me');
                     Route::get('all_tm', [UserController::class, 'allTerritoryManager'])->name('all_tm');
                     Route::get('all_farmer', [FarmerController::class, 'index']);
+                    Route::get('farmer_search',[FarmerController::class,'paginateFarmerWithSearch'])->name('paginateFarmerWithSearch');
                     Route::get('unassigned_distributor', [UserController::class, 'unassignedDistributor'])->name('unassigned_distributor');
                     Route::get('unassigned_me', [UserController::class, 'unassignedMe'])->name('unassigned_me');
                     Route::get('all_channel', [ChannelController::class, 'index'])->name('hq.all_channel');
@@ -134,6 +135,7 @@ Route::prefix('v1/')
                         function () {
                             Route::get('all_member', [DashboardController::class, 'all_member'])->name('all_member');
                             Route::get('total_group', [DashboardController::class, 'total_group'])->name('total_group');
+                            Route::get('location_wise_farmer', [DashboardController::class, 'location_wise_farmer'])->name('district_wise_farmer');
                         }
                     );
                 });
@@ -207,6 +209,9 @@ Route::prefix('v1/')
 
                     Route::post('survey', [SurveyController::class, 'store'])->name('me.survey.store');
 
+
+                    Route::post('my_farmer/{farmer}', [FarmerController::class, 'update'])->name('me.farmer.update');
+
                     // Route::get('all_channel', [ChannelController::class, 'index'])->name('me.all_channel');
                     // Route::post('add_cluster',[ClusterController::class,'store'])->name('me.cluster.store');
                 });
@@ -222,10 +227,13 @@ Route::prefix('v1/')
                     Route::get('farmer_added', [DashboardController::class, 'farmer_added'])->name('farmer_added');
                     Route::get('location_wise_farmer', [DashboardController::class, 'location_wise_farmer'])->name('district_wise_farmer');
                     Route::get('cp_wise_farmer', [DashboardController::class, 'distributor_wise_farmer'])->name('distributor_wise_farmer');
+
                 });
         });
 
         Route::get('test',[DashboardController::class,'test'])->name('test');
+        Route::get('test2',[DashboardController::class,'farmerOnboardedTimeWithCount'])->name('farmerOnboardedTimeWithCount');
+
 
 
     });

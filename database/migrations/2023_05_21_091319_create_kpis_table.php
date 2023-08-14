@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('kpis', function (Blueprint $table) {
             $table->id();
+            $table->string('starting_date');
+            $table->string('ending_date');
+            $table->string('type');
+            $table->integer('target');
+            $table->string('for');
+            $table->string('note')->nullable();
             $table->timestamps();
         });
     }

@@ -174,7 +174,6 @@ class DashboardController extends Controller
     public function test(Request $request)
     {
 
-
         $collection = collect([]);
 
         $distributors = Employee::where('type', 2)->get();
@@ -217,6 +216,23 @@ class DashboardController extends Controller
             ]);
         });
         return $collection;
+    }
+
+    public function farmerOnboardedTimeWithCount(){
+        $collection = collect([]);
+
+        $farmers = Farmer::whereTime('created_at', '>=', '00:00:00')
+            ->whereTime('created_at', '<=', '12:00:00')
+            ->get()
+            ->groupBy(function ($farmer) {
+                return $farmer->created_at->format('H');
+            })
+            ->map(function ($group) {
+                return $group->count();
+            });
+
+        return $farmers;
+
     }
 
 
