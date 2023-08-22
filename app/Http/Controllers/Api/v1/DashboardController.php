@@ -12,6 +12,7 @@ use App\Models\v1\Farmer;
 use App\Models\v1\FarmerGroup;
 use App\Models\v1\Product;
 use App\Models\v1\Upazila;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
 use PhpParser\Node\Name\FullyQualified;
@@ -218,7 +219,8 @@ class DashboardController extends Controller
         return $collection;
     }
 
-    public function farmerOnboardedTimeWithCount(){
+    public function farmerOnboardedTimeWithCount()
+    {
         $collection = collect([]);
 
         $farmers = Farmer::whereTime('created_at', '>=', '00:00:00')
@@ -232,9 +234,129 @@ class DashboardController extends Controller
             });
 
         return $farmers;
-
     }
 
+
+    public function phone_error()
+    {
+        $collection = collect([]);
+        $farmers = Farmer::whereRaw('LENGTH(phone) <> 11')
+            ->get();
+
+        $farmers->map(function ($farmer) use ($collection) {
+            $farmerName = $farmer->first_name . ' ' . $farmer->last_name;
+            $farmerPhone = $farmer->phone;
+            $collection->push([
+                'farmer_name' => $farmerName,
+                'farmer_phone' => $farmerPhone,
+                'me_by' => User::where('df_id', $farmer->onboard_by)->first()->full_name,
+                'me_phone' => User::where('df_id', $farmer->onboard_by)->first()->phone,
+            ]);
+        });
+
+        return $collection;
+    }
+
+
+
+    public function farmerOnboardedTimeWithCount2()
+    {
+        $collection = collect([]);
+
+        $farmers = Farmer::whereTime('created_at', '>=', '12:00:00')
+            ->whereTime('created_at', '<=', '23:59:59')
+            ->get()
+            ->groupBy(function ($farmer) {
+                return $farmer->created_at->format('H');
+            })
+            ->map(function ($group) {
+                return $group->count();
+            });
+
+        return $farmers;
+    }
+
+    public function farmerOnboardedTimeWithCount3()
+    {
+        $collection = collect([]);
+
+        $farmers = Farmer::whereTime('created_at', '>=', '00:00:00')
+            ->whereTime('created_at', '<=', '23:59:59')
+            ->get()
+            ->groupBy(function ($farmer) {
+                return $farmer->created_at->format('H');
+            })
+            ->map(function ($group) {
+                return $group->count();
+            });
+
+        return $farmers;
+    }
+
+    public function farmerOnboardedTimeWithCount4()
+    {
+        $collection = collect([]);
+
+        $farmers = Farmer::whereTime('created_at', '>=', '00:00:00')
+            ->whereTime('created_at', '<=', '23:59:59')
+            ->get()
+            ->groupBy(function ($farmer) {
+                return $farmer->created_at->format('H');
+            })
+            ->map(function ($group) {
+                return $group->count();
+            });
+
+        return $farmers;
+    }
+
+    public function groupLeadersName()
+    {
+        $collection = collect([]);
+
+        FarmerGroup::all()->map(function ($group) use ($collection) {
+            $groupName = $group->farmer_group_name;
+            if ($group->group_leader == null) {
+                $groupLeaderName = 'N/A';
+                $groupLeaderPhone = 'N/A';
+            } else {
+                $leader = Farmer::where('farmer_id', $group->group_leader)->first();
+                $groupLeaderName = $leader->first_name . ' ' . $leader->last_name;
+                $groupLeaderPhone = $leader->phone;
+            }
+            $collection->push([
+                'group_name' => $groupName,
+                'group_leader_name' => $groupLeaderName,
+                'group_leader_phone' => $groupLeaderPhone,
+            ]);
+        });
+
+
+        return $collection;
+    }
+
+
+    public function dob_error()
+    {
+        $collection = collect([]);
+        $farmers = Farmer::whereRaw('LENGTH(phone) <> 11')
+            ->orWhereYear('date_of_birth', '=', date('Y'))
+            ->get();
+        $farmers->map(function ($farmer) use ($collection) {
+            $farmerName = $farmer->first_name . ' ' . $farmer->last_name;
+            $farmerDob = $farmer->date_of_birth;
+            $collection->push([
+                'farmer_name' => $farmerName,
+                'farmer_dob' => $farmerDob,
+                'farmer_phone' => $farmer->phone,
+                'farmer_address' => $farmer->address,
+                'me_by' => User::where('df_id', $farmer->onboard_by)->first()->full_name,
+                'me_phone' => User::where('df_id', $farmer->onboard_by)->first()->phone,
+            ]);
+        });
+
+        return $collection;
+    }
 
 
     // all Co Dashboard info

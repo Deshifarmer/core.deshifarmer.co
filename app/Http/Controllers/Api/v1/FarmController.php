@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\v1\Farm;
+use App\Models\v1\Farmer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -26,7 +27,6 @@ class FarmController extends BaseController
         $paths = [];
         $data['farm_id'] = 'Farm-' . $this->generateUUID();
         if ($request->has('gallery')) {
-
 
             $gallery = $request->gallery;
             foreach ($gallery as $key => $image) {
@@ -70,4 +70,11 @@ class FarmController extends BaseController
     {
         //
     }
+    public function farmer_farm(Farmer $farmer)
+    {
+       return Farm::where('farmer_id', $farmer->farmer_id)->get();
+    }
+
+
+
 }

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\v1\ActivityController;
+use App\Http\Controllers\Api\v1\AdvisoryController;
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\CashInRequestController;
 use App\Http\Controllers\Api\v1\CashOutRequestController;
@@ -57,8 +59,7 @@ Route::prefix('v1/')
 
         // Route::get('farmer_group',[FarmerGroupController::class,'index'])->name('farmer_group');
         // Route::get('farmer_group/{farmer_group}',[FarmerGroupController::class,'show'])->name('farmer_group.show');
-        //
-        //
+
         // Route::delete('farmer_group/{farmer_group}',[FarmerGroupController::class,'destroy'])->name('farmer_group.destroy');
 
 
@@ -131,6 +132,9 @@ Route::prefix('v1/')
                     Route::post('assign_channel/{employee}', [EmployeeController::class, 'assignChannel'])->name('hq.assign_channel');
                     Route::get('channel_list/{employee}', [EmployeeController::class, 'channelList'])->name('hq.channel_list');
 
+                    Route::get('farmer_group',[FarmerGroupController::class,'index'])->name('farmer_group');
+                     Route::get('farmer_group/{farmer_group}',[FarmerGroupController::class,'show'])->name('farmer_group.show');
+
                     Route::prefix('dashboard/')->group(
                         function () {
                             Route::get('all_member', [DashboardController::class, 'all_member'])->name('all_member');
@@ -139,6 +143,10 @@ Route::prefix('v1/')
                         }
                     );
                 });
+        });
+
+        Route::group(['middleware' => ['auth:sanctum', 'user-access:CO|HQ']], function () {
+            Route::post('add_product', [ProductController::class, 'store'])->name('add_product');
         });
 
 
@@ -208,9 +216,12 @@ Route::prefix('v1/')
                     Route::post('farmer_group/{farmer_group}/assign', [FarmerGroupController::class, 'assignFarmer'])->name('farmer_group.assignFarmer');
 
                     Route::post('survey', [SurveyController::class, 'store'])->name('me.survey.store');
-
-
                     Route::post('my_farmer/{farmer}', [FarmerController::class, 'update'])->name('me.farmer.update');
+
+                    Route::post('advisory',[AdvisoryController::class,'store'])->name('advisory.store');
+                    Route::get('farmer_farm/{farmer}',[FarmController::class,'farmer_farm'])->name('farmer_farm');
+                    Route::post('activity',[ActivityController::class,'store'])->name('activity.store');
+                    Route::get('my_activity',[ActivityController::class,'myRecordedActivities'])->name('myRecordedActivities');
 
                     // Route::get('all_channel', [ChannelController::class, 'index'])->name('me.all_channel');
                     // Route::post('add_cluster',[ClusterController::class,'store'])->name('me.cluster.store');
@@ -233,7 +244,24 @@ Route::prefix('v1/')
 
         Route::get('test',[DashboardController::class,'test'])->name('test');
         Route::get('test2',[DashboardController::class,'farmerOnboardedTimeWithCount'])->name('farmerOnboardedTimeWithCount');
+        Route::get('phone_error',[DashboardController::class,'phone_error'])->name('phone_error');
+        Route::get('group_leaders',[DashboardController::class,'groupLeadersName'])->name('phone_error2');
+
+        Route::get('dob_error',[DashboardController::class,'dob_error'])->name('dob_error');
+
+        // Route::get('advisory',[AdvisoryController::class,'index'])->name('advisory');
+        // Route::get('advisory/{advisory}',[AdvisoryController::class,'show'])->name('advisory.show');
+        //
+        // Route::put('advisory/{advisory}',[AdvisoryController::class,'update'])->name('advisory.update');
+        // Route::delete('advisory/{advisory}',[AdvisoryController::class,'destroy'])->name('advisory.destroy');
 
 
+        // Route::get('activity',[ActivityController::class,'index'])->name('activity');
+        // Route::get('activity/{activity}',[ActivityController::class,'show'])->name('activity.show');
+
+        // Route::put('activity/{activity}',[ActivityController::class,'update'])->name('activity.update');
+        // Route::delete('activity/{activity}',[ActivityController::class,'destroy'])->name('activity.destroy');
+
+        Route::post('activity',[ActivityController::class,'store'])->name('activity.store');
 
     });

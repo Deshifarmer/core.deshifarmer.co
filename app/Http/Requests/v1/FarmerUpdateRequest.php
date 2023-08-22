@@ -25,7 +25,7 @@ class FarmerUpdateRequest extends FormRequest
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'first_name' => 'string',
             'last_name' => 'string',
-            'nid' => 'integer|unique:farmers,nid,' . $this->farmer->id,
+            'nid' => 'integer|unique:farmers,nid,' ,
             'gov_farmer_id' => 'integer',
             'fathers_name' => 'string',
             'is_married' => 'boolean',

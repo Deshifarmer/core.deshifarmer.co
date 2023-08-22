@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Models\v1\Advisory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AdvisoryController extends Controller
 {
@@ -21,8 +22,25 @@ class AdvisoryController extends Controller
      */
     public function store(Request $request)
     {
+        $input = $request->all();
+        if($request->hasFile('files')) {
+            $paths = [];
+            $files = $request->file('files');
 
-        
+            foreach ($files as $key => $image) {
+                $extension = $image->getClientOriginalExtension();
+                $image->storeAs('public/advisory', $key.time()  .'.'. $extension);
+                $imagePath = 'advisory/' . $key.time()  .'.'. $extension;
+
+                $paths[] = $imagePath;
+            }
+            $input['files'] = $paths;
+        }
+
+        $input['created_by'] = auth()->user()->df_id;
+
+        $advisory = Advisory::create($input);
+        return response()->json($advisory, 201);
     }
 
     /**

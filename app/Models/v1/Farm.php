@@ -33,6 +33,8 @@ class Farm extends Model
 
     protected $casts = [
         'gallery' => 'array',
+        'lat' => 'float',
+        'long' => 'float',
     ];
 
 }

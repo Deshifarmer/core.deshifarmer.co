@@ -36,9 +36,7 @@ class ProductController extends BaseController
             'category_id' => 'required|integer|exists:product_categories,id',
             'subcategory_id' => 'integer|exists:product_subcategories,id',
         ]);
-        if ($validator->fails()) {
-            return $this->sendError('Error validation', $validator->errors());
-        }
+       
 
         $input = $request->all();
         $input["product_id"] = 'pro-' . $this->generateUUID();

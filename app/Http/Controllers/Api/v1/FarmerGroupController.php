@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\Http\Requests\v1\FarmerUpdateRequest;
 use App\Http\Resources\v1\FarmerGroupResource;
 use App\Models\v1\Farmer;
 use App\Models\v1\FarmerGroup;
@@ -15,7 +16,7 @@ class FarmerGroupController extends BaseController
      */
     public function index()
     {
-        return FarmerGroup::all()->sortByDesc('created_at');
+        return FarmerGroupResource::collection(FarmerGroup::all()->sortByDesc('created_at'));
     }
 
     /**
@@ -46,7 +47,8 @@ class FarmerGroupController extends BaseController
                         'group_id' => $data['farmer_group_id'],
                     ]
                 ),
-                Farmer::where('farmer_id', $request->group_leader)->first());
+                Farmer::where('farmer_id', $request->group_leader)->first()
+            );
         }
         $farmerGroup = FarmerGroup::create($data);
         return response()->json($farmerGroup, 201);
@@ -62,7 +64,7 @@ class FarmerGroupController extends BaseController
 
     public function assignFarmer(Request $request, FarmerGroup $farmerGroup)
     {
-        if(Farmer::where('group_id', $farmerGroup->farmer_group_id)->count() >= 25){
+        if (Farmer::where('group_id', $farmerGroup->farmer_group_id)->count() >= 25) {
             return response()->json([
                 'message' => 'Group is Full',
                 'status' => 'error',
@@ -70,16 +72,19 @@ class FarmerGroupController extends BaseController
         }
 
         foreach ($request->list as $key => $value) {
-           (new FarmerController)->update(
-                new Request(
-                    [
-                        'group_id' => $farmerGroup->farmer_group_id,
-                    ]
-                ),
+            (new FarmerController)->update(
+                new Request([
+                    'group_id' => $farmerGroup->farmer_group_id,
+                ]),
                 Farmer::where('farmer_id', $value)->first()
             );
-        return $farmerGroup->farmer_group_id;
+            return response()->json([
+                'message' => 'Farmer Assign Successfully',
+                'status' => 'success',
+
+            ], 200);
         }
+
         return response()->json([
             'message' => 'Farmer Assign Successfully',
             'status' => 'success',
@@ -110,12 +115,12 @@ class FarmerGroupController extends BaseController
     }
 
     public function freeGroup()
-    
+
     {
         $farmerGroup = FarmerGroup::where('group_manager_id', auth()->user()->df_id)->get()->sortByDesc('created_at');
         $farmerGroup = $farmerGroup->filter(function ($value, $key) {
             $test = Farmer::where('group_id', $value->farmer_group_id)->count();
-            return $test < 25 ;
+            return $test < 25;
         });
         return FarmerGroupResource::collection($farmerGroup);
     }

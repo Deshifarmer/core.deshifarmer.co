@@ -13,6 +13,7 @@ class Advisory extends Model
         'subject',
         'time_slot',
         'farmer_group_id',
+        'farmer_list',
         'files',
         'note',
         'created_by',
@@ -25,5 +26,6 @@ class Advisory extends Model
 
     protected $casts = [
         'files' => 'array',
+        'farmer_list' => 'array',
     ];
 }

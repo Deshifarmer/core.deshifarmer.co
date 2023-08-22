@@ -55,9 +55,13 @@ class FarmerController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(FarmerUpdateRequest $request, Farmer $farmer)
+    public function update(Request $request, Farmer $farmer)
     {
-        $validated = $request->validated();
+
+
+        // $validated = $request->validated();
+        $validated = $request->all();
+
         if ($request->hasFile('image')) {
             $extension = $request->file('image')->getClientOriginalExtension();
             $request->file('image')->storeAs('public/image/farmer', $farmer->farmer_id . '.' . $extension);
@@ -108,4 +112,8 @@ class FarmerController extends BaseController
             ->appends(request()->query());
         return FarmerResource::collection($farmer);
     }
+
+   
+
+
 }

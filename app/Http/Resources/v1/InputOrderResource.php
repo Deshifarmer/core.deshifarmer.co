@@ -69,6 +69,7 @@ class InputOrderResource extends JsonResource
                 return [
                     'farmer_name' => $farmer_details->implode('first_name') . ' ' . $farmer_details->implode('last_name'),
                     'farmer_phone' => $farmer_details->implode('phone'),
+                    'farmer_address' => $farmer_details->implode('address'),
                 ];
             }),
             'order_details' => $this->when($request->routeIs(
