@@ -25,6 +25,8 @@ class GroupLeaderDetailsResource extends JsonResource
             'gender'=> $this->gender,
             'address' => $this->address,
             'image' => $this->image,
+            'farm_area'=> $this->farm_area,
+
         ];
     }
 }

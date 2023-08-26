@@ -10,6 +10,7 @@ use App\Models\v1\Division;
 use App\Models\v1\Employee;
 use App\Models\v1\Farmer;
 use App\Models\v1\FarmerGroup;
+use App\Models\v1\Order;
 use App\Models\v1\Product;
 use App\Models\v1\Upazila;
 use Carbon\Carbon;
@@ -39,6 +40,9 @@ class DashboardController extends Controller
             'total_te' => $counts[4] ?? 0,
             'total_farmer' => Farmer::count(),
             'total_channel' => Channel::count(),
+            'total_group' => FarmerGroup::count(),
+            'total_product' => Product::count(),
+            'total_order' => Order::count(),
         ]);
     }
 

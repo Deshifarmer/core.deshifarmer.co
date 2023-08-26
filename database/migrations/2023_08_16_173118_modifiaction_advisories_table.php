@@ -13,8 +13,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('advisories', function (Blueprint $table) {
+            $table->dropColumn('note');
             $table->text('farmer_group_id')->nullable()->change();
-            // $table->json('farmer_list');
+            $table->json('farmer_list');
             $table->json('files')->nullable()->change();
         });
     }
@@ -26,7 +27,7 @@ return new class extends Migration
     {
         Schema::table('advisories', function (Blueprint $table) {
             $table->text('farmer_group_id')->nullable()->change();
-            // $table->json('farmer_list');
+            $table->json('farmer_list');
             $table->json('files')->nullable()->change();
         });
     }
