@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\v1\ProductResource;
 use App\Models\User;
 use App\Models\v1\Channel;
 use App\Models\v1\District;
@@ -223,7 +224,7 @@ class DashboardController extends Controller
         return $collection;
     }
 
-    public function farmerOnboardedTimeWithCount()
+    public function farmerOnboardTimeWithCount()
     {
         $collection = collect([]);
 
@@ -261,58 +262,6 @@ class DashboardController extends Controller
         return $collection;
     }
 
-
-
-    public function farmerOnboardedTimeWithCount2()
-    {
-        $collection = collect([]);
-
-        $farmers = Farmer::whereTime('created_at', '>=', '12:00:00')
-            ->whereTime('created_at', '<=', '23:59:59')
-            ->get()
-            ->groupBy(function ($farmer) {
-                return $farmer->created_at->format('H');
-            })
-            ->map(function ($group) {
-                return $group->count();
-            });
-
-        return $farmers;
-    }
-
-    public function farmerOnboardedTimeWithCount3()
-    {
-        $collection = collect([]);
-
-        $farmers = Farmer::whereTime('created_at', '>=', '00:00:00')
-            ->whereTime('created_at', '<=', '23:59:59')
-            ->get()
-            ->groupBy(function ($farmer) {
-                return $farmer->created_at->format('H');
-            })
-            ->map(function ($group) {
-                return $group->count();
-            });
-
-        return $farmers;
-    }
-
-    public function farmerOnboardedTimeWithCount4()
-    {
-        $collection = collect([]);
-
-        $farmers = Farmer::whereTime('created_at', '>=', '00:00:00')
-            ->whereTime('created_at', '<=', '23:59:59')
-            ->get()
-            ->groupBy(function ($farmer) {
-                return $farmer->created_at->format('H');
-            })
-            ->map(function ($group) {
-                return $group->count();
-            });
-
-        return $farmers;
-    }
 
     public function groupLeadersName()
     {
@@ -361,6 +310,19 @@ class DashboardController extends Controller
 
         return $collection;
     }
+
+
+    // public function popular_product(){
+    //     return Order::where('product_id', '!=', null)
+    //         ->selectRaw('COUNT(*) as total, product_id')
+    //         ->groupBy('product_id')
+    //         ->orderBy('total', 'desc')
+    //         ->limit(5)
+    //         ->get()
+    //         ->map(function ($order) {
+    //             return ProductResource::make(Product::where('product_id', $order->product_id)->first());
+    //         });
+    // }
 
 
     // all Co Dashboard info

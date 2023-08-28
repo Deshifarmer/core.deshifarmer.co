@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\ProductResource;
+use App\Models\v1\Order;
 use App\Models\v1\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -26,7 +27,7 @@ class ProductController extends BaseController
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse|Response
      */
     public function store(Request $request)
     {
@@ -36,7 +37,7 @@ class ProductController extends BaseController
             'category_id' => 'required|integer|exists:product_categories,id',
             'subcategory_id' => 'integer|exists:product_subcategories,id',
         ]);
-       
+
 
         $input = $request->all();
         $input["product_id"] = 'pro-' . $this->generateUUID();
@@ -46,7 +47,7 @@ class ProductController extends BaseController
         $input['image'] =  $image_path;
         $input['company_id'] =  $request->company_id == null ? auth()->user()->df_id : $input['company_id'];
         $input['sell_price'] = $input['sell_price_from_company'];
-        $product = Product::create($input);
+        Product::create($input);
         return Response()->json([
             'message' => 'Product Created Successfully',
             'status' => 'success',
@@ -69,7 +70,7 @@ class ProductController extends BaseController
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, Product $product)
     {
@@ -181,5 +182,17 @@ class ProductController extends BaseController
     {
         $products = Product::where('company_id', auth()->user()->df_id)->get();
         return ProductResource::collection($products);
+    }
+
+    public function popular_product(){
+        return Order::where('product_id', '!=', null)
+            ->selectRaw('COUNT(*) as total, product_id')
+            ->groupBy('product_id')
+            ->orderBy('total', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(function ($order) {
+                return ProductResource::make(Product::where('product_id', $order->product_id)->first());
+            });
     }
 }

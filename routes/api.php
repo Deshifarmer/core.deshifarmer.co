@@ -225,6 +225,8 @@ Route::prefix('v1/')
 
                     // Route::get('all_channel', [ChannelController::class, 'index'])->name('me.all_channel');
                     // Route::post('add_cluster',[ClusterController::class,'store'])->name('me.cluster.store');
+
+                    Route::get('popular_product',[ProductController::class,'popular_product'])->name('popular_product');
                 });
         });
 
@@ -233,17 +235,17 @@ Route::prefix('v1/')
             Route::prefix('manager/dashboard')
                 ->group(function () {
                     Route::get('company_wise_product', [DashboardController::class, 'company_wise_product'])->name('company_wise_product');
-                    Route::get('all_member', [DashboardController::class, 'all_member'])->name('all_member');
-                    Route::get('total_group', [DashboardController::class, 'total_group'])->name('total_group');
+                    Route::get('all_member', [DashboardController::class, 'all_member'])->name('all_count');
+                    Route::get('total_group', [DashboardController::class, 'total_group'])->name('manager.total_group');
                     Route::get('farmer_added', [DashboardController::class, 'farmer_added'])->name('farmer_added');
-                    Route::get('location_wise_farmer', [DashboardController::class, 'location_wise_farmer'])->name('district_wise_farmer');
+                    Route::get('location_wise_farmer', [DashboardController::class, 'location_wise_farmer'])->name('manager.location_wise_farmer');
                     Route::get('cp_wise_farmer', [DashboardController::class, 'distributor_wise_farmer'])->name('distributor_wise_farmer');
 
                 });
         });
 
         Route::get('test',[DashboardController::class,'test'])->name('test');
-        Route::get('test2',[DashboardController::class,'farmerOnboardedTimeWithCount'])->name('farmerOnboardedTimeWithCount');
+        Route::get('test2',[DashboardController::class,'farmerOnboard TimeWithCount'])->name('farmerOnboardTimeWithCount');
         Route::get('phone_error',[DashboardController::class,'phone_error'])->name('phone_error');
         Route::get('group_leaders',[DashboardController::class,'groupLeadersName'])->name('phone_error2');
 
@@ -262,6 +264,8 @@ Route::prefix('v1/')
         // Route::put('activity/{activity}',[ActivityController::class,'update'])->name('activity.update');
         // Route::delete('activity/{activity}',[ActivityController::class,'destroy'])->name('activity.destroy');
 
-        Route::post('activity',[ActivityController::class,'store'])->name('activity.store');
+
+
+
 
     });
