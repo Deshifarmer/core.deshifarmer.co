@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\v1\ActivityController;
 use App\Http\Controllers\Api\v1\AdvisoryController;
+use App\Http\Controllers\Api\v1\AttendanceController;
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\CashInRequestController;
 use App\Http\Controllers\Api\v1\CashOutRequestController;
@@ -26,7 +27,7 @@ use App\Http\Controllers\Api\v1\ProductSubCategoryController;
 use App\Http\Controllers\Api\v1\SurveyController;
 use App\Http\Controllers\Api\v1\TransactionController;
 use App\Http\Controllers\Api\v1\UserController;
-
+use App\Models\v1\Attendance;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\Console\Input\Input;
 
@@ -42,7 +43,7 @@ use Symfony\Component\Console\Input\Input;
 */
 
 Route::prefix('v1/')
-    ->middleware(['cors', 'json'])
+    ->middleware(['cors'])
     ->group(function () {
 
         // Route::get('farm',[FarmController::class,'index'])->name('farm');
@@ -90,6 +91,12 @@ Route::prefix('v1/')
 
             Route::get('product/{product}', [ProductController::class, 'show']);
             Route::get('all_company', [UserController::class, 'allCompany'])->name('all_company');
+
+            Route::get('toadys_attendance', [AttendanceController::class, 'todays_attendance'])->name('todays_attendance');
+            Route::get('attendance_history', [AttendanceController::class, 'attendance_history'])->name('attendance_history');
+            Route::get('attendance/{attendance}', [AttendanceController::class, 'show'])->name('attendance.show');
+            Route::post('attendance', [AttendanceController::class, 'store'])->name('attendance.store');
+            Route::put('attendance/{attendance}', [AttendanceController::class, 'update'])->name('attendance.update');
         });
 
 
@@ -104,7 +111,7 @@ Route::prefix('v1/')
                     Route::get('all_me', [UserController::class, 'allMicroEnt'])->name('all_me');
                     Route::get('all_tm', [UserController::class, 'allTerritoryManager'])->name('all_tm');
                     Route::get('all_farmer', [FarmerController::class, 'index']);
-                    Route::get('farmer_search',[FarmerController::class,'paginateFarmerWithSearch'])->name('paginateFarmerWithSearch');
+                    Route::get('farmer_search', [FarmerController::class, 'paginateFarmerWithSearch'])->name('paginateFarmerWithSearch');
                     Route::get('unassigned_distributor', [UserController::class, 'unassignedDistributor'])->name('unassigned_distributor');
                     Route::get('unassigned_me', [UserController::class, 'unassignedMe'])->name('unassigned_me');
                     Route::get('all_channel', [ChannelController::class, 'index'])->name('hq.all_channel');
@@ -132,8 +139,13 @@ Route::prefix('v1/')
                     Route::post('assign_channel/{employee}', [EmployeeController::class, 'assignChannel'])->name('hq.assign_channel');
                     Route::get('channel_list/{employee}', [EmployeeController::class, 'channelList'])->name('hq.channel_list');
 
-                    Route::get('farmer_group',[FarmerGroupController::class,'index'])->name('farmer_group');
-                     Route::get('farmer_group/{farmer_group}',[FarmerGroupController::class,'show'])->name('farmer_group.show');
+                    Route::get('farmer_group', [FarmerGroupController::class, 'index'])->name('farmer_group');
+                    Route::get('farmer_group/{farmer_group}', [FarmerGroupController::class, 'show'])->name('farmer_group.show');
+
+                    Route::get('all_farm', [FarmController::class, 'index'])->name('hq.all_farm');
+                    Route::get('farmer_farm/{farmer}', [FarmController::class, 'farmer_farm'])->name('hq.farmer_farm');
+
+                    Route::get('attendance', [AttendanceController::class, 'index'])->name('attendance');
 
                     Route::prefix('dashboard/')->group(
                         function () {
@@ -218,15 +230,15 @@ Route::prefix('v1/')
                     Route::post('survey', [SurveyController::class, 'store'])->name('me.survey.store');
                     Route::post('my_farmer/{farmer}', [FarmerController::class, 'update'])->name('me.farmer.update');
 
-                    Route::post('advisory',[AdvisoryController::class,'store'])->name('advisory.store');
-                    Route::get('farmer_farm/{farmer}',[FarmController::class,'farmer_farm'])->name('farmer_farm');
-                    Route::post('activity',[ActivityController::class,'store'])->name('activity.store');
-                    Route::get('my_activity',[ActivityController::class,'myRecordedActivities'])->name('myRecordedActivities');
+                    Route::post('advisory', [AdvisoryController::class, 'store'])->name('advisory.store');
+                    Route::get('farmer_farm/{farmer}', [FarmController::class, 'farmer_farm'])->name('farmer_farm');
+                    Route::post('activity', [ActivityController::class, 'store'])->name('activity.store');
+                    Route::get('my_activity', [ActivityController::class, 'myRecordedActivities'])->name('myRecordedActivities');
 
                     // Route::get('all_channel', [ChannelController::class, 'index'])->name('me.all_channel');
                     // Route::post('add_cluster',[ClusterController::class,'store'])->name('me.cluster.store');
 
-                    Route::get('popular_product',[ProductController::class,'popular_product'])->name('popular_product');
+                    Route::get('popular_product', [ProductController::class, 'popular_product'])->name('popular_product');
                 });
         });
 
@@ -240,16 +252,15 @@ Route::prefix('v1/')
                     Route::get('farmer_added', [DashboardController::class, 'farmer_added'])->name('farmer_added');
                     Route::get('location_wise_farmer', [DashboardController::class, 'location_wise_farmer'])->name('manager.location_wise_farmer');
                     Route::get('cp_wise_farmer', [DashboardController::class, 'distributor_wise_farmer'])->name('distributor_wise_farmer');
-
                 });
         });
 
-        Route::get('test',[DashboardController::class,'test'])->name('test');
-        Route::get('test2',[DashboardController::class,'farmerOnboard TimeWithCount'])->name('farmerOnboardTimeWithCount');
-        Route::get('phone_error',[DashboardController::class,'phone_error'])->name('phone_error');
-        Route::get('group_leaders',[DashboardController::class,'groupLeadersName'])->name('phone_error2');
+        Route::get('test', [DashboardController::class, 'test'])->name('test');
+        Route::get('test2', [DashboardController::class, 'farmerOnboard TimeWithCount'])->name('farmerOnboardTimeWithCount');
+        Route::get('phone_error', [DashboardController::class, 'phone_error'])->name('phone_error');
+        Route::get('group_leaders', [DashboardController::class, 'groupLeadersName'])->name('phone_error2');
 
-        Route::get('dob_error',[DashboardController::class,'dob_error'])->name('dob_error');
+        Route::get('dob_error', [DashboardController::class, 'dob_error'])->name('dob_error');
 
         // Route::get('advisory',[AdvisoryController::class,'index'])->name('advisory');
         // Route::get('advisory/{advisory}',[AdvisoryController::class,'show'])->name('advisory.show');
@@ -267,5 +278,5 @@ Route::prefix('v1/')
 
 
 
-
+        Route::get('public_farmer_trace/{farmer}', [FarmerController::class, 'publicFarmerTrace'])->name('public_farmer_trace');
     });

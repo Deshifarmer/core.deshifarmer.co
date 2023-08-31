@@ -20,7 +20,7 @@ class UserController extends Controller
     }
     public function allCompany()
     {
-        return UserResource::collection(Employee::where('type',1)->get()->sortByDesc('created_at')) ;
+        return UserResource::collection(Employee::where('type',1)->inRandomOrder()->get()) ;
 
     }
 

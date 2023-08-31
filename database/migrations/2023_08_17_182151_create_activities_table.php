@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('farmer_id');
             $table->string('farm');
             $table->string('crop');
-            $table->string('type');
-            $table->string('quantity');
-            $table->string('unit');
+            // $table->string('type');
+            $table->string('quantity')->nullable();
+            $table->string('unit')->nullable();
             $table->json('location');
             $table->string('activity_by');
             $table->string('details');

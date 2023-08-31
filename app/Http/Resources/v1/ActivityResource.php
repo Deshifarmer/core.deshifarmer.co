@@ -21,13 +21,12 @@ class ActivityResource extends JsonResource
             'farmer_id' => $this->farmer_id,
             'farmer_details' => Farmer::where('farmer_id', $this->farmer_id)->get()->map(function ($farmer) {
                 return [
-
                     'full_name' => $farmer->full_name,
                     'phone' => $farmer->phone,
                     'image' => $farmer->image,
                 ];
             }),
-            'farm' => $this->farm, 
+            'farm' => $this->farm,
             'crop' => $this->crop,
             'type' => $this->type,
             'quantity' => $this->quantity,

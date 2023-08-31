@@ -2,8 +2,10 @@
 
 namespace App\Console;
 
+use App\Models\v1\Attendance;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\DB;
 
 class Kernel extends ConsoleKernel
 {
@@ -15,7 +17,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->call(function () {
+           Attendance::where('check_out', null)->update(['check_out' => now(), 'updated_at' => now(),'cout_note' => 'Forgot to check out']);
+        })->daily();
     }
 
     /**

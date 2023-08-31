@@ -15,13 +15,19 @@ class AuthResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        // $details = Employee::where('df_id', $this->df_id)->get();
+        $arr = [
+            0 => 'HQ',
+            1 => 'CO',
+            2 => 'DB',
+            3 => 'ME',
+            4 => 'TM',
+        ];
+
         return [
-            'token' => $this->createToken('hq_app')->plainTextToken,
+            'token' => $this->createToken($arr[$this->role])->plainTextToken,
             'full_name' => "$this->first_name $this->last_name",
             'df_id' => $this->df_id,
             'role' => $this->role,
-           
         ];
     }
 }

@@ -81,8 +81,8 @@ class ProductController extends BaseController
             return $this->sendError('Error validation', $validator->errors());
         }
         $input = $request->all();
-        if($request->hasFile('image')){
-            Storage::delete('public/'.$product->image);
+        if ($request->hasFile('image')) {
+            Storage::delete('public/' . $product->image);
             $extension = $request->file('image')->getClientOriginalExtension();
             $request->file('image')->storeAs('public/image/product', $product->product_id . '.' . $extension);
             $image_path = '/image/product/' . $product->product_id . '.' . $extension;
@@ -113,52 +113,6 @@ class ProductController extends BaseController
 
     public function sort(Request $request)
     {
-        // $per_page = 10;
-        // if ($request->has('per_page')) {
-        //     $per_page = $request->per_page;
-        // }
-        // if ($request->has('company_id') && $request->has('category_id')) {
-        //     $products = Product::where('company_id', $request->company_id)
-        //         ->where('category_id', $request->category_id)
-        //         ->where('status', 'active')
-        //         ->orderBy('created_at', 'desc')
-        //         ->paginate($per_page)
-        //         ->appends(request()->query());
-        //     return ProductResource::collection($products);
-        // } elseif ($request->has('product_name') && $request->has('company_id')) {
-        //     $products = Product::where('name', 'LIKE', '%' . $request->product_name . '%')
-        //         ->Where('company_id', $request->company_id)
-        //         ->where('status', 'active')
-        //         ->orderBy('created_at', 'desc')
-        //         ->paginate($per_page)
-        //         ->appends(request()->query());
-        //     return ProductResource::collection($products);
-        // } elseif ($request->has('company_id')) {
-        //     $products = Product::where('company_id', $request->company_id)
-        //         ->where('status', 'active')
-        //         ->orderBy('created_at', 'desc')
-        //         ->paginate($per_page)
-        //         ->appends(request()->query());
-        //     return ProductResource::collection($products);
-        // } elseif ($request->has('category_id')) {
-        //     $products = Product::where('category_id', $request->category_id)
-        //         ->where('status', 'active')
-        //         ->orderBy('created_at', 'desc')
-        //         ->paginate($per_page)
-        //         ->appends(request()->query());
-        //     return ProductResource::collection($products);
-        // } elseif ($request->has('product_name')) {
-        //     $products = Product::where('name', 'LIKE', '%' . $request->product_name . '%')
-        //         ->where('status', 'active')
-        //         ->orderBy('created_at', 'desc')
-        //         ->paginate($per_page)
-        //         ->appends(request()->query());
-        //     return ProductResource::collection($products);
-        // } else {
-        //     return ProductResource::collection(Product::where('status', 'active')
-        //         ->inRandomOrder()
-        //         ->paginate($per_page));
-        // }
 
         $products = Product::query()
             ->when($request->has('company_id'), function ($query) use ($request) {
@@ -184,7 +138,8 @@ class ProductController extends BaseController
         return ProductResource::collection($products);
     }
 
-    public function popular_product(){
+    public function popular_product()
+    {
         return Order::where('product_id', '!=', null)
             ->selectRaw('COUNT(*) as total, product_id')
             ->groupBy('product_id')

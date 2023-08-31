@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Requests\v1\FarmerUpdateRequest;
 use App\Http\Resources\v1\FarmerResource;
+use App\Http\Resources\v1\PublicFarmerTrace;
 use App\Models\v1\Farmer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -113,7 +114,10 @@ class FarmerController extends BaseController
         return FarmerResource::collection($farmer);
     }
 
-   
 
+    public function PublicFarmerTrace(Farmer $farmer){
 
+        return new PublicFarmerTrace($farmer);
+
+    }
 }
