@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\v1\AttendanceResource;
+use App\Http\Resources\v1\AttendenceResource;
 use App\Models\v1\Attendance;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -79,7 +81,20 @@ class AttendanceController extends Controller
 
     public function todays_attendance()
     {
-        return Attendance::where('employee_id', auth()->user()->df_id)->whereDate('check_in', now())->first();
+        $t_attend = Attendance::where('employee_id', auth()->user()->df_id)->whereDate('check_in', now())->first();
+        if ( $t_attend){
+
+            return response()->json(
+                AttendanceResource::make($t_attend),
+                200
+            );
+        }else{
+            return response()->json([
+                'message' => 'You have not checked in yet'
+            ], 400);
+        }
+
+
     }
 
     public function attendance_history()

@@ -46,25 +46,13 @@ Route::prefix('v1/')
     ->middleware(['cors'])
     ->group(function () {
 
-        // Route::get('farm',[FarmController::class,'index'])->name('farm');
-        // Route::get('farm/{farm}',[FarmController::class,'show'])->name('farm.show');
-        // Route::post('farm',[FarmController::class,'store'])->name('farm.store');
-        // Route::put('farm/{farm}',[FarmController::class,'update'])->name('farm.update');
-        // Route::delete('farm/{farm}',[FarmController::class,'destroy'])->name('farm.destroy');
+
 
         // Route::get('cluster',[ClusterController::class,'index'])->name('cluster');
         // Route::get('cluster/{cluster}',[ClusterController::class,'show'])->name('cluster.show');
         // Route::post('cluster',[ClusterController::class,'store'])->name('cluster.store');
         // Route::put('cluster/{cluster}',[ClusterController::class,'update'])->name('cluster.update');
         // Route::delete('cluster/{cluster}',[ClusterController::class,'destroy'])->name('cluster.destroy');
-
-        // Route::get('farmer_group',[FarmerGroupController::class,'index'])->name('farmer_group');
-        // Route::get('farmer_group/{farmer_group}',[FarmerGroupController::class,'show'])->name('farmer_group.show');
-
-        // Route::delete('farmer_group/{farmer_group}',[FarmerGroupController::class,'destroy'])->name('farmer_group.destroy');
-
-
-
 
 
         Route::post('hq/login', [AuthController::class, 'login'])->name('hq_login');
@@ -92,7 +80,7 @@ Route::prefix('v1/')
             Route::get('product/{product}', [ProductController::class, 'show']);
             Route::get('all_company', [UserController::class, 'allCompany'])->name('all_company');
 
-            Route::get('toadys_attendance', [AttendanceController::class, 'todays_attendance'])->name('todays_attendance');
+            Route::get('todays_attendance', [AttendanceController::class, 'todays_attendance'])->name('todays_attendance');
             Route::get('attendance_history', [AttendanceController::class, 'attendance_history'])->name('attendance_history');
             Route::get('attendance/{attendance}', [AttendanceController::class, 'show'])->name('attendance.show');
             Route::post('attendance', [AttendanceController::class, 'store'])->name('attendance.store');
@@ -239,6 +227,7 @@ Route::prefix('v1/')
                     // Route::post('add_cluster',[ClusterController::class,'store'])->name('me.cluster.store');
 
                     Route::get('popular_product', [ProductController::class, 'popular_product'])->name('popular_product');
+                    Route::get('farmer_search', [FarmerController::class, 'MepaginateFarmerWithSearch'])->name('MepaginateFarmerWithSearch');
                 });
         });
 
@@ -268,15 +257,11 @@ Route::prefix('v1/')
         // Route::put('advisory/{advisory}',[AdvisoryController::class,'update'])->name('advisory.update');
         // Route::delete('advisory/{advisory}',[AdvisoryController::class,'destroy'])->name('advisory.destroy');
 
-
         // Route::get('activity',[ActivityController::class,'index'])->name('activity');
         // Route::get('activity/{activity}',[ActivityController::class,'show'])->name('activity.show');
 
         // Route::put('activity/{activity}',[ActivityController::class,'update'])->name('activity.update');
         // Route::delete('activity/{activity}',[ActivityController::class,'destroy'])->name('activity.destroy');
-
-
-
-
         Route::get('public_farmer_trace/{farmer}', [FarmerController::class, 'publicFarmerTrace'])->name('public_farmer_trace');
+
     });

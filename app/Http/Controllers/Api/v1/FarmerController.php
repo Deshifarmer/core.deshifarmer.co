@@ -101,9 +101,9 @@ class FarmerController extends BaseController
     public function paginateFarmerWithSearch(Request $request)
     {
         $farmer = Farmer::query()
-            ->latest()
+            
             ->when($request->search, function ($query) use ($request) {
-                $query->WhereRaw("concat(first_name, ' ', last_name) like '%" .$request->search. "%' ")
+                $query->WhereRaw("concat(first_name, ' ', last_name) like '%" . $request->search . "%' ")
                     ->orWhere('farmer_id', 'LIKE', '%' . $request->search . '%')
                     ->orWhere('phone', 'LIKE', '%' . $request->search . '%')
                     ->orWhere('nid', 'LIKE', '%' . $request->search . '%');
@@ -115,9 +115,38 @@ class FarmerController extends BaseController
     }
 
 
-    public function PublicFarmerTrace(Farmer $farmer){
+    public function PublicFarmerTrace(Farmer $farmer)
+    {
 
         return new PublicFarmerTrace($farmer);
+    }
+
+    public function MepaginateFarmerWithSearch(Request $request)
+    {
+
+
+        $user = auth()->user();
+        $search = $request->search;
+
+        $farmers = Farmer::where('onboard_by', $user->df_id)
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->whereRaw("concat(first_name, ' ', last_name) like ?", ["%$search%"])
+                        ->orWhere('farmer_id', 'LIKE', "%$search%")
+                        ->orWhere('phone', 'LIKE', "%$search%")
+                        ->orWhere('nid', 'LIKE', "%$search%");
+                });
+            })
+
+            ->get()->sortByDesc('created_at');
+        if ($farmers->isEmpty()) {
+            return response()->json([
+                'message' => 'No farmer found',
+            ]);
+        } else {
+            return FarmerResource::collection($farmers);
+        }
+
 
     }
 }
