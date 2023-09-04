@@ -101,7 +101,7 @@ class FarmerController extends BaseController
     public function paginateFarmerWithSearch(Request $request)
     {
         $farmer = Farmer::query()
-            
+
             ->when($request->search, function ($query) use ($request) {
                 $query->WhereRaw("concat(first_name, ' ', last_name) like '%" . $request->search . "%' ")
                     ->orWhere('farmer_id', 'LIKE', '%' . $request->search . '%')
@@ -139,6 +139,7 @@ class FarmerController extends BaseController
             })
 
             ->get()->sortByDesc('created_at');
+            
         if ($farmers->isEmpty()) {
             return response()->json([
                 'message' => 'No farmer found',
@@ -146,7 +147,5 @@ class FarmerController extends BaseController
         } else {
             return FarmerResource::collection($farmers);
         }
-
-
     }
 }

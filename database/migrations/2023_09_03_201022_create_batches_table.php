@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('activities', function (Blueprint $table) {
+        Schema::create('batches', function (Blueprint $table) {
             $table->id();
-            $table->json('activity');
-            $table->json('images')->nullable();
-            $table->string('batch_id');
-            $table->string('track_by');
-            
+            $table->string('batch_id')->unique()->index();
+            $table->string('season'); // season
+            $table->string('farm_id');
+            $table->string('which_crop');
+            $table->string('created_by');
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('activities');
+        Schema::dropIfExists('batches');
     }
 };

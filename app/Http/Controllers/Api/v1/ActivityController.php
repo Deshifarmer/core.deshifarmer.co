@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\ActivityResource;
 use App\Models\v1\Activity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ActivityController extends Controller
 {
@@ -22,6 +23,14 @@ class ActivityController extends Controller
      */
     public function store(Request $request)
     {
+
+        $validator = Validator::make($request->all(), [
+            'batch_id' => 'required|string|exists:batches,batch_id',
+
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
         $input = $request->all();
         $images = [];
         if ($request->hasFile('images')) {
@@ -33,13 +42,15 @@ class ActivityController extends Controller
 
                 $images[] = $imagePath;
             }
-            $input['images'] = json_encode($images);
+            $input['images'] = $images;
         }
-        $input['activity_by'] = auth()->user()->df_id;
-        $activity = Activity::create($input);
+        $input['track_by'] = auth()->user()->df_id;
+       
+
+
+         Activity::create($input);
         return response()->json([
             "message" => "Activity created Successfully",
-            'activity' => $activity
         ], 201);
     }
 
@@ -69,7 +80,7 @@ class ActivityController extends Controller
 
     public function myRecordedActivities()
     {
-        $activities = ActivityResource::collection(Activity::where('activity_by', auth()->user()->df_id)->get());
+        $activities = ActivityResource::collection(Activity::where('track_by', auth()->user()->df_id)->get());
 
         return response()->json(
              $activities

@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\v1\ActivityController;
 use App\Http\Controllers\Api\v1\AdvisoryController;
 use App\Http\Controllers\Api\v1\AttendanceController;
 use App\Http\Controllers\Api\v1\AuthController;
+use App\Http\Controllers\Api\v1\BatchController;
 use App\Http\Controllers\Api\v1\CashInRequestController;
 use App\Http\Controllers\Api\v1\CashOutRequestController;
 use App\Http\Controllers\Api\v1\ChannelController;
@@ -55,6 +56,10 @@ Route::prefix('v1/')
         // Route::delete('cluster/{cluster}',[ClusterController::class,'destroy'])->name('cluster.destroy');
 
 
+
+
+
+
         Route::post('hq/login', [AuthController::class, 'login'])->name('hq_login');
         Route::post('co/login', [AuthController::class, 'login'])->name('co_login');
         Route::post('distributor/login', [AuthController::class, 'login'])->name('distributor_login');
@@ -62,6 +67,11 @@ Route::prefix('v1/')
         Route::post('pm/login', [AuthController::class, 'login'])->name('pm_login');
 
         Route::group(['middleware' => ['auth:sanctum']], function () {
+
+            Route::get('batch', [BatchController::class, 'index'])->name('batch');
+            Route::get('batch/{batch}', [BatchController::class, 'show'])->name('batch.show');
+            Route::put('batch/{batch}', [BatchController::class, 'update'])->name('batch.update');
+            Route::delete('batch/{batch}', [BatchController::class, 'destroy'])->name('batch.destroy');
             Route::post('logout', [AuthController::class, 'logout']);
             Route::get('division', [DivisionController::class, 'index']);
             Route::get('division/{division}', [DivisionController::class, 'show']);
@@ -228,6 +238,8 @@ Route::prefix('v1/')
 
                     Route::get('popular_product', [ProductController::class, 'popular_product'])->name('popular_product');
                     Route::get('farmer_search', [FarmerController::class, 'MepaginateFarmerWithSearch'])->name('MepaginateFarmerWithSearch');
+
+                    Route::post('batch', [BatchController::class, 'store'])->name('batch.store');
                 });
         });
 
@@ -243,7 +255,7 @@ Route::prefix('v1/')
                     Route::get('cp_wise_farmer', [DashboardController::class, 'distributor_wise_farmer'])->name('distributor_wise_farmer');
                 });
         });
-
+ 
         Route::get('test', [DashboardController::class, 'test'])->name('test');
         Route::get('test2', [DashboardController::class, 'farmerOnboard TimeWithCount'])->name('farmerOnboardTimeWithCount');
         Route::get('phone_error', [DashboardController::class, 'phone_error'])->name('phone_error');

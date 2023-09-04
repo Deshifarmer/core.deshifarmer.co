@@ -5,17 +5,19 @@ namespace App\Models\v1;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Activity extends Model
+class Batch extends Model
 {
+
     use HasFactory;
+    public function getRouteKeyName()
+    {
+        return 'batch_id';
+    }
     protected $fillable = [
-        'activity',
-        'images',
         'batch_id',
-        'track_by'
-    ];
-    protected $casts = [
-        'images' => 'array',
-        'activity' => 'json'
+        'season',
+        'farm_id',
+        'which_crop',
+        'created_by'
     ];
 }
