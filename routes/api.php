@@ -94,7 +94,7 @@ Route::prefix('v1/')
             Route::get('attendance_history', [AttendanceController::class, 'attendance_history'])->name('attendance_history');
             Route::get('attendance/{attendance}', [AttendanceController::class, 'show'])->name('attendance.show');
             Route::post('attendance', [AttendanceController::class, 'store'])->name('attendance.store');
-            Route::put('attendance/{attendance}', [AttendanceController::class, 'update'])->name('attendance.update');
+            Route::post('attendance/{attendance}', [AttendanceController::class, 'update'])->name('attendance.update');
         });
 
 
@@ -255,7 +255,7 @@ Route::prefix('v1/')
                     Route::get('cp_wise_farmer', [DashboardController::class, 'distributor_wise_farmer'])->name('distributor_wise_farmer');
                 });
         });
- 
+
         Route::get('test', [DashboardController::class, 'test'])->name('test');
         Route::get('test2', [DashboardController::class, 'farmerOnboard TimeWithCount'])->name('farmerOnboardTimeWithCount');
         Route::get('phone_error', [DashboardController::class, 'phone_error'])->name('phone_error');

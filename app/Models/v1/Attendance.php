@@ -16,6 +16,8 @@ class Attendance extends Model
         'cout_location',
         'cin_note',
         'cout_note',
+        'cin_image',
+        'cout_image',
 
     ];
 }

@@ -20,6 +20,8 @@ return new class extends Migration
             $table->json('cout_location')->nullable();
             $table->text('cin_note')->nullable();
             $table->text('cout_note')->nullable();
+            $table->string('cin_image');
+            $table->string('cout_image')->nullable();
             $table->timestamps();
         });
     }

@@ -23,6 +23,7 @@ class FarmerResource extends JsonResource
     {
         return [
             'farmer_id' => $this->farmer_id,
+            'usaid_id' => $this->usaid_id,
             'image'=>$this->image,
             // 'farmer_type' => $this->farmer_type,
             'onboard_by' => $this->onboard_by,

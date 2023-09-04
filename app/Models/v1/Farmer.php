@@ -17,6 +17,7 @@ class Farmer extends Model
     }
     protected $fillable = [
         'farmer_id',
+        'usaid_id',
         'image',
         'farmer_type',
         'onboard_by',

@@ -8,6 +8,7 @@ use App\Http\Resources\v1\AttendenceResource;
 use App\Models\v1\Attendance;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AttendanceController extends Controller
 {
@@ -24,7 +25,27 @@ class AttendanceController extends Controller
      */
     public function store(Request $request)
     {
+
+        $validator = Validator::make($request->all(), [
+            'cin_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(
+                [
+                    'error' => $validator->errors()
+                ],
+                422
+            );
+        }
+
+
         $input = $request->all();
+
+        $extension = $request->file('cin_image')->getClientOriginalExtension();
+        $request->file('cin_image')->storeAs('public/image/attendance', time() . '.' . $extension);
+        $image_path = '/image/farmer/' . time() . '.' . $extension;
+        $input['cin_image'] =  $image_path;
         if (Attendance::where('employee_id', auth()->user()->df_id)->whereDate('check_in', now())->exists()) {
             return response()->json([
                 'message' => 'You have already checked in today'
@@ -58,8 +79,17 @@ class AttendanceController extends Controller
                 'message' => 'You have already checked out'
             ], 400);
         } elseif ($request->has('check_out') && carbon::parse($attendance->check_in)->diffInDays(Carbon::now()) == 0) {
+
+
+            $extension = $request->file('cout_image')->getClientOriginalExtension();
+            $request->file('cout_image')->storeAs('public/image/attendance', time() . '.' . $extension);
+            $image_path = '/image/farmer/' . time() . '.' . $extension;
+
             $attendance->check_out = now();
-            $attendance->save();
+            $attendance->cout_image = $image_path;
+            $attendance->update();
+
+
             return response()->json([
                 'message' => 'Check out successfully'
             ], 200);
@@ -82,19 +112,17 @@ class AttendanceController extends Controller
     public function todays_attendance()
     {
         $t_attend = Attendance::where('employee_id', auth()->user()->df_id)->whereDate('check_in', now())->first();
-        if ( $t_attend){
+        if ($t_attend) {
 
             return response()->json(
                 AttendanceResource::make($t_attend),
                 200
             );
-        }else{
+        } else {
             return response()->json([
                 'message' => 'You have not checked in yet'
             ], 400);
         }
-
-
     }
 
     public function attendance_history()
