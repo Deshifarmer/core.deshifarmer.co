@@ -17,7 +17,6 @@ return new class extends Migration
             $table->json('images')->nullable();
             $table->string('batch_id');
             $table->string('track_by');
-            
             $table->timestamps();
         });
     }

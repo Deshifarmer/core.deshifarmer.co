@@ -49,6 +49,7 @@ class FarmerResource extends JsonResource
             'family_member' => $this->family_member,
             'number_of_children' => $this->number_of_children,
             'yearly_income' => $this->yearly_income,
+            'farm_area'=>$this->farm_area,
 
             'year_of_stay_in' => $this->year_of_stay_in,
             'group_id' => $this->group_id,

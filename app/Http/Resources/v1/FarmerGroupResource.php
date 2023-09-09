@@ -27,8 +27,10 @@ class FarmerGroupResource extends JsonResource
             'updated_at' => $this->updated_at,
             'color' => $this->color,
             'total_farmers' => Farmer::where('group_id', $this->farmer_group_id)->count(),
-            'member_pic' => Farmer::where('group_id', $this->farmer_group_id)->inRandomOrder()->limit(4)->get()->map(function ($farmer) {
-                return $farmer->image;
+            'member_pic' => $this->when($request->routeIs(['group.show','me.my_group']), function () {
+                return Farmer::where('group_id', $this->farmer_group_id)->inRandomOrder()->limit(4)->get()->map(function ($farmer) {
+                    return $farmer->image;
+                });
             }),
             'farmer_list' => $this->when($request->routeIs(['group.show','farmer_group.show']), function () {
                 return GroupLeaderDetailsResource::collection(Farmer::where('group_id', $this->farmer_group_id)

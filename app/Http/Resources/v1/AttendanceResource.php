@@ -20,11 +20,12 @@ class AttendanceResource extends JsonResource
         return [
             'id' => $this->id,
             'employee_id' => $this->employee_id,
-            'cin_note' => $this->cin_note,
             'check_in' => Carbon::parse($this->check_in)->format('h:i:s A'),
+            'cin_note' => $this->cin_note,
+            'cin_location' => $this->cin_location,
             'check_out' =>  Carbon::parse($this->check_in)->format('h:i:s A'),
             'cout_note' => $this->cout_note,
-            
+            'cout_location' => $this->cout_location,
         ];
     }
 }

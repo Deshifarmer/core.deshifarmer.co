@@ -27,7 +27,8 @@ class AttendanceController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'cin_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'cin_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'cin_location' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -39,26 +40,26 @@ class AttendanceController extends Controller
             );
         }
 
+        $input = $request->only(['cin_location', 'cin_image', 'check_in']);
 
-        $input = $request->all();
-
-        $extension = $request->file('cin_image')->getClientOriginalExtension();
-        $request->file('cin_image')->storeAs('public/image/attendance', time() . '.' . $extension);
-        $image_path = '/image/farmer/' . time() . '.' . $extension;
-        $input['cin_image'] =  $image_path;
         if (Attendance::where('employee_id', auth()->user()->df_id)->whereDate('check_in', now())->exists()) {
             return response()->json([
                 'message' => 'You have already checked in today'
             ], 400);
         }
-        $input['employee_id'] = auth()->user()->df_id;
+
         if ($request->has('check_in')) {
+            $input['employee_id'] = auth()->user()->df_id;
+            $extension = $request->file('cin_image')->getClientOriginalExtension();
+            $request->file('cin_image')->storeAs('public/attendance', time() . '.' . $extension);
+            $image_path = '/attendance/' . time() . '.' . $extension;
+            $input['cin_image'] =  $image_path;
             $input['check_in'] = now();
+            Attendance::create($input);
+            return response()->json([
+                'message' => 'check in successfully'
+            ], 201);
         }
-        Attendance::create($input);
-        return response()->json([
-            'message' => 'check in successfully'
-        ], 201);
     }
 
     /**
@@ -74,28 +75,44 @@ class AttendanceController extends Controller
      */
     public function update(Request $request, Attendance $attendance)
     {
+
+        $validator = Validator::make($request->all(), [
+            'cout_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'cout_location' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(
+                [
+                    'error' => $validator->errors()
+                ],
+                422
+            );
+        }
+        if ($request->has('check_in')) {
+            return response()->json([
+                'message' => 'You have already checked in yet'
+            ], 400);
+        }
         if ($request->has('check_out') && $attendance->check_out != null) {
             return response()->json([
                 'message' => 'You have already checked out'
             ], 400);
-        } elseif ($request->has('check_out') && carbon::parse($attendance->check_in)->diffInDays(Carbon::now()) == 0) {
-
-
+        } elseif ($request->has('check_out') && carbon::parse($attendance->check_in)->diffInDays(Carbon::now()) == 0 && $attendance->check_out == null && $attendance->check_in != null) {
             $extension = $request->file('cout_image')->getClientOriginalExtension();
-            $request->file('cout_image')->storeAs('public/image/attendance', time() . '.' . $extension);
-            $image_path = '/image/farmer/' . time() . '.' . $extension;
+            $request->file('cout_image')->storeAs('public/attendance', time() . '.' . $extension);
+            $image_path = '/attendance/' . time() . '.' . $extension;
 
-            $attendance->check_out = now();
-            $attendance->cout_image = $image_path;
-            $attendance->update();
-
-
+            $attendance->update([
+                'check_out' => now(),
+                'cout_location' => $request->cout_location,
+                'cout_image' => $image_path
+            ]);
             return response()->json([
                 'message' => 'Check out successfully'
             ], 200);
         } else {
             return response()->json([
-                'message' => 'You can not check out for previous days'
+                'message' => 'You can not check in today'
             ], 400);
         }
     }

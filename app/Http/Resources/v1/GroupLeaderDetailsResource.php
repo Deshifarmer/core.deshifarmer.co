@@ -17,6 +17,7 @@ class GroupLeaderDetailsResource extends JsonResource
     {
         return [
             'farmer_id' => $this->farmer_id,
+            'usaid_id' => $this->usaid_id,
             'full_name' => $this->full_name,
             'first_name' => $this->first_name,
             'last_name' =>$this->last_name,
@@ -24,9 +25,11 @@ class GroupLeaderDetailsResource extends JsonResource
             'phone' => $this->phone,
             'gender'=> $this->gender,
             'address' => $this->address,
+            'village' => $this->village,
             'image' => $this->image,
             'farm_area'=> $this->farm_area,
-
+            'date_of_birth' => $this->date_of_birth,
+            'created_at' => $this->created_at,
         ];
     }
 }
