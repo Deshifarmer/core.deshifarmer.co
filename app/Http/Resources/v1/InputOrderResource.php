@@ -53,7 +53,7 @@ class InputOrderResource extends JsonResource
                     'distributor.me_confirm_order_status'
                 ]
             ), function () {
-                $me_details = Employee::where('df_id', $this->distributor_id)->get();
+                $me_details = Employee::where('df_id', $this->me_id)->get();
                 return [
                     'me_name' => $me_details->implode('full_name'),
                     'me_phone' => $me_details->implode('phone'),

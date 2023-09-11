@@ -108,7 +108,7 @@ class FarmerController extends BaseController
                     ->orWhere('phone', 'LIKE', '%' . $request->search . '%')
                     ->orWhere('nid', 'LIKE', '%' . $request->search . '%');
             })
-
+            ->orderBy('created_at', 'desc')
             ->paginate($request->input('per_page', 150))
             ->appends(request()->query());
         return FarmerResource::collection($farmer);
@@ -139,7 +139,7 @@ class FarmerController extends BaseController
             })
 
             ->get()->sortByDesc('created_at');
-            
+
         if ($farmers->isEmpty()) {
             return response()->json([
                 'message' => 'No farmer found',

@@ -11,15 +11,14 @@ class Kernel extends ConsoleKernel
 {
     protected $commands = [
         Commands\ReloadCacheCommand::class,
+        Commands\AutoCheckout::class,
     ];
     /**
      * Define the application's command schedule.
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->call(function () {
-           Attendance::where('check_out', null)->update(['check_out' => now(), 'updated_at' => now(),'cout_note' => 'Forgot to check out']);
-        })->daily();
+      //
     }
 
     /**

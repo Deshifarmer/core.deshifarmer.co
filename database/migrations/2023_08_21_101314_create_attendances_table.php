@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
             $table->string('employee_id');
-            $table->timestamp('check_in');
-            $table->timestamp('check_out')->nullable();
+            $table->string('check_in');
+            $table->string('check_out')->nullable();
             $table->json('cin_location');
             $table->json('cout_location')->nullable();
             $table->text('cin_note')->nullable();
