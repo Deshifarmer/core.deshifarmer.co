@@ -22,7 +22,7 @@ class BatchResource extends JsonResource
             'which_crop' => $this->which_crop,
             'created_by' => $this->created_by,
 
-            'activities' => ActivityResource::collection( Activity::where('batch_id', $this->batch_id)->get())
+            // 'activities' => ActivityResource::collection( Activity::where('batch_id', $this->batch_id)->get())
         ];
     }
 }

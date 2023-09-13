@@ -23,7 +23,7 @@ class AttendanceResource extends JsonResource
             'check_in' => Carbon::parse($this->check_in)->format('h:i:s A'),
             'cin_note' => $this->cin_note,
             'cin_location' => $this->cin_location,
-            'check_out' =>  Carbon::parse($this->check_in)->format('h:i:s A'),
+            'check_out' =>  $this->check_out ? Carbon::parse($this->check_out)->format('h:i:s A') : null,
             'cout_note' => $this->cout_note,
             'cout_location' => $this->cout_location,
         ];

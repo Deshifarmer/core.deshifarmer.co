@@ -45,9 +45,6 @@ class ActivityController extends Controller
             $input['images'] = $images;
         }
         $input['track_by'] = auth()->user()->df_id;
-       
-
-
          Activity::create($input);
         return response()->json([
             "message" => "Activity created Successfully",

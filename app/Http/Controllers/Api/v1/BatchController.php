@@ -35,11 +35,12 @@ class BatchController extends BaseController
         $input = $request->all();
         $input['batch_id'] = 'B-' . $this->generateUUID();
         $input['created_by'] = auth()->user()->df_id;
-        Batch::create($input);
-        return response()->json([
-            "message" => "Batch created Successfully",
-        ], 201);
-    }
+        $batch = Batch::create($input);
+        return response()->json(
+            BatchResource::make($batch),
+            201
+        );
+    }    
 
     /**
      * Display the specified resource.

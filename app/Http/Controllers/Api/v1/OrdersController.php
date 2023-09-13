@@ -139,7 +139,7 @@ class OrdersController extends Controller
             (new TransactionController)->store(
                 new Request(
                     [
-                        'amount' => $companyBuyPrice,
+                        'amount' => floatval($companyBuyPrice) * $order->quantity,
                         'order_id' => $order->me_order_id,
                         'method' => 'paid to company',
                         'credited_to' => $order->company_id,
