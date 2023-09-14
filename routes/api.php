@@ -72,6 +72,8 @@ Route::prefix('v1/')
             Route::get('batch/{batch}', [BatchController::class, 'show'])->name('batch.show');
             Route::put('batch/{batch}', [BatchController::class, 'update'])->name('batch.update');
             Route::delete('batch/{batch}', [BatchController::class, 'destroy'])->name('batch.destroy');
+
+
             Route::post('logout', [AuthController::class, 'logout']);
             Route::get('division', [DivisionController::class, 'index']);
             Route::get('division/{division}', [DivisionController::class, 'show']);
@@ -144,6 +146,7 @@ Route::prefix('v1/')
                     Route::get('farmer_farm/{farmer}', [FarmController::class, 'farmer_farm'])->name('hq.farmer_farm');
 
                     Route::get('attendance', [AttendanceController::class, 'index'])->name('attendance');
+                    Route::get('advisory',[AdvisoryController::class,'index'])->name('advisory');
 
                     Route::prefix('dashboard/')->group(
                         function () {
@@ -263,7 +266,7 @@ Route::prefix('v1/')
 
         Route::get('dob_error', [DashboardController::class, 'dob_error'])->name('dob_error');
 
-        // Route::get('advisory',[AdvisoryController::class,'index'])->name('advisory');
+        //
         // Route::get('advisory/{advisory}',[AdvisoryController::class,'show'])->name('advisory.show');
         //
         // Route::put('advisory/{advisory}',[AdvisoryController::class,'update'])->name('advisory.update');

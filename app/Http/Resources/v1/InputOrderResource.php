@@ -33,6 +33,7 @@ class InputOrderResource extends JsonResource
             'distributor_commission' => $this->distributor_commission,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
+            'total_item' =>Order::where('me_order_id', $this->order_id)->count(),
 
 
             'distributor_details' => $this->when($request->routeIs(

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\AttendanceResource;
-use App\Http\Resources\v1\AttendenceResource;
+
 use App\Models\v1\Attendance;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
