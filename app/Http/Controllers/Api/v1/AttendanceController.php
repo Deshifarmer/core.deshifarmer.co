@@ -17,7 +17,8 @@ class AttendanceController extends Controller
      */
     public function index()
     {
-        return Attendance::all();
+        $today = Carbon::today();
+        return AttendanceResource::collection( Attendance::whereDate('created_at', $today)->orderBy('id', 'desc')->get());
     }
 
     /**

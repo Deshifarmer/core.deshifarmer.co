@@ -21,6 +21,11 @@ class AutoCheckout extends Command
      */
     protected $description = 'This command is for auto checkout for those who forgot to checkout';
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     /**
      * Execute the console command.
      */

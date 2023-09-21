@@ -21,8 +21,7 @@ class BatchResource extends JsonResource
             'farm_id' => $this->farm_id,
             'which_crop' => $this->which_crop,
             'created_by' => $this->created_by,
-
-            // 'activities' => ActivityResource::collection( Activity::where('batch_id', $this->batch_id)->get())
+            'activities' => $this->when( $request->routeIs('batch.show'), ActivityResource::collection(Activity::where('batch_id', $this->batch_id)->get())),
         ];
     }
 }

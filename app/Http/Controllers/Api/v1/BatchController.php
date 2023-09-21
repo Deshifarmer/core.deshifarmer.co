@@ -15,7 +15,7 @@ class BatchController extends BaseController
      */
     public function index()
     {
-        //
+        return BatchResource::collection(Batch::all());
     }
 
     /**
@@ -40,7 +40,7 @@ class BatchController extends BaseController
             BatchResource::make($batch),
             201
         );
-    }    
+    }
 
     /**
      * Display the specified resource.

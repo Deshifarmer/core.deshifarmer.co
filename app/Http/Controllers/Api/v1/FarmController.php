@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\v1\FarmResource;
 use App\Models\v1\Farm;
 use App\Models\v1\Farmer;
 use Illuminate\Http\Request;
@@ -52,7 +53,7 @@ class FarmController extends BaseController
      */
     public function show(Farm $farm)
     {
-        return $farm;
+        return FarmResource::make($farm);
     }
 
     /**
@@ -72,7 +73,7 @@ class FarmController extends BaseController
     }
     public function farmer_farm(Farmer $farmer)
     {
-       return Farm::where('farmer_id', $farmer->farmer_id)->get();
+       return FarmResource::collection(Farm::where('farmer_id', $farmer->farmer_id)->get());
     }
 
 

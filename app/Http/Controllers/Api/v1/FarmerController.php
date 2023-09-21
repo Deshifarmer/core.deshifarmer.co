@@ -28,7 +28,10 @@ class FarmerController extends BaseController
         $validator = Validator::make($request->all(), [
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'nid' => 'required|string|unique:farmers,nid',
-            'phone' => 'required|unique:farmers'
+            'phone' => 'required|unique:farmers',
+            'district' => 'required|numeric|exists:districts,id',
+            'upazila' => 'required|numeric|exists:upazilas,id',
+            'division' => 'required|numeric|exists:divisions,id',
         ]);
         if ($validator->fails()) {
             return $this->sendError('Error validation', $validator->errors());

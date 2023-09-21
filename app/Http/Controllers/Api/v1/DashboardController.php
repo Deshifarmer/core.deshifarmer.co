@@ -44,6 +44,7 @@ class DashboardController extends Controller
             'total_group' => FarmerGroup::count(),
             'total_product' => Product::count(),
             'total_order' => Order::count(),
+            'agri_input_sell' => request()->route()->getName() == 'hq.all_member' ? Order::where('status', 'collected by me')->sum('total_price') : null,
         ]);
     }
 
@@ -312,21 +313,77 @@ class DashboardController extends Controller
     }
 
 
-    // public function popular_product(){
-    //     return Order::where('product_id', '!=', null)
-    //         ->selectRaw('COUNT(*) as total, product_id')
-    //         ->groupBy('product_id')
-    //         ->orderBy('total', 'desc')
-    //         ->limit(5)
-    //         ->get()
-    //         ->map(function ($order) {
-    //             return ProductResource::make(Product::where('product_id', $order->product_id)->first());
-    //         });
-    // }
 
 
-    // all Co Dashboard info
-    // all Distributor Dashboard info
-    // all Me Dashboard info
+    public function location_wise_Male_Female(Request $request)
+    {
+        $groupBy = $request->input('location');
+        $collection = collect([]);
+        $query = Farmer::selectRaw('COUNT(*) as total, ' . $groupBy)
+            ->groupBy($groupBy);
+        if ($request->has('date')) {
+            $date = $request->input('date');
+            $query->whereDate('created_at', $date);
+        } elseif ($request->has('start_date') && $request->has('end_date')) {
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        }
+        $results =  $query->pluck('total', $groupBy)->toArray();
+        foreach ($results as $key => $value) {
+            $model = $groupBy == 'district' ? District::class : ($groupBy == 'division' ? Division::class : Upazila::class);
+
+            $uName = $model::where('id', $key)->get();
+            $maleCount = Farmer::where('gender', 'male')->where($groupBy,$key)->count();
+            $femaleCount = Farmer::where('gender', 'female')->where($groupBy,$key)->count();
+
+            $collection->push([
+                $groupBy . "_name" => $uName->implode('name', ' '),
+                $groupBy . "_bn_name" => $uName->implode('bn_name', ' '),
+                'total' => $value,
+                'male_count' => $maleCount,
+                'female_count' => $femaleCount,
+            ]);
+        }
+        return $collection;
+
+
+    }
+
+
+
+    public function map(Request $request)
+    {
+        $groupBy = $request->input('location');
+        $collection = collect([]);
+        $query = Farmer::selectRaw('COUNT(*) as total, ' . $groupBy)
+            ->groupBy($groupBy);
+        if ($request->has('date')) {
+            $date = $request->input('date');
+            $query->whereDate('created_at', $date);
+        } elseif ($request->has('start_date') && $request->has('end_date')) {
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        }
+        $results =  $query->pluck('total', $groupBy)->toArray();
+        foreach ($results as $key => $value) {
+            $model = $groupBy == 'district' ? District::class : ($groupBy == 'division' ? Division::class : Upazila::class);
+
+            $uName = $model::where('id', $key)->get();
+            $maleCount = Farmer::where('gender', 'male')->where($groupBy,$key)->count();
+            $femaleCount = Farmer::where('gender', 'female')->where($groupBy,$key)->count();
+
+            $collection->push([
+                'id'=>$key,
+                'latitude'=>$uName->implode('lat', ' '),
+                'longitude'=>$uName->implode('long', ' '),
+                'title' => $uName->implode('name', ' '),
+                'description' => 'Total farmer = ' .$value . ' ♂ Male = ' .$maleCount . ' ♀ Female = '. $femaleCount,
+            ]);
+        }
+        return $collection;
+    }
+
 
 }

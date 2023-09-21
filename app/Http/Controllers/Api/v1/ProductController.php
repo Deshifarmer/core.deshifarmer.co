@@ -115,6 +115,7 @@ class ProductController extends BaseController
     {
 
         $products = Product::query()
+
             ->when($request->has('company_id'), function ($query) use ($request) {
                 $query->where('company_id', $request->company_id);
             })

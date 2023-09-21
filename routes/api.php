@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\v1\EmployeeController;
 use App\Http\Controllers\Api\v1\FarmController;
 use App\Http\Controllers\Api\v1\FarmerGroupController;
 use App\Http\Controllers\Api\v1\InputOrderController;
+use App\Http\Controllers\Api\v1\LogisticController;
 use App\Http\Controllers\Api\v1\OrdersController;
 use App\Http\Controllers\Api\v1\ProductCategoryController;
 use App\Http\Controllers\Api\v1\ProductController;
@@ -56,6 +57,12 @@ Route::prefix('v1/')
         // Route::delete('cluster/{cluster}',[ClusterController::class,'destroy'])->name('cluster.destroy');
 
 
+        // Route::get('logistic/{logistic}', [LogisticController::class, 'show'])->name('logistic.show');
+        //
+        // Route::put('logistic/{logistic}', [LogisticController::class, 'update'])->name('logistic.update');
+        // Route::delete('logistic/{logistic}', [LogisticController::class, 'destroy'])->name('logistic.destroy');
+
+
 
 
 
@@ -68,8 +75,8 @@ Route::prefix('v1/')
 
         Route::group(['middleware' => ['auth:sanctum']], function () {
 
-            Route::get('batch', [BatchController::class, 'index'])->name('batch');
-            Route::get('batch/{batch}', [BatchController::class, 'show'])->name('batch.show');
+
+
             Route::put('batch/{batch}', [BatchController::class, 'update'])->name('batch.update');
             Route::delete('batch/{batch}', [BatchController::class, 'destroy'])->name('batch.destroy');
 
@@ -143,16 +150,23 @@ Route::prefix('v1/')
                     Route::get('farmer_group/{farmer_group}', [FarmerGroupController::class, 'show'])->name('farmer_group.show');
 
                     Route::get('all_farm', [FarmController::class, 'index'])->name('hq.all_farm');
+                    Route::get('farm/{farm}', [FarmController::class, 'show'])->name('hq.farm.show');
                     Route::get('farmer_farm/{farmer}', [FarmController::class, 'farmer_farm'])->name('hq.farmer_farm');
 
                     Route::get('attendance', [AttendanceController::class, 'index'])->name('attendance');
                     Route::get('advisory',[AdvisoryController::class,'index'])->name('advisory');
 
+                    Route::get('batch', [BatchController::class, 'index'])->name('batch');
+                    Route::get('batch/{batch}', [BatchController::class, 'show'])->name('batch.show');
+                    Route::get('logistic', [LogisticController::class, 'index'])->name('logistic');
+
                     Route::prefix('dashboard/')->group(
                         function () {
-                            Route::get('all_member', [DashboardController::class, 'all_member'])->name('all_member');
+                            Route::get('all_member', [DashboardController::class, 'all_member'])->name('hq.all_member');
                             Route::get('total_group', [DashboardController::class, 'total_group'])->name('total_group');
                             Route::get('location_wise_farmer', [DashboardController::class, 'location_wise_farmer'])->name('district_wise_farmer');
+                            Route::get('male_female',[DashboardController::class,'location_wise_Male_Female'])->name('male_female');
+                            Route::get('map', [DashboardController::class, 'map'])->name('map');
                         }
                     );
                 });
@@ -243,6 +257,7 @@ Route::prefix('v1/')
                     Route::get('farmer_search', [FarmerController::class, 'MepaginateFarmerWithSearch'])->name('MepaginateFarmerWithSearch');
 
                     Route::post('batch', [BatchController::class, 'store'])->name('batch.store');
+                    Route::post('logistic', [LogisticController::class, 'store'])->name('logistic.store');
                 });
         });
 
@@ -278,5 +293,9 @@ Route::prefix('v1/')
         // Route::put('activity/{activity}',[ActivityController::class,'update'])->name('activity.update');
         // Route::delete('activity/{activity}',[ActivityController::class,'destroy'])->name('activity.destroy');
         Route::get('public_farmer_trace/{farmer}', [FarmerController::class, 'publicFarmerTrace'])->name('public_farmer_trace');
+
+        Route::get('product', [ProductController::class, 'sort'])->name('product');
+
+
 
     });
