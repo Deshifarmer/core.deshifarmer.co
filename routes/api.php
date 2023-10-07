@@ -26,11 +26,13 @@ use App\Http\Controllers\Api\v1\OrdersController;
 use App\Http\Controllers\Api\v1\ProductCategoryController;
 use App\Http\Controllers\Api\v1\ProductController;
 use App\Http\Controllers\Api\v1\ProductSubCategoryController;
+use App\Http\Controllers\Api\v1\SourcingController;
 use App\Http\Controllers\Api\v1\SurveyController;
 use App\Http\Controllers\Api\v1\TransactionController;
 use App\Http\Controllers\Api\v1\UserController;
 use App\Models\v1\Attendance;
 use Illuminate\Support\Facades\Auth;
+use PHPUnit\TextUI\Configuration\Source;
 use Symfony\Component\Console\Input\Input;
 
 /*
@@ -154,18 +156,23 @@ Route::prefix('v1/')
                     Route::get('farmer_farm/{farmer}', [FarmController::class, 'farmer_farm'])->name('hq.farmer_farm');
 
                     Route::get('attendance', [AttendanceController::class, 'index'])->name('attendance');
-                    Route::get('advisory',[AdvisoryController::class,'index'])->name('advisory');
+                    Route::get('advisory', [AdvisoryController::class, 'index'])->name('advisory');
 
-                    Route::get('batch', [BatchController::class, 'index'])->name('batch');
-                    Route::get('batch/{batch}', [BatchController::class, 'show'])->name('batch.show');
+                    Route::get('batch', [BatchController::class, 'index'])->name('hq.batch');
+                    Route::get('batch/{batch}', [BatchController::class, 'show'])->name('hq.batch.show');
                     Route::get('logistic', [LogisticController::class, 'index'])->name('logistic');
+
+
+                    Route::get('sourcing', [SourcingController::class, 'index'])->name('hq.sourcing');
+                    Route::get('sourcing/{sourcing}', [SourcingController::class, 'show'])->name('hq.sourcing.show');
+
 
                     Route::prefix('dashboard/')->group(
                         function () {
                             Route::get('all_member', [DashboardController::class, 'all_member'])->name('hq.all_member');
                             Route::get('total_group', [DashboardController::class, 'total_group'])->name('total_group');
                             Route::get('location_wise_farmer', [DashboardController::class, 'location_wise_farmer'])->name('district_wise_farmer');
-                            Route::get('male_female',[DashboardController::class,'location_wise_Male_Female'])->name('male_female');
+                            Route::get('male_female', [DashboardController::class, 'location_wise_Male_Female'])->name('male_female');
                             Route::get('map', [DashboardController::class, 'map'])->name('map');
                         }
                     );
@@ -218,6 +225,7 @@ Route::prefix('v1/')
             });
 
 
+
         //all route only for Micro Entrepreneur
         Route::group(['middleware' => ['auth:sanctum', 'user-access:ME']], function () {
             Route::prefix('me/')
@@ -250,14 +258,17 @@ Route::prefix('v1/')
                     Route::post('activity', [ActivityController::class, 'store'])->name('activity.store');
                     Route::get('my_activity', [ActivityController::class, 'myRecordedActivities'])->name('myRecordedActivities');
 
-                    // Route::get('all_channel', [ChannelController::class, 'index'])->name('me.all_channel');
-                    // Route::post('add_cluster',[ClusterController::class,'store'])->name('me.cluster.store');
-
                     Route::get('popular_product', [ProductController::class, 'popular_product'])->name('popular_product');
                     Route::get('farmer_search', [FarmerController::class, 'MepaginateFarmerWithSearch'])->name('MepaginateFarmerWithSearch');
 
                     Route::post('batch', [BatchController::class, 'store'])->name('batch.store');
+                    Route::get('farm_batch', [BatchController::class, 'farmBatch'])->name('farmBatch');
+
                     Route::post('logistic', [LogisticController::class, 'store'])->name('logistic.store');
+
+                    Route::post('sourcing', [SourcingController::class, 'store'])->name('sourcing.store');
+                    Route::get('my_sourcing',[SourcingController::class,'mySourcing'])->name('me.my_sourcing');
+                    Route::get('sourcing/{sourcing}', [SourcingController::class, 'show'])->name('me.sourcing.show');
                 });
         });
 
@@ -292,10 +303,9 @@ Route::prefix('v1/')
 
         // Route::put('activity/{activity}',[ActivityController::class,'update'])->name('activity.update');
         // Route::delete('activity/{activity}',[ActivityController::class,'destroy'])->name('activity.destroy');
-        Route::get('public_farmer_trace/{farmer}', [FarmerController::class, 'publicFarmerTrace'])->name('public_farmer_trace');
-
-        Route::get('product', [ProductController::class, 'sort'])->name('product');
+        // Route::get('public_farmer_trace/{farmer}', [FarmerController::class, 'publicFarmerTrace'])->name('public_farmer_trace');
 
 
-
+        // Route::put('sourcing/{sourcing}', [SourcingController::class, 'update'])->name('sourcing.update');
+        // Route::delete('sourcing/{sourcing}', [SourcingController::class, 'destroy'])->name('sourcing.destroy');
     });

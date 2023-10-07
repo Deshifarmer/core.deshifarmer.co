@@ -65,4 +65,21 @@ class BatchController extends BaseController
     {
         //
     }
+
+    public function farmBatch()
+    {
+        $validator = Validator::make(Request()->all(), [
+            'farm_id' => 'required|string|exists:farms,farm_id',
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $farm_id = Request()->farm_id;
+        $batches = Batch::where('farm_id', $farm_id)
+            ->where('created_by', auth()->user()->df_id)
+            ->latest()
+            ->get();
+        return BatchResource::collection($batches);
+    }
 }

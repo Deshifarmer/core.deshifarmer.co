@@ -10,17 +10,23 @@ class Sourcing extends Model
     use HasFactory;
     protected $fillable = [
         'source_id',
+        'batch_id',
         'product_name',
-        'product_image',
+        'product_images',
         'buy_price',
         'sell_price',
         'quantity',
+        'variety',
         'unit',
         'description',
-        'category',
         'which_farmer',
         'source_by',
-        'transportation_id',
+        'source_location',
+        'is_sorted',
+        'is_active',
+    ];
 
+    protected $casts = [
+        'product_images' => 'array',
     ];
 }

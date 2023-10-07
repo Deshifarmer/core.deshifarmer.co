@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\SourcingResource;
 use App\Models\v1\Sourcing;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Validator;
 
 class SourcingController extends BaseController
 {
@@ -15,7 +15,7 @@ class SourcingController extends BaseController
      */
     public function index()
     {
-        return SourcingResource::collection(Sourcing::all());
+        return SourcingResource::collection(Sourcing::latest()->paginate(10));
     }
 
     /**
@@ -23,20 +23,53 @@ class SourcingController extends BaseController
      */
     public function store(Request $request)
     {
-        $data = $request->all();
+
+        $validator = Validator::make($request->all(), [
+            'which_farmer' => 'required|exists:farmers,farmer_id',
+            'batch_id' => 'exists:batches,batch_id',
+            'product_name' => 'required|string',
+            'buy_price' => 'required|numeric',
+            'quantity' => 'required|numeric',
+            'unit' => 'required|string',
+            'source_location' => 'required|string',
+
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'message' => $validator->errors(),
+            ], 422);
+        }
+        $data = $request->only([
+            'which_farmer',
+            'batch_id',
+            'product_name',
+            'product_images',
+            'buy_price',
+            'quantity',
+            'variety',
+            'unit',
+            'description',
+            'source_location',
+            'is_sorted',
+            'is_active',
+        ]);
         $paths = [];
         $data['source_id'] = 'Source-' . $this->generateUUID();
+        if($request->hasFile('product_images')){
 
-        $product_image = $request->product_image;
-        foreach ($product_image as $key => $image) {
-            $extension = $image->getClientOriginalExtension();
-            $image->storeAs('public/image/sourcing/', $key . $data['source_id'] . '.' . $extension);
-            $imagePath = '/image/sourcing/' . $key . $data['source_id'] . '.' . $extension;
+            $product_image = $request->product_images;
+            foreach ($product_image as $key => $image) {
+                $extension = $image->getClientOriginalExtension();
+                $image->storeAs('public/image/sourcing/', $key . $data['source_id'] . '.' . $extension);
+                $imagePath = '/image/sourcing/' . $key . $data['source_id'] . '.' . $extension;
+                $paths[] = $imagePath;
+            }
 
-            $paths[] = $imagePath;
         }
         $data['source_by'] = auth()->user()->id;
-        $data['product_image'] = $paths;
+        $data['product_images'] = $paths;
+
+
         Sourcing::create($data);
 
         return response()->json([

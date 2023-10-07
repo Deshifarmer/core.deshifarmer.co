@@ -17,9 +17,9 @@ class SourcingResource extends JsonResource
         return [
             'source_id' => $this->source_id,
             'product_name' => $this->product_name,
-            'product_image' => $this->product_image,
-            // 'buy_price' => $this->buy_price,
-            // 'sell_price' => $this->sell_price,
+            'product_images' => $this->product_images,
+            'buy_price' => $this->buy_price,
+            'sell_price' => $this->sell_price,
             'quantity' => $this->quantity,
             'unit' => $this->unit,
             'description' => $this->description,

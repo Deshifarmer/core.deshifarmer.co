@@ -31,7 +31,7 @@ class ChannelResource extends JsonResource
             'total_order'=>$this->when($request->routeIs('hq.all_channel'), function () {
                 return InputOrder::where('channel_id',$this->channel_name)->count();
             }),
-            'total_sales'=>InputOrder::where('channel_id',$this->channel_name)->sum('total_price'),
+            'total_sales'=>InputOrder::where('channel_id',$this->channel_name)->where('status','collected by me')->sum('total_price'),
 
             'disrtibutor_list' => $this->when($request->routeIs('hq.single_channel'), function () {
                 return Employee::where('type',2)
