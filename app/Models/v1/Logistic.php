@@ -16,6 +16,7 @@ class Logistic extends Model
         'vehicle_type',
         'weight',
         'price',
+        'request_by',
         'diver_name',
         'phone_no',
         'car_no',

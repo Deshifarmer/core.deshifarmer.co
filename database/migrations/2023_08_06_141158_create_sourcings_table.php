@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('source_by'); //me id
             $table->string('source_location')->nullable();
-            $table->boolean('is_sorted')->default();
+            $table->boolean('is_sorted')->default(false);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

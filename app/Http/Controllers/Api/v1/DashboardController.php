@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\ProductResource;
 use App\Models\User;
+use App\Models\v1\Advisory;
 use App\Models\v1\Channel;
 use App\Models\v1\District;
 use App\Models\v1\Division;
@@ -13,6 +14,7 @@ use App\Models\v1\Farmer;
 use App\Models\v1\FarmerGroup;
 use App\Models\v1\Order;
 use App\Models\v1\Product;
+use App\Models\v1\SourceSelling;
 use App\Models\v1\Upazila;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -45,6 +47,10 @@ class DashboardController extends Controller
             'total_product' => Product::count(),
             'total_order' => Order::count(),
             'agri_input_sell' => request()->route()->getName() == 'hq.all_member' ? Order::where('status', 'collected by me')->sum('total_price') : null,
+            'output_sell' => request()->route()->getName() == 'hq.all_member' ? floatval(SourceSelling::sum('sell_price')) : null,
+            'output_sell_volume' => request()->route()->getName() == 'hq.all_member' ? floatval(SourceSelling::sum('quantity')) : null,
+            'total_advisory' => request()->route()->getName() == 'hq.all_member' ? floatval(Advisory::sum('time_slot')) : null,
+
         ]);
     }
 

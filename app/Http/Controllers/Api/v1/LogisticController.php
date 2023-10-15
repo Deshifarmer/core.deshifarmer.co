@@ -22,7 +22,7 @@ class LogisticController extends BaseController
     public function store(Request $request)
     {
         $input = $request->all();
-        $input['log_id'] = $this->generateId();
+        $input['log_id'] = $this->generateUUID();
         $input['request_by'] = auth()->user()->df_id;
         Logistic::create($input);
 

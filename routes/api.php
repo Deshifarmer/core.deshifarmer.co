@@ -20,16 +20,22 @@ use App\Http\Controllers\Api\v1\DivisionController;
 use App\Http\Controllers\Api\v1\EmployeeController;
 use App\Http\Controllers\Api\v1\FarmController;
 use App\Http\Controllers\Api\v1\FarmerGroupController;
+use App\Http\Controllers\Api\v1\FertilizationController;
 use App\Http\Controllers\Api\v1\InputOrderController;
+use App\Http\Controllers\Api\v1\LandPreparationController;
 use App\Http\Controllers\Api\v1\LogisticController;
 use App\Http\Controllers\Api\v1\OrdersController;
+use App\Http\Controllers\Api\v1\PesticideController;
 use App\Http\Controllers\Api\v1\ProductCategoryController;
 use App\Http\Controllers\Api\v1\ProductController;
 use App\Http\Controllers\Api\v1\ProductSubCategoryController;
+use App\Http\Controllers\Api\v1\SourceSellingController;
 use App\Http\Controllers\Api\v1\SourcingController;
+use App\Http\Controllers\Api\v1\SowingController;
 use App\Http\Controllers\Api\v1\SurveyController;
 use App\Http\Controllers\Api\v1\TransactionController;
 use App\Http\Controllers\Api\v1\UserController;
+use App\Http\Controllers\Api\v1\WateringController;
 use App\Models\v1\Attendance;
 use Illuminate\Support\Facades\Auth;
 use PHPUnit\TextUI\Configuration\Source;
@@ -52,23 +58,6 @@ Route::prefix('v1/')
 
 
 
-        // Route::get('cluster',[ClusterController::class,'index'])->name('cluster');
-        // Route::get('cluster/{cluster}',[ClusterController::class,'show'])->name('cluster.show');
-        // Route::post('cluster',[ClusterController::class,'store'])->name('cluster.store');
-        // Route::put('cluster/{cluster}',[ClusterController::class,'update'])->name('cluster.update');
-        // Route::delete('cluster/{cluster}',[ClusterController::class,'destroy'])->name('cluster.destroy');
-
-
-        // Route::get('logistic/{logistic}', [LogisticController::class, 'show'])->name('logistic.show');
-        //
-        // Route::put('logistic/{logistic}', [LogisticController::class, 'update'])->name('logistic.update');
-        // Route::delete('logistic/{logistic}', [LogisticController::class, 'destroy'])->name('logistic.destroy');
-
-
-
-
-
-
         Route::post('hq/login', [AuthController::class, 'login'])->name('hq_login');
         Route::post('co/login', [AuthController::class, 'login'])->name('co_login');
         Route::post('distributor/login', [AuthController::class, 'login'])->name('distributor_login');
@@ -78,9 +67,6 @@ Route::prefix('v1/')
         Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
-
-            Route::put('batch/{batch}', [BatchController::class, 'update'])->name('batch.update');
-            Route::delete('batch/{batch}', [BatchController::class, 'destroy'])->name('batch.destroy');
 
 
             Route::post('logout', [AuthController::class, 'logout']);
@@ -160,11 +146,16 @@ Route::prefix('v1/')
 
                     Route::get('batch', [BatchController::class, 'index'])->name('hq.batch');
                     Route::get('batch/{batch}', [BatchController::class, 'show'])->name('hq.batch.show');
+                    Route::get('farm_batch', [BatchController::class, 'farmBatch'])->name('hq.farmBatch');
                     Route::get('logistic', [LogisticController::class, 'index'])->name('logistic');
 
+                    // Route::post('sourcing', [SourcingController::class, 'store'])->name('hq.sourcing.store');
 
                     Route::get('sourcing', [SourcingController::class, 'index'])->name('hq.sourcing');
                     Route::get('sourcing/{sourcing}', [SourcingController::class, 'show'])->name('hq.sourcing.show');
+                    Route::get('source_selling', [SourceSellingController::class, 'index'])->name('hq.source_selling.index');
+                    Route::post('source_selling', [SourceSellingController::class, 'store'])->name('hq.source_selling.store');
+                    Route::get('source_selling/{source_selling}', [SourceSellingController::class, 'show'])->name('hq.source_selling.show');
 
 
                     Route::prefix('dashboard/')->group(
@@ -263,12 +254,20 @@ Route::prefix('v1/')
 
                     Route::post('batch', [BatchController::class, 'store'])->name('batch.store');
                     Route::get('farm_batch', [BatchController::class, 'farmBatch'])->name('farmBatch');
+                    Route::get('my_batch', [BatchController::class, 'my_batch'])->name('me.my_batch');
+                    Route::get('batch/{batch}', [BatchController::class, 'show'])->name('me.batch.show');
 
                     Route::post('logistic', [LogisticController::class, 'store'])->name('logistic.store');
 
                     Route::post('sourcing', [SourcingController::class, 'store'])->name('sourcing.store');
-                    Route::get('my_sourcing',[SourcingController::class,'mySourcing'])->name('me.my_sourcing');
+                    Route::get('my_sourcing', [SourcingController::class, 'mySourcing'])->name('me.my_sourcing');
                     Route::get('sourcing/{sourcing}', [SourcingController::class, 'show'])->name('me.sourcing.show');
+
+                    Route::post('land_preparation', [LandPreparationController::class, 'store'])->name('land_preparation.store');
+                    Route::post('sowing', [SowingController::class, 'store'])->name('sowing.store');
+                    Route::post('fertilization', [FertilizationController::class, 'store'])->name('fertilization.store');
+                    Route::post('watering', [WateringController::class, 'store'])->name('watering.store');
+                    Route::post('pesticide', [PesticideController::class, 'store'])->name('pesticide.store');
                 });
         });
 
@@ -308,4 +307,10 @@ Route::prefix('v1/')
 
         // Route::put('sourcing/{sourcing}', [SourcingController::class, 'update'])->name('sourcing.update');
         // Route::delete('sourcing/{sourcing}', [SourcingController::class, 'destroy'])->name('sourcing.destroy');
+
+
+        // Route::get('land_preparation', [LandPreparationController::class, 'index'])->name('land_preparation');
+        // Route::get('land_preparation/{land_preparation}', [LandPreparationController::class, 'show'])->name('land_preparation.show');
+
+
     });

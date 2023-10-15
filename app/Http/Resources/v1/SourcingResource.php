@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\v1;
 
+use App\Models\v1\Farmer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -25,8 +26,10 @@ class SourcingResource extends JsonResource
             'description' => $this->description,
             'category' => $this->category,
             'which_farmer' => $this->which_farmer,
+            'farmer_name' =>Farmer::where('farmer_id', $this->which_farmer)->first()->first_name . ' ' . Farmer::where('farmer_id', $this->which_farmer)->first()->last_name,
             'source_by' => $this->source_by,
             'transportation_id' => $this->transportation_id,
+            'created_at' => $this->created_at,
         ];
     }
 }

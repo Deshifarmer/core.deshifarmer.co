@@ -76,8 +76,16 @@ class BatchController extends BaseController
         }
 
         $farm_id = Request()->farm_id;
+
         $batches = Batch::where('farm_id', $farm_id)
-            ->where('created_by', auth()->user()->df_id)
+            // ->where('created_by', auth()->user()->df_id)
+            ->latest()
+            ->get();
+        return BatchResource::collection($batches);
+    }
+
+    public function my_batch(){
+        $batches = Batch::where('created_by', auth()->user()->df_id)
             ->latest()
             ->get();
         return BatchResource::collection($batches);

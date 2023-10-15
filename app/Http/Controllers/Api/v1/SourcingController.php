@@ -15,7 +15,7 @@ class SourcingController extends BaseController
      */
     public function index()
     {
-        return SourcingResource::collection(Sourcing::latest()->paginate(10));
+        return SourcingResource::collection(Sourcing::latest()->paginate(Request()->input('per_page', 10)));
     }
 
     /**
@@ -66,7 +66,7 @@ class SourcingController extends BaseController
             }
 
         }
-        $data['source_by'] = auth()->user()->id;
+        $data['source_by'] = auth()->user()->df_id;
         $data['product_images'] = $paths;
 
 
@@ -99,5 +99,8 @@ class SourcingController extends BaseController
     public function destroy(Sourcing $sourcing)
     {
         //
+    }
+    public function mySourcing(){
+        return SourcingResource::collection(Sourcing::where('source_by',auth()->user()->df_id)->latest()->get());
     }
 }
