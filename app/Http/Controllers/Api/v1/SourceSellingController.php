@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\SourceSellingListResource;
 use App\Http\Resources\v1\SourceSellingResource;
+use App\Models\v1\OutputCustomer;
 use App\Models\v1\SourceSelling;
 use App\Models\v1\Sourcing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class SourceSellingController extends Controller
+class SourceSellingController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -33,6 +34,11 @@ class SourceSellingController extends Controller
             'sell_price' => 'required',
             'quantity' => 'required',
             'market_type' => 'required',
+            'customer_id' => 'exists:output_customers,customer_id',
+            'phone_number' => 'required_without:customer_id|unique:output_customers,phone_number',
+            'email' => 'unique:output_customers,email',
+            'name' => 'required_without:customer_id',
+
 
         ]);
         if ($validator->fails()) {
@@ -51,6 +57,20 @@ class SourceSellingController extends Controller
         $source->save();
 
         $input = $request->all();
+        if ($request->has('customer_id')) {
+            $input['customer_id'] = $request->customer_id;
+        } else {
+            $input['customer_id'] = 'Cust-' . $this->generateUUID();
+            OutputCustomer::create([
+                'customer_id' => $input['customer_id'],
+                'name' => $request->name,
+                'email' => $request->email,
+                'address' => $request->address,
+                'phone_number' => $request->phone_number,
+                'onboard_by' => auth()->user()->df_id
+            ]);
+        }
+
         $input['sold_by'] = auth()->user()->df_id;
         SourceSelling::create($input);
         return response()->json([

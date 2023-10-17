@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\v1;
 
+use App\Models\v1\OutputCustomer;
 use App\Models\v1\Sourcing;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -20,6 +21,7 @@ class SourceSellingResource extends JsonResource
             'source_id'=>$this->source_id,
             'source_details'=>SourcingResource::make(Sourcing::where('source_id',$this->source_id)->first()),
             'customer_id'=>$this->customer_id,
+            'customer_details'=>OutputCustomerResource::make(OutputCustomer::where('customer_id',$this->customer_id)->first()),
             'sell_location'=>$this->sell_location,
             'sell_price'=>$this->sell_price,
             'quantity'=>$this->quantity,

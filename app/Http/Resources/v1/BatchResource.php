@@ -27,27 +27,26 @@ class BatchResource extends JsonResource
             'farm_id' => $this->farm_id,
             'which_crop' => $this->which_crop,
             'created_by' => $this->created_by,
-            'land_preparation' => $this->when($request->routeIs(['hq.batch.show','me.batch.show']), function () {
-                return LandPreparationResource::make(LandPreparation::where('batch_id', $this->batch_id)->first());
+            'land_preparation' => $this->when($request->routeIs(['hq.batch.show', 'me.batch.show']), function () {
+                $lp =  LandPreparation::where('batch_id', $this->batch_id)->first();
+                return  $lp ? LandPReparationResource::make($lp) : null;
             }),
-            'sowing' => $this->when($request->routeIs(['hq.batch.show','me.batch.show']), function () {
-                return SowingResource::make(Sowing::where('batch_id', $this->batch_id)->first());
+            'sowing' => $this->when($request->routeIs(['hq.batch.show', 'me.batch.show']), function () {
+                $sow =  Sowing::where('batch_id', $this->batch_id)->first();
+                return  $sow ? SowingResource::make($sow) : null;
             }),
-            'fertilization' => $this->when($request->routeIs(['hq.batch.show','me.batch.show']), function () {
+            'fertilization' => $this->when($request->routeIs(['hq.batch.show', 'me.batch.show']), function () {
                 return Fertilization::where('batch_id', $this->batch_id)->first();
             }),
-            'pesticide' => $this->when($request->routeIs(['hq.batch.show','me.batch.show']), function () {
+            'pesticide' => $this->when($request->routeIs(['hq.batch.show', 'me.batch.show']), function () {
                 return Pesticide::where('batch_id', $this->batch_id)->first();
             }),
-            'watering' => $this->when($request->routeIs(['hq.batch.show','me.batch.show']), function () {
+            'watering' => $this->when($request->routeIs(['hq.batch.show', 'me.batch.show']), function () {
                 return Watering::where('batch_id', $this->batch_id)->first();
             }),
-            'sourcing' => $this->when($request->routeIs(['hq.batch.show','me.batch.show']), function () {
+            'sourcing' => $this->when($request->routeIs(['hq.batch.show', 'me.batch.show']), function () {
                 return SourcingResource::make(Sourcing::where('batch_id', $this->batch_id)->first());
             }),
-
-
-
         ];
     }
 }

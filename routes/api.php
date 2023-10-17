@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\v1\InputOrderController;
 use App\Http\Controllers\Api\v1\LandPreparationController;
 use App\Http\Controllers\Api\v1\LogisticController;
 use App\Http\Controllers\Api\v1\OrdersController;
+use App\Http\Controllers\Api\v1\OutputCustomerController;
 use App\Http\Controllers\Api\v1\PesticideController;
 use App\Http\Controllers\Api\v1\ProductCategoryController;
 use App\Http\Controllers\Api\v1\ProductController;
@@ -149,7 +150,9 @@ Route::prefix('v1/')
                     Route::get('farm_batch', [BatchController::class, 'farmBatch'])->name('hq.farmBatch');
                     Route::get('logistic', [LogisticController::class, 'index'])->name('logistic');
 
-                    // Route::post('sourcing', [SourcingController::class, 'store'])->name('hq.sourcing.store');
+                    Route::post('sourcing', [SourcingController::class, 'store'])->name('hq.sourcing.store');
+
+                    Route::get('output_customer', [OutputCustomerController::class, 'index'])->name('output_customer');
 
                     Route::get('sourcing', [SourcingController::class, 'index'])->name('hq.sourcing');
                     Route::get('sourcing/{sourcing}', [SourcingController::class, 'show'])->name('hq.sourcing.show');

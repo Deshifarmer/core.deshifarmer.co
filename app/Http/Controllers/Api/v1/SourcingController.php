@@ -56,7 +56,6 @@ class SourcingController extends BaseController
         $paths = [];
         $data['source_id'] = 'Source-' . $this->generateUUID();
         if($request->hasFile('product_images')){
-
             $product_image = $request->product_images;
             foreach ($product_image as $key => $image) {
                 $extension = $image->getClientOriginalExtension();
@@ -64,7 +63,6 @@ class SourcingController extends BaseController
                 $imagePath = '/image/sourcing/' . $key . $data['source_id'] . '.' . $extension;
                 $paths[] = $imagePath;
             }
-
         }
         $data['source_by'] = auth()->user()->df_id;
         $data['product_images'] = $paths;

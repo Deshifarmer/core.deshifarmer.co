@@ -109,7 +109,8 @@ class FarmerController extends BaseController
                 $query->WhereRaw("concat(first_name, ' ', last_name) like '%" . $request->search . "%' ")
                     ->orWhere('farmer_id', 'LIKE', '%' . $request->search . '%')
                     ->orWhere('phone', 'LIKE', '%' . $request->search . '%')
-                    ->orWhere('nid', 'LIKE', '%' . $request->search . '%');
+                    ->orWhere('nid', 'LIKE', '%' . $request->search . '%')
+                    ->orWhere('usaid_id', 'LIKE', '%' . $request->search . '%');
             })
             ->orderBy('created_at', 'desc')
             ->paginate($request->input('per_page', 150))
