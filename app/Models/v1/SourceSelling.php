@@ -19,4 +19,5 @@ class SourceSelling extends Model
         'market_type',
         'payment_id',
     ];
+
 }

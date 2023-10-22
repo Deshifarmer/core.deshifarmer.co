@@ -15,9 +15,11 @@ use App\Models\v1\FarmerGroup;
 use App\Models\v1\Order;
 use App\Models\v1\Product;
 use App\Models\v1\SourceSelling;
+use App\Models\v1\Sourcing;
 use App\Models\v1\Upazila;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use PhpParser\Node\Name\FullyQualified;
 
@@ -82,7 +84,6 @@ class DashboardController extends Controller
         $groups = FarmerGroup::all();
 
         $groups->map(function ($group) use ($collection) {
-
             $groupName = $group->farmer_group_name;
             $memberCount = Farmer::where('group_id', $group->farmer_group_id)->count();
             $collection->push([
@@ -340,8 +341,8 @@ class DashboardController extends Controller
             $model = $groupBy == 'district' ? District::class : ($groupBy == 'division' ? Division::class : Upazila::class);
 
             $uName = $model::where('id', $key)->get();
-            $maleCount = Farmer::where('gender', 'male')->where($groupBy,$key)->count();
-            $femaleCount = Farmer::where('gender', 'female')->where($groupBy,$key)->count();
+            $maleCount = Farmer::where('gender', 'male')->where($groupBy, $key)->count();
+            $femaleCount = Farmer::where('gender', 'female')->where($groupBy, $key)->count();
 
             $collection->push([
                 $groupBy . "_name" => $uName->implode('name', ' '),
@@ -352,8 +353,6 @@ class DashboardController extends Controller
             ]);
         }
         return $collection;
-
-
     }
 
 
@@ -377,19 +376,83 @@ class DashboardController extends Controller
             $model = $groupBy == 'district' ? District::class : ($groupBy == 'division' ? Division::class : Upazila::class);
 
             $uName = $model::where('id', $key)->get();
-            $maleCount = Farmer::where('gender', 'male')->where($groupBy,$key)->count();
-            $femaleCount = Farmer::where('gender', 'female')->where($groupBy,$key)->count();
+            $maleCount = Farmer::where('gender', 'male')->where($groupBy, $key)->count();
+            $femaleCount = Farmer::where('gender', 'female')->where($groupBy, $key)->count();
 
             $collection->push([
-                'id'=>$key,
-                'latitude'=>$uName->implode('lat', ' '),
-                'longitude'=>$uName->implode('long', ' '),
+                'id' => $key,
+                'latitude' => $uName->implode('lat', ' '),
+                'longitude' => $uName->implode('long', ' '),
                 'title' => $uName->implode('name', ' '),
-                'description' => 'Total farmer = ' .$value . ' ♂ Male = ' .$maleCount . ' ♀ Female = '. $femaleCount,
+                'description' => 'Total farmer = ' . $value . ' ♂ Male = ' . $maleCount . ' ♀ Female = ' . $femaleCount,
             ]);
         }
         return $collection;
     }
 
 
+    public function sourceAndSourceSellingStat()
+    {
+        return $this->sourceAndSellingStat('day', 7);
+    }
+
+    public function ourceAndSourceSellingStatMonth()
+    {
+        return $this->sourceAndSellingStat('month', 12);
+    }
+
+
+    public function sourceAndSellingStat($period = 'day', $count = 7)
+    {
+        $collection = collect([]);
+        $date = Carbon::now()->subDays($count);
+        $format = 'Y-m-d';
+
+        if ($period === 'month') {
+            $date = Carbon::now()->subMonths($count);
+            $format = 'Y-m';
+        }
+
+        $sources = Sourcing::where('created_at', '>=', $date)
+            ->get()
+            ->groupBy(function ($date) use ($format) {
+                return Carbon::parse($date->created_at)->format($format);
+            })
+            ->map(function ($group) {
+                return $group->sum('buy_price');
+            });
+
+        $sourceSellings = SourceSelling::where('created_at', '>=', $date)
+            ->get()
+            ->groupBy(function ($date) use ($format) {
+                return Carbon::parse($date->created_at)->format($format);
+            })
+            ->map(function ($group) {
+                return $group->sum('sell_price');
+            });
+
+        for ($i = 0; $i < $count; $i++) {
+            $date = $period === 'day' ? Carbon::now()->subDays($i) : Carbon::now()->subMonths($i);
+            $formattedDate = $date->format($format);
+            $displayDate = $date->format($period === 'day' ? 'd M Y' : 'M Y');
+            $collection->push([
+                'date' => $displayDate,
+                'source_total_buy_price' => $sources->get($formattedDate, 0),
+                'source_total_sell_price' => $sourceSellings->get($formattedDate, 0),
+            ]);
+        }
+
+        return $collection;
+    }
+
+
+    public function sourcingUnitWiseQuantity(){
+        $results = DB::table('sourcings')
+            ->leftJoin('source_sellings', 'sourcings.source_id', '=', 'source_sellings.source_id')
+            ->select('sourcings.unit', DB::raw('SUM(sourcings.quantity) as unsold'), DB::raw('SUM(source_sellings.quantity) as sold'))
+            ->groupBy('sourcings.unit')
+            ->get();
+
+        return $results;
+    }
 }

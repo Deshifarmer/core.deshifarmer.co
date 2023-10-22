@@ -8,7 +8,9 @@ use App\Http\Resources\v1\SourceSellingResource;
 use App\Models\v1\OutputCustomer;
 use App\Models\v1\SourceSelling;
 use App\Models\v1\Sourcing;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class SourceSellingController extends BaseController
@@ -19,7 +21,7 @@ class SourceSellingController extends BaseController
     public function index()
     {
         return SourceSellingListResource::collection(
-            SourceSelling::latest()->paginate(Request()->input('per_page', 10))
+            SourceSelling::whereDate('created_at',Request()->date)->latest()->paginate(Request()->input('per_page', 50))
         );
     }
 
@@ -100,5 +102,31 @@ class SourceSellingController extends BaseController
     public function destroy(SourceSelling $sourceSelling)
     {
         //
+    }
+
+    public function dayWiseSourceSelling()
+    {
+
+
+        $startDate = Request()->start_date ?? Carbon::now()->subDays(15)->toDateString();
+        $endDate =Request()->end_date ?? Carbon::now()->toDateString();
+        $daysDifference = Carbon::createFromDate($startDate)->diffInDays(Carbon::createFromDate($endDate));
+
+        $sourceSellingData = collect();
+        for($i=0;$i<=$daysDifference;$i++){
+            $date = Carbon::createFromDate($startDate)->addDays($i)->toDateString();
+            $sourceSellingData ->push( [
+                'date' => $date,
+                'total_selling' => SourceSelling::whereDate('created_at',$date)->sum('sell_price'),
+                'unit_wise_selling' => SourceSelling::whereDate('created_at',$date)->select('unit',DB::raw('sum(quantity) as total_quantity'),DB::raw('sum(sell_price) as total_sell_price'))->groupBy('unit')->get(),
+
+            ]);
+        }
+
+        return response()->json(
+            $sourceSellingData
+        , 200);
+
+
     }
 }

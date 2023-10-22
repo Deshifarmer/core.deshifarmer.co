@@ -19,6 +19,7 @@ class SourceSellingResource extends JsonResource
         return [
             'id'=>$this->id,
             'source_id'=>$this->source_id,
+            
             'source_details'=>SourcingResource::make(Sourcing::where('source_id',$this->source_id)->first()),
             'customer_id'=>$this->customer_id,
             'customer_details'=>OutputCustomerResource::make(OutputCustomer::where('customer_id',$this->customer_id)->first()),
@@ -28,6 +29,7 @@ class SourceSellingResource extends JsonResource
             'sold_by'=>$this->sold_by,
             'market_type'=>$this->market_type,
             'payment_id'=>$this->payment_id,
+            'created_at'=>$this->created_at,
         ];
     }
 }

@@ -59,6 +59,8 @@ Route::prefix('v1/')
 
 
 
+
+
         Route::post('hq/login', [AuthController::class, 'login'])->name('hq_login');
         Route::post('co/login', [AuthController::class, 'login'])->name('co_login');
         Route::post('distributor/login', [AuthController::class, 'login'])->name('distributor_login');
@@ -159,6 +161,7 @@ Route::prefix('v1/')
                     Route::get('source_selling', [SourceSellingController::class, 'index'])->name('hq.source_selling.index');
                     Route::post('source_selling', [SourceSellingController::class, 'store'])->name('hq.source_selling.store');
                     Route::get('source_selling/{source_selling}', [SourceSellingController::class, 'show'])->name('hq.source_selling.show');
+                    Route::get('day_wise_source_selling', [SourceSellingController::class, 'dayWiseSourceSelling'])->name('dayWiseSourceSelling');
 
 
                     Route::prefix('dashboard/')->group(
@@ -168,6 +171,10 @@ Route::prefix('v1/')
                             Route::get('location_wise_farmer', [DashboardController::class, 'location_wise_farmer'])->name('district_wise_farmer');
                             Route::get('male_female', [DashboardController::class, 'location_wise_Male_Female'])->name('male_female');
                             Route::get('map', [DashboardController::class, 'map'])->name('map');
+                            Route::get('ssstat',[DashboardController::class,'sourceAndSourceSellingStat'])->name('ssstat');
+                            Route::get('ssstatm',[DashboardController::class,'ourceAndSourceSellingStatMonth'])->name('ssstat');
+                            Route::get('sourcingUnitWiseQuantity',[DashboardController::class, 'sourcingUnitWiseQuantity'])->name('sourcingUnitWiseQuantity');
+
                         }
                     );
                 });

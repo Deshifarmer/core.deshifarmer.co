@@ -29,4 +29,5 @@ class Sourcing extends Model
     protected $casts = [
         'product_images' => 'array',
     ];
+   
 }

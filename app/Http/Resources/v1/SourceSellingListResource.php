@@ -26,6 +26,7 @@ class SourceSellingListResource extends JsonResource
             'sold_by'=>$this->sold_by,
             'market_type'=>$this->market_type,
             'payment_id'=>$this->payment_id,
+            'created_at'=>$this->created_at,
         ];
     }
 }
