@@ -393,7 +393,7 @@ class DashboardController extends Controller
 
     public function sourceAndSourceSellingStat()
     {
-        return $this->sourceAndSellingStat('day', 7);
+        return $this->sourceAndSellingStat('day', 15);
     }
 
     public function ourceAndSourceSellingStatMonth()

@@ -74,6 +74,7 @@ class SourceSellingController extends BaseController
         }
 
         $input['sold_by'] = auth()->user()->df_id;
+        $input['unit']= $source->unit;
         SourceSelling::create($input);
         return response()->json([
             'success' => 'Source Selling Created Successfully'
@@ -114,7 +115,7 @@ class SourceSellingController extends BaseController
 
         $sourceSellingData = collect();
         for($i=0;$i<=$daysDifference;$i++){
-            $date = Carbon::createFromDate($startDate)->addDays($i)->toDateString();
+            $date = Carbon::createFromDate($endDate)->subDays($i)->toDateString();
             $sourceSellingData ->push( [
                 'date' => $date,
                 'total_selling' => SourceSelling::whereDate('created_at',$date)->sum('sell_price'),

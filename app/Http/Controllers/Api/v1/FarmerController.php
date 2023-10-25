@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Requests\v1\FarmerUpdateRequest;
+use App\Http\Resources\v1\FarmerListResource;
 use App\Http\Resources\v1\FarmerResource;
 use App\Http\Resources\v1\PublicFarmerTrace;
 use App\Models\v1\Farmer;
@@ -87,9 +88,22 @@ class FarmerController extends BaseController
         //
     }
 
-    public function myFarmer()
+    public function myFarmer(Request $request)
     {
-        $farmer = Farmer::where('onboard_by', auth()->user()->df_id)->get()->sortByDesc('created_at');
+
+        $farmer = Farmer::query()
+            ->where('onboard_by', auth()->user()->df_id)
+            ->when($request->search, function ($query) use ($request) {
+                $query->where(function ($query) use ($request) {
+                    $query->whereRaw("concat(first_name, ' ', last_name) like '%" . $request->search . "%' ")
+                        ->orWhere('farmer_id', 'LIKE', '%' . $request->search . '%')
+                        ->orWhere('phone', 'LIKE', '%' . $request->search . '%')
+                        ->orWhere('nid', 'LIKE', '%' . $request->search . '%')
+                        ->orWhere('usaid_id', 'LIKE', '%' . $request->search . '%');
+                });
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
         return FarmerResource::collection($farmer);
     }
     public function unassignedFarmer()
