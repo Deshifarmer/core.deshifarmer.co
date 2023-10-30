@@ -55,7 +55,7 @@ class AuthController extends BaseController
         $user = User::create($input);
         return response()->json(['success' => 'User created successfully'], 201);
 
-        return new Request($input);
+       
     }
 
     /**

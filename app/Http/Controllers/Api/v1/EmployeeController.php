@@ -85,10 +85,10 @@ class EmployeeController extends BaseController
      */
     public function update(Request $request, Employee $employee)
     {
-        $employee->update(
-            $request->all()
-        );
-        return new UserResource($employee);
+        // $employee->update(
+        //     $request->all()
+        // );
+        // return new UserResource($employee);
     }
 
     /**

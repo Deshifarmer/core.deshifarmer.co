@@ -37,29 +37,11 @@ use App\Http\Controllers\Api\v1\SurveyController;
 use App\Http\Controllers\Api\v1\TransactionController;
 use App\Http\Controllers\Api\v1\UserController;
 use App\Http\Controllers\Api\v1\WateringController;
-use App\Models\v1\Attendance;
-use Illuminate\Support\Facades\Auth;
-use PHPUnit\TextUI\Configuration\Source;
-use Symfony\Component\Console\Input\Input;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
 
 Route::prefix('v1/')
     ->middleware(['cors'])
     ->group(function () {
-
-
-
-
 
         Route::post('hq/login', [AuthController::class, 'login'])->name('hq_login');
         Route::post('co/login', [AuthController::class, 'login'])->name('co_login');
@@ -67,10 +49,12 @@ Route::prefix('v1/')
         Route::post('me/login', [AuthController::class, 'login'])->name('me_login');
         Route::post('pm/login', [AuthController::class, 'login'])->name('pm_login');
 
+
+        Route::group(['middleware' => ['auth:sanctum', 'user-access:HQ|ME|DB']], function () {
+            Route::post('user/{user}/update', [UserController::class, 'update'])->name('user.update');
+        });
+
         Route::group(['middleware' => ['auth:sanctum']], function () {
-
-
-
 
             Route::post('logout', [AuthController::class, 'logout']);
             Route::get('division', [DivisionController::class, 'index']);
@@ -171,10 +155,9 @@ Route::prefix('v1/')
                             Route::get('location_wise_farmer', [DashboardController::class, 'location_wise_farmer'])->name('district_wise_farmer');
                             Route::get('male_female', [DashboardController::class, 'location_wise_Male_Female'])->name('male_female');
                             Route::get('map', [DashboardController::class, 'map'])->name('map');
-                            Route::get('ssstat',[DashboardController::class,'sourceAndSourceSellingStat'])->name('ssstat');
-                            Route::get('ssstatm',[DashboardController::class,'ourceAndSourceSellingStatMonth'])->name('ssstat');
-                            Route::get('sourcingUnitWiseQuantity',[DashboardController::class, 'sourcingUnitWiseQuantity'])->name('sourcingUnitWiseQuantity');
-
+                            Route::get('ssstat', [DashboardController::class, 'sourceAndSourceSellingStat'])->name('ssstat');
+                            Route::get('ssstatm', [DashboardController::class, 'ourceAndSourceSellingStatMonth'])->name('ssstatm');
+                            Route::get('sourcingUnitWiseQuantity', [DashboardController::class, 'sourcingUnitWiseQuantity'])->name('sourcingUnitWiseQuantity');
                         }
                     );
                 });
@@ -309,18 +292,11 @@ Route::prefix('v1/')
 
         // Route::get('activity',[ActivityController::class,'index'])->name('activity');
         // Route::get('activity/{activity}',[ActivityController::class,'show'])->name('activity.show');
-
         // Route::put('activity/{activity}',[ActivityController::class,'update'])->name('activity.update');
         // Route::delete('activity/{activity}',[ActivityController::class,'destroy'])->name('activity.destroy');
         // Route::get('public_farmer_trace/{farmer}', [FarmerController::class, 'publicFarmerTrace'])->name('public_farmer_trace');
-
-
         // Route::put('sourcing/{sourcing}', [SourcingController::class, 'update'])->name('sourcing.update');
         // Route::delete('sourcing/{sourcing}', [SourcingController::class, 'destroy'])->name('sourcing.destroy');
-
-
         // Route::get('land_preparation', [LandPreparationController::class, 'index'])->name('land_preparation');
         // Route::get('land_preparation/{land_preparation}', [LandPreparationController::class, 'show'])->name('land_preparation.show');
-
-
     });
