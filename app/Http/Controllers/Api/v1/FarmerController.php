@@ -103,7 +103,8 @@ class FarmerController extends BaseController
                 });
             })
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate($request->input('per_page', 25));
+
         return FarmerResource::collection($farmer);
     }
     public function unassignedFarmer()

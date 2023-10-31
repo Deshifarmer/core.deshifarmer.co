@@ -347,7 +347,9 @@ class InputOrderController extends BaseController
             InputOrderResource::collection(
                 InputOrder::where('me_id', auth()->user()->df_id)
                     ->orderBy('created_at', 'desc')
-                    ->get()
+                    ->paginate(
+                        Request()->input('per_page', 5)
+                    )
             );
     }
 }

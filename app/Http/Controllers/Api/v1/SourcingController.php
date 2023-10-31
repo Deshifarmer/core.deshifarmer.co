@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\SourcingResource;
+use App\Models\v1\SourceSelling;
 use App\Models\v1\Sourcing;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class SourcingController extends BaseController
@@ -67,9 +69,26 @@ class SourcingController extends BaseController
         $data['source_by'] = auth()->user()->df_id;
         $data['product_images'] = $paths;
 
+        //this function is only for recent market linkage
+        if(Auth::user()->df_id!='HQ-01'){
+            SourceSelling::create(
+                [
+                    'source_id' => $data['source_id'],
+                    'sell_location' => $request->market_name,
+                    'sell_price' => $data['buy_price'],
+                    'quantity' => $data['quantity'],
+                    'market_type' => 'Market Linkage',
+                    'customer_id' => 'Cust-0690-7c252',
+                    'sold_by' => auth()->user()->df_id,
+                    'unit' => $data['unit'],
+                ]
+            );
+            $data['sell_price'] = $data['buy_price'];
+            $data['quantity'] = 0;
 
+        }
+        //this function is only for recent market linkage
         Sourcing::create($data);
-
         return response()->json([
             'message' => 'Sourcing created successfully',
         ], 201);
@@ -99,6 +118,6 @@ class SourcingController extends BaseController
         //
     }
     public function mySourcing(){
-        return SourcingResource::collection(Sourcing::where('source_by',auth()->user()->df_id)->latest()->get());
+        return SourcingResource::collection(Sourcing::where('source_by',auth()->user()->df_id)->latest()->limit(25)->get());
     }
 }

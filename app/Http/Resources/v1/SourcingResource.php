@@ -29,6 +29,7 @@ class SourcingResource extends JsonResource
             // 'category' => $this->category,
             'which_farmer' => $this->which_farmer,
             'farmer_name' =>Farmer::where('farmer_id', $this->which_farmer)->first()->first_name . ' ' . Farmer::where('farmer_id', $this->which_farmer)->first()->last_name,
+            'usaid_id' => Farmer::where('farmer_id', $this->which_farmer)->first()->usaid_id ?? null,
             'source_by' => $this->source_by,
             'transportation_id' => $this->transportation_id,
             'source_location' => Upazila::where('id', $this->source_location)->first()->name,
