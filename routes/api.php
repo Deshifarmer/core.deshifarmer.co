@@ -37,7 +37,7 @@ use App\Http\Controllers\Api\v1\SurveyController;
 use App\Http\Controllers\Api\v1\TransactionController;
 use App\Http\Controllers\Api\v1\UserController;
 use App\Http\Controllers\Api\v1\WateringController;
-
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::prefix('v1/')
     ->middleware(['cors'])
@@ -146,6 +146,9 @@ Route::prefix('v1/')
                     Route::post('source_selling', [SourceSellingController::class, 'store'])->name('hq.source_selling.store');
                     Route::get('source_selling/{source_selling}', [SourceSellingController::class, 'show'])->name('hq.source_selling.show');
                     Route::get('day_wise_source_selling', [SourceSellingController::class, 'dayWiseSourceSelling'])->name('dayWiseSourceSelling');
+
+
+                    Route::get('testForSourceSellingDataExport',[DashboardController::class , 'testForSourceSellingDataExport']);
 
 
                     Route::prefix('dashboard/')->group(
@@ -299,4 +302,7 @@ Route::prefix('v1/')
         // Route::delete('sourcing/{sourcing}', [SourcingController::class, 'destroy'])->name('sourcing.destroy');
         // Route::get('land_preparation', [LandPreparationController::class, 'index'])->name('land_preparation');
         // Route::get('land_preparation/{land_preparation}', [LandPreparationController::class, 'show'])->name('land_preparation.show');
+
+
+
     });

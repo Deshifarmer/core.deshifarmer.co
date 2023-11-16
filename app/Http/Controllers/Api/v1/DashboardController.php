@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ExelResource;
 use App\Http\Resources\v1\ProductResource;
 use App\Models\User;
 use App\Models\v1\Advisory;
@@ -12,6 +13,7 @@ use App\Models\v1\Division;
 use App\Models\v1\Employee;
 use App\Models\v1\Farmer;
 use App\Models\v1\FarmerGroup;
+use App\Models\v1\InputOrder;
 use App\Models\v1\Order;
 use App\Models\v1\Product;
 use App\Models\v1\SourceSelling;
@@ -47,7 +49,7 @@ class DashboardController extends Controller
             'total_channel' => Channel::count(),
             'total_group' => FarmerGroup::count(),
             'total_product' => Product::count(),
-            'total_order' => Order::count(),
+            'total_order' => InputOrder::count(),
             'agri_input_sell' => request()->route()->getName() == 'hq.all_member' ? Order::where('status', 'collected by me')->sum('total_price') : null,
             'output_sell' => request()->route()->getName() == 'hq.all_member' ? floatval(SourceSelling::sum('sell_price')) : null,
             'output_sell_volume' => request()->route()->getName() == 'hq.all_member' ? floatval(SourceSelling::sum('quantity')) : null,
@@ -446,7 +448,8 @@ class DashboardController extends Controller
     }
 
 
-    public function sourcingUnitWiseQuantity(){
+    public function sourcingUnitWiseQuantity()
+    {
         $results = DB::table('sourcings')
             ->leftJoin('source_sellings', 'sourcings.source_id', '=', 'source_sellings.source_id')
             ->select('sourcings.unit', DB::raw('SUM(sourcings.quantity) as unsold'), DB::raw('SUM(source_sellings.quantity) as sold'))
@@ -454,5 +457,12 @@ class DashboardController extends Controller
             ->get();
 
         return $results;
+    }
+
+
+    public function testForSourceSellingDataExport()
+    {
+        return ExelResource::collection(Sourcing::whereDate('created_at', Request()->date)->get());
+        //return Sourcing::whereDate('created_at', Request()->date)->get();
     }
 }
