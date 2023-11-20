@@ -7,6 +7,8 @@ use App\Models\v1\Division;
 use App\Models\v1\Farm;
 use App\Models\v1\InputOrder;
 use App\Models\v1\Order;
+use App\Models\v1\SourceSelling;
+use App\Models\v1\Sourcing;
 use App\Models\v1\Upazila;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -71,6 +73,10 @@ class FarmerResource extends JsonResource
             'farm_list' => $this->when($request->routeIs('me.my_single_farmer'), function () {
                 return Farm::where('farmer_id', $this->farmer_id)->orderBy('id', 'desc')->get();
             }),
+
+
+            'input_buy' =>InputOrder::where('sold_to', $this->farmer_id)->sum('total_price'),
+            'output_sold' => Sourcing::where('which_farmer', $this->farmer_id)->sum('sell_price')
         ];
     }
 }

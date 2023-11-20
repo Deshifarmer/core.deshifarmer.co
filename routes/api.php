@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\v1\ActivityController;
 use App\Http\Controllers\Api\v1\AdvisoryController;
 use App\Http\Controllers\Api\v1\AttendanceController;
@@ -8,10 +8,8 @@ use App\Http\Controllers\Api\v1\BatchController;
 use App\Http\Controllers\Api\v1\CashInRequestController;
 use App\Http\Controllers\Api\v1\CashOutRequestController;
 use App\Http\Controllers\Api\v1\ChannelController;
-use App\Http\Controllers\Api\v1\ClusterController;
 use App\Http\Controllers\Api\v1\DashboardController;
 use App\Http\Controllers\Api\v1\DistributorsFileController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\v1\FarmerController;
 use App\Http\Controllers\Api\v1\UnitController;
 use App\Http\Controllers\Api\v1\UpazilaController;
@@ -37,7 +35,7 @@ use App\Http\Controllers\Api\v1\SurveyController;
 use App\Http\Controllers\Api\v1\TransactionController;
 use App\Http\Controllers\Api\v1\UserController;
 use App\Http\Controllers\Api\v1\WateringController;
-use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+
 
 Route::prefix('v1/')
     ->middleware(['cors'])
@@ -146,9 +144,9 @@ Route::prefix('v1/')
                     Route::post('source_selling', [SourceSellingController::class, 'store'])->name('hq.source_selling.store');
                     Route::get('source_selling/{source_selling}', [SourceSellingController::class, 'show'])->name('hq.source_selling.show');
                     Route::get('day_wise_source_selling', [SourceSellingController::class, 'dayWiseSourceSelling'])->name('dayWiseSourceSelling');
-
-
                     Route::get('testForSourceSellingDataExport',[DashboardController::class , 'testForSourceSellingDataExport']);
+
+                    Route::get('farmer_source_selling/{farmer}',[FarmerController::class, 'farmer_source_selling']);
 
 
                     Route::prefix('dashboard/')->group(

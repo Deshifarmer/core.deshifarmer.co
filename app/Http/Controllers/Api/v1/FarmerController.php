@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Requests\v1\FarmerUpdateRequest;
+use App\Http\Resources\ExelResource;
 use App\Http\Resources\v1\FarmerListResource;
 use App\Http\Resources\v1\FarmerResource;
 use App\Http\Resources\v1\PublicFarmerTrace;
 use App\Models\v1\Farmer;
+use App\Models\v1\Sourcing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -166,5 +168,19 @@ class FarmerController extends BaseController
         } else {
             return FarmerResource::collection($farmers);
         }
+    }
+
+
+    public function farmer_source_selling(Farmer $farmer)
+    {
+        return ExelResource::collection(
+            Sourcing::where(
+                'which_farmer',
+                $farmer->farmer_id
+            )
+                ->latest()
+                ->limit(10)
+                ->get()
+        );;
     }
 }

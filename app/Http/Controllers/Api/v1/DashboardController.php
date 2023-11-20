@@ -462,7 +462,12 @@ class DashboardController extends Controller
 
     public function testForSourceSellingDataExport()
     {
-        return ExelResource::collection(Sourcing::whereDate('created_at', Request()->date)->get());
+        return ExelResource::collection(
+            Sourcing::whereDate(
+                'created_at',
+                Request()->date
+            )->get()
+        );
         //return Sourcing::whereDate('created_at', Request()->date)->get();
     }
 }
