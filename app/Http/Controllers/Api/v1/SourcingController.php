@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\SourcingResource;
 use App\Models\v1\SourceSelling;
 use App\Models\v1\Sourcing;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -118,6 +119,12 @@ class SourcingController extends BaseController
         //
     }
     public function mySourcing(){
-        return SourcingResource::collection(Sourcing::where('source_by',auth()->user()->df_id)->latest()->limit(25)->get());
+        $startDate = Request()->start_date ?? Carbon::now()->subDays(20)->toDateString();
+        $endDate =Request()->end_date ?? Carbon::now()->toDateString();
+        return SourcingResource::
+        collection(
+            Sourcing::where('source_by',auth()->user()->df_id)
+            ->whereBetween('created_at', [$startDate, $endDate])->latest()->get());
     }
 }
+
