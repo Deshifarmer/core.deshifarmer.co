@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\v1\ActivityController;
 use App\Http\Controllers\Api\v1\AdvisoryController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\Api\v1\EmployeeController;
 use App\Http\Controllers\Api\v1\FarmController;
 use App\Http\Controllers\Api\v1\FarmerGroupController;
 use App\Http\Controllers\Api\v1\FertilizationController;
+use App\Http\Controllers\Api\v1\FinanceRequestController;
 use App\Http\Controllers\Api\v1\InputOrderController;
 use App\Http\Controllers\Api\v1\LandPreparationController;
 use App\Http\Controllers\Api\v1\LogisticController;
@@ -35,7 +37,7 @@ use App\Http\Controllers\Api\v1\SurveyController;
 use App\Http\Controllers\Api\v1\TransactionController;
 use App\Http\Controllers\Api\v1\UserController;
 use App\Http\Controllers\Api\v1\WateringController;
-
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::prefix('v1/')
     ->middleware(['cors'])
@@ -144,11 +146,12 @@ Route::prefix('v1/')
                     Route::post('source_selling', [SourceSellingController::class, 'store'])->name('hq.source_selling.store');
                     Route::get('source_selling/{source_selling}', [SourceSellingController::class, 'show'])->name('hq.source_selling.show');
                     Route::get('day_wise_source_selling', [SourceSellingController::class, 'dayWiseSourceSelling'])->name('dayWiseSourceSelling');
-                    Route::get('testForSourceSellingDataExport',[DashboardController::class , 'testForSourceSellingDataExport']);
+                    Route::get('testForSourceSellingDataExport', [DashboardController::class, 'testForSourceSellingDataExport']);
 
-                    Route::get('farmer_source_selling/{farmer}',[FarmerController::class, 'farmer_source_selling']);
+                    Route::get('farmer_source_selling/{farmer}', [FarmerController::class, 'farmer_source_selling']);
 
-
+                    Route::get('finance_request', [FinanceRequestController::class, 'index']);
+                    
                     Route::prefix('dashboard/')->group(
                         function () {
                             Route::get('all_member', [DashboardController::class, 'all_member'])->name('hq.all_member');
@@ -262,6 +265,7 @@ Route::prefix('v1/')
                     Route::post('fertilization', [FertilizationController::class, 'store'])->name('fertilization.store');
                     Route::post('watering', [WateringController::class, 'store'])->name('watering.store');
                     Route::post('pesticide', [PesticideController::class, 'store'])->name('pesticide.store');
+                    Route::post('finance_request', [FinanceRequestController::class, 'store'])->name('store.finance_request');
                 });
         });
 
@@ -301,6 +305,7 @@ Route::prefix('v1/')
         // Route::get('land_preparation', [LandPreparationController::class, 'index'])->name('land_preparation');
         // Route::get('land_preparation/{land_preparation}', [LandPreparationController::class, 'show'])->name('land_preparation.show');
 
+       // Route::get('farmerWithoutUSAIDAtJessore',[DashboardController::class , 'farmerWithoutUSAIDAtJessore'])->name('farmerWithoutUSAIDAtJessore');
 
 
     });

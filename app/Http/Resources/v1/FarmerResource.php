@@ -4,6 +4,7 @@ namespace App\Http\Resources\v1;
 
 use App\Models\v1\District;
 use App\Models\v1\Division;
+use App\Models\v1\Employee;
 use App\Models\v1\Farm;
 use App\Models\v1\InputOrder;
 use App\Models\v1\Order;
@@ -27,8 +28,9 @@ class FarmerResource extends JsonResource
             'farmer_id' => $this->farmer_id,
             'usaid_id' => $this->usaid_id,
             'image'=>$this->image,
-            // 'farmer_type' => $this->farmer_type,
+            'farmer_type' => $this->farmer_type,
             'onboard_by' => $this->onboard_by,
+            'me_name'=>Employee::where('df_id',$this->onboard_by)->first()->full_name,
             'nid' => $this->nid,
             'gov_farmer_id' => $this->gov_farmer_id,
             'first_name' => $this->first_name,
@@ -36,7 +38,7 @@ class FarmerResource extends JsonResource
             'full_name' => $this->full_name,
             'fathers_name' => $this->fathers_name,
             'phone' => $this->phone,
-            // 'is_married' => $this->is_married,
+            'is_married' => $this->is_married,
             'gender' => $this->gender,
             'date_of_birth' => $this->date_of_birth,
             'address' => $this->address,

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ExelResource;
+use App\Http\Resources\v1\FarmerResource;
 use App\Http\Resources\v1\ProductResource;
 use App\Models\User;
 use App\Models\v1\Advisory;
@@ -469,5 +470,11 @@ class DashboardController extends Controller
             )->get()
         );
         //return Sourcing::whereDate('created_at', Request()->date)->get();
+    }
+
+    public function farmerWithoutUSAIDAtJessore(){
+      return FarmerResource::collection(Farmer::where('division',4)
+        ->whereNotNull('usaid_id')
+        ->get());
     }
 }

@@ -37,7 +37,7 @@ class SourcingController extends BaseController
             'source_location' => 'required|string',
 
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
                 'message' => $validator->errors(),
             ], 422);
@@ -58,7 +58,7 @@ class SourcingController extends BaseController
         ]);
         $paths = [];
         $data['source_id'] = 'Source-' . $this->generateUUID();
-        if($request->hasFile('product_images')){
+        if ($request->hasFile('product_images')) {
             $product_image = $request->product_images;
             foreach ($product_image as $key => $image) {
                 $extension = $image->getClientOriginalExtension();
@@ -71,7 +71,7 @@ class SourcingController extends BaseController
         $data['product_images'] = $paths;
 
         //this function is only for recent market linkage
-        if(Auth::user()->df_id!='HQ-01'){
+        if (Auth::user()->df_id != 'HQ-01') {
             SourceSelling::create(
                 [
                     'source_id' => $data['source_id'],
@@ -86,7 +86,6 @@ class SourcingController extends BaseController
             );
             $data['sell_price'] = $data['buy_price'];
             $data['quantity'] = 0;
-
         }
         //this function is only for recent market linkage
         Sourcing::create($data);
@@ -118,13 +117,14 @@ class SourcingController extends BaseController
     {
         //
     }
-    public function mySourcing(){
-        $startDate = Request()->start_date ?? Carbon::now()->subDays(20)->toDateString();
-        $endDate =Request()->end_date ?? Carbon::now()->toDateString();
-        return SourcingResource::
-        collection(
-            Sourcing::where('source_by',auth()->user()->df_id)
-            ->whereBetween('created_at', [$startDate, $endDate])->latest()->get());
+
+    public function mySourcing()
+    {
+        $startDate = Request()->start_date ?? Carbon::today()->subDays(20)->toDateString();
+        $endDate = Request()->end_date ?? Carbon::now()->addDay()->toDateString();
+        return SourcingResource::collection(
+                Sourcing::where('source_by', auth()->user()->df_id)
+                    ->whereBetween('created_at', [$startDate, $endDate])->latest()->get()
+            );
     }
 }
-
