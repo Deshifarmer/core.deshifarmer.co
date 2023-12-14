@@ -39,6 +39,10 @@ class UserController extends Controller
     {
         return UserResource::collection(Employee::where('type', 4)->get()->sortByDesc('created_at'));
     }
+    public function allFinancePartner()
+    {
+        return UserResource::collection(Employee::where('type', 5)->get()->sortByDesc('created_at'));
+    }
     public function unassignedDistributor()
     {
         return UserResource::collection(Employee::where('type', 2)

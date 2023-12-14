@@ -18,7 +18,10 @@ return new class extends Migration
             $table->string('producing_crop');
             $table->string('variety')->nullable();
             $table->string('purpose_of_loan');
+            $table->string('order_id')->nullable();
             $table->double('amount_of_loan');
+            $table->string('which_fp')->nullable();
+            $table->double('df_approved_loan')->default(0);
             $table->string('season_and_eta_sales')->nullable();
             $table->string('note')->nullable();
             $table->string('payment_schedule');

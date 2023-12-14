@@ -21,7 +21,7 @@ class AuthController extends BaseController
             'email' => 'required|email|unique:users',
             'phone' => 'required|unique:users,phone',
             'nid' => 'required|unique:users,nid',
-            'role' => 'required|in:0,1,2,3,4',
+            'role' => 'required|in:0,1,2,3,4,5',
             'password' => 'required',
             'c_password' => 'required|same:password',
         ]);
@@ -43,6 +43,7 @@ class AuthController extends BaseController
             2 => 'DB-',
             3 => 'ME-',
             4 => 'TM-',
+            5 => 'FP-',
         ];
         $input['df_id'] = $arr[$input['role']] . $this->generateUuid();
         $input['type'] = $input['role'];
@@ -55,7 +56,7 @@ class AuthController extends BaseController
         $user = User::create($input);
         return response()->json(['success' => 'User created successfully'], 201);
 
-       
+
     }
 
     /**
@@ -82,6 +83,8 @@ class AuthController extends BaseController
             } else if ($user->role == 3 && Employee::where('df_id', $user->df_id)->first()->under != null && Route::currentRouteName() == 'me_login') {
                 return AuthResource::make($user);
             } else if ($user->role == 4 && Route::currentRouteName() == 'pm_login') {
+                return AuthResource::make($user);
+            } else if ($user->role == 5 && Route::currentRouteName() == 'fp_login') {
                 return AuthResource::make($user);
             } else {
                 return response()->json(

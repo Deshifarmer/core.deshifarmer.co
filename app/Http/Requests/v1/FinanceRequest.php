@@ -27,7 +27,7 @@ class FinanceRequest extends FormRequest
             'producing_crop'=>'required|string',
             'variety'=>'string',
             'purpose_of_loan'=>'required|string',
-            'amount_of_loan'=>'required|numeric|min_digits:4',
+            'amount_of_loan'=>'required',
             'season_and_eta_sales'=>'string',
             'note'=>'string',
             'payment_schedule'=>'required|string',

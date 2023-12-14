@@ -48,7 +48,7 @@ Route::prefix('v1/')
         Route::post('distributor/login', [AuthController::class, 'login'])->name('distributor_login');
         Route::post('me/login', [AuthController::class, 'login'])->name('me_login');
         Route::post('pm/login', [AuthController::class, 'login'])->name('pm_login');
-
+        Route::post('fp/login', [AuthController::class, 'login'])->name('fp_login');
 
         Route::group(['middleware' => ['auth:sanctum', 'user-access:HQ|ME|DB']], function () {
             Route::post('user/{user}/update', [UserController::class, 'update'])->name('user.update');
@@ -92,6 +92,7 @@ Route::prefix('v1/')
                     Route::get('distributor_file/{distributors_file}', [DistributorsFileController::class, 'show']);
                     Route::get('all_me', [UserController::class, 'allMicroEnt'])->name('all_me');
                     Route::get('all_tm', [UserController::class, 'allTerritoryManager'])->name('all_tm');
+                    Route::get('all_fp', [UserController::class, 'allFinancePartner'])->name('all_fp');
                     Route::get('all_farmer', [FarmerController::class, 'index']);
                     Route::get('farmer_search', [FarmerController::class, 'paginateFarmerWithSearch'])->name('paginateFarmerWithSearch');
                     Route::get('unassigned_distributor', [UserController::class, 'unassignedDistributor'])->name('unassigned_distributor');
@@ -151,7 +152,9 @@ Route::prefix('v1/')
                     Route::get('farmer_source_selling/{farmer}', [FarmerController::class, 'farmer_source_selling']);
 
                     Route::get('finance_request', [FinanceRequestController::class, 'index']);
-                    
+                    Route::get('finance_request/{request_finance}', [FinanceRequestController::class, 'show']);
+                    Route::post('finance_request/{request_finance}', [FinanceRequestController::class, 'update']);
+
                     Route::prefix('dashboard/')->group(
                         function () {
                             Route::get('all_member', [DashboardController::class, 'all_member'])->name('hq.all_member');
@@ -305,7 +308,16 @@ Route::prefix('v1/')
         // Route::get('land_preparation', [LandPreparationController::class, 'index'])->name('land_preparation');
         // Route::get('land_preparation/{land_preparation}', [LandPreparationController::class, 'show'])->name('land_preparation.show');
 
-       // Route::get('farmerWithoutUSAIDAtJessore',[DashboardController::class , 'farmerWithoutUSAIDAtJessore'])->name('farmerWithoutUSAIDAtJessore');
+        // Route::get('farmerWithoutUSAIDAtJessore',[DashboardController::class , 'farmerWithoutUSAIDAtJessore'])->name('farmerWithoutUSAIDAtJessore');
+        // route for HeadQuatre and Company
+
+        Route::group(['middleware' => ['auth:sanctum', 'user-access:FP']], function () {
+            Route::prefix('fp/dashboard')
+                ->group(function () {
+                    // Route::get('all_request',[FinanceRequestController::class])
+
+                });
+        });
 
 
     });

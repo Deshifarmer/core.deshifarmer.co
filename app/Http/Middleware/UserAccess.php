@@ -17,7 +17,7 @@ class UserAccess
      */
     public function handle(Request $request, Closure $next, $userType)
     {
-       $type = array ( "HQ","CO","DB","ME","HQ_MAN" );
+       $type = array ( "HQ","CO","DB","ME","HQ_MAN","FP" );
        $arr = explode('|', $userType);
         foreach ($arr as $arrs){
             if($type[auth()->user()->role] ==  $arrs){

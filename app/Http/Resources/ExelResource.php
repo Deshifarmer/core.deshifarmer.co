@@ -21,6 +21,7 @@ class ExelResource extends JsonResource
         $sourceSelling = SourceSelling::where('source_id', $this->source_id)->first();
         $me = Employee::where('df_id',$this->source_by)->first();
         return [
+            'source_id' => $this->source_id,
             'farmer_df_id'=>$farmer->farmer_id,
             'participant_id' => $farmer->usaid_id,
             'participant_name'=>$farmer->full_name,

@@ -21,6 +21,7 @@ class AuthResource extends JsonResource
             2 => 'DB',
             3 => 'ME',
             4 => 'TM',
+            5 => 'FP',
         ];
 
         return [

@@ -16,7 +16,9 @@ class FinanceRequestController extends Controller
      */
     public function index()
     {
-        $fr = RequestFinance::latest()->paginate(25);
+        $fr = RequestFinance::latest()->paginate(
+            Request()->input('per_page', 10)
+        );
         return FinanceRequestResource::collection($fr);
     }
 
@@ -40,7 +42,7 @@ class FinanceRequestController extends Controller
      */
     public function show(RequestFinance $requestFinance)
     {
-        //
+        return $requestFinance;
     }
 
     /**
@@ -48,7 +50,13 @@ class FinanceRequestController extends Controller
      */
     public function update(Request $request, RequestFinance $requestFinance)
     {
-        //
+        $requestFinance->update($request->all());
+        return response()->json(
+            [
+                'message' => 'updated'
+            ],
+            200
+        );
     }
 
     /**
@@ -58,4 +66,6 @@ class FinanceRequestController extends Controller
     {
         //
     }
+
+    
 }
