@@ -314,7 +314,9 @@ Route::prefix('v1/')
         Route::group(['middleware' => ['auth:sanctum', 'user-access:FP']], function () {
             Route::prefix('fp/dashboard')
                 ->group(function () {
-                    // Route::get('all_request',[FinanceRequestController::class])
+                     Route::get('all_fp_request',[FinanceRequestController::class,'fp_request'])->name('fp_wise_request');
+                     Route::get('fp_request/{request_finance}', [FinanceRequestController::class, 'show']);
+                     Route::post('fp_request/{request_finance}', [FinanceRequestController::class, 'update']);
 
                 });
         });

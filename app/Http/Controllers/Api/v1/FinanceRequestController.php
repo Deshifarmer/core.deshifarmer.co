@@ -65,7 +65,15 @@ class FinanceRequestController extends Controller
     public function destroy(RequestFinance $requestFinance)
     {
         //
+
     }
 
-    
+    public function fp_request(){
+        return  $fr = RequestFinance::where('which_fp',auth()->user()->df_id)->latest()->paginate(
+            Request()->input('per_page', 10)
+        );
+        return FinanceRequestResource::collection($fr);;
+    }
+
+
 }

@@ -82,7 +82,7 @@ class UserController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'first_name' => 'required|string|max:255',
+            'first_name' => 'string|max:255',
             'last_name' => 'nullable|string|max:255',
             'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'nid' => 'string|unique:users,nid,' . $user->id,
@@ -96,7 +96,14 @@ class UserController extends Controller
         if (Auth::user()->df_id == 'HQ-01' || Auth::user()->df_id == $user->df_id) {
 
             $user->update(
-                $request->only('first_name', 'last_name', 'nid', 'phone', 'email')
+                // $request->only('first_name', 'last_name', 'nid', 'phone', 'email')
+                [
+                    'first_name' => $request->first_name??$user->first_name,
+                    'last_name' => $request->last_name??$user->last_name,
+                    'nid' => $request->nid??$user->nid,
+                    'phone' => $request->phone??$user->phone,
+                    'email' => $request->email??$user->email,
+                ]
             );
             $employee_db = Employee::where('df_id', $user->df_id)->first();
             if ($request->hasFile('photo')) {
@@ -106,11 +113,11 @@ class UserController extends Controller
                 $image_path = '/image/employee/' . $user->df_id . '.' . $extension;
             }
             Employee::where('df_id', $user->df_id)->update([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'nid' => $request->nid,
-                'phone' => $request->phone,
-                'email' => $request->email,
+                'first_name' => $request->first_name??$employee_db->first_name,
+                'last_name' => $request->last_name??$employee_db->last_name,
+                'nid' => $request->nid??$employee_db->nid,
+                'phone' => $request->phone??$employee_db->phone,
+                'email' => $request->email??$employee_db->email,
                 'photo' => $image_path ?? $employee_db->photo
             ]);
             return response()->json(['message' => 'User Updated Successfully'], 200);
